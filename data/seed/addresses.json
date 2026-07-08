@@ -1,0 +1,18 @@
+[
+  {
+    "id": "addr-0",
+    "label": "본사",
+    "recipient": "샘플건설",
+    "tel": "010-1234-5678",
+    "address": "서울시 강남구 테헤란로 1",
+    "isDefault": true
+  },
+  {
+    "id": "addr-1",
+    "label": "현장창고",
+    "recipient": "김현장",
+    "tel": "010-2222-3333",
+    "address": "경기도 하남시 미사대로 100",
+    "isDefault": false
+  }
+]

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingCart, User } from "lucide-react";
+import { Search, ShoppingCart, User, ClipboardList } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import styles from "./Header.module.css";
 
@@ -56,6 +56,14 @@ export default function Header() {
           <Link href="/cart" className={styles.navLink} aria-label="견적서" title="견적서">
             <ShoppingCart size={20} strokeWidth={1.75} />
             {totalCount > 0 && <span className={styles.badge}>{totalCount}</span>}
+          </Link>
+          <Link
+            href="/mypage/orders"
+            className={styles.navLink}
+            aria-label="마이페이지"
+            title="마이페이지"
+          >
+            <ClipboardList size={20} strokeWidth={1.75} />
           </Link>
           <Link href="/login" className={styles.navLink} aria-label="로그인" title="로그인">
             <User size={20} strokeWidth={1.75} />

@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // 개발 화면 좌측 하단 인디케이터(N 로고) 숨김
+  devIndicators: false,
 };
 
 export default nextConfig;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import { SUPPLIER, BANK_ACCOUNT } from "@/lib/constants";
+import { saveOrder, type Order } from "@/lib/orders";
 import styles from "./page.module.css";
 
 // 사업자등록번호 10자리를 000-00-00000 형태로 표시
@@ -31,8 +32,8 @@ export default function CheckoutPage() {
   const [bizNo, setBizNo] = useState("");
   const [company, setCompany] = useState("");
 
-  // 주문 완료 상태
-  const [orderNo, setOrderNo] = useState<string | null>(null);
+  // 주문 완료 시점의 스냅샷 (라이브 장바구니와 분리)
+  const [completed, setCompleted] = useState<Order | null>(null);
 
   const supply = Math.round(totalPrice / 1.1);
   const vat = totalPrice - supply;
@@ -48,7 +49,33 @@ export default function CheckoutPage() {
     ).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(
       now.getSeconds(),
     ).padStart(2, "0")}`;
-    setOrderNo(no);
+
+    // 주문 시점 값을 그대로 복사한 스냅샷 (이후 상품 가격이 바뀌어도 불변)
+    const order: Order = {
+      orderNo: no,
+      createdAt: now.toISOString(),
+      items,
+      total: totalPrice,
+      supply,
+      vat,
+      orderer: {
+        name: ordererName,
+        tel: ordererTel,
+        address,
+        memo: memo || undefined,
+      },
+      depositor,
+      taxInvoice: {
+        requested: taxInvoice,
+        bizNo: taxInvoice ? bizNo : undefined,
+        company: taxInvoice ? company || undefined : undefined,
+      },
+    };
+
+    // 히스토리에 저장하고, 주문된 상품은 견적(장바구니)에서 비운다
+    saveOrder(order);
+    clearCart();
+    setCompleted(order);
   };
 
   const canOrder =
@@ -68,18 +95,18 @@ export default function CheckoutPage() {
 
   // 완료 후 스크롤 상단으로
   useEffect(() => {
-    if (orderNo) window.scrollTo(0, 0);
-  }, [orderNo]);
+    if (completed) window.scrollTo(0, 0);
+  }, [completed]);
 
-  // ── 주문 완료 화면 ───────────────────────────────
-  if (orderNo) {
+  // ── 주문 완료 화면 (스냅샷 기준) ─────────────────
+  if (completed) {
     return (
       <div className={styles.page}>
         <div className={styles.doneCard}>
           <p className={styles.doneBadge}>주문 접수 완료</p>
           <h1 className={styles.doneTitle}>입금을 기다리고 있습니다</h1>
           <p className={styles.doneText}>
-            주문번호 <strong>{orderNo}</strong>
+            주문번호 <strong>{completed.orderNo}</strong>
             <br />
             아래 계좌로 입금해주시면 확인 후 처리해드립니다.
           </p>
@@ -99,18 +126,18 @@ export default function CheckoutPage() {
             </div>
             <div className={styles.depositAmount}>
               <dt>입금 금액</dt>
-              <dd>{formatPrice(totalPrice)}</dd>
+              <dd>{formatPrice(completed.total)}</dd>
             </div>
           </dl>
 
           <p className={styles.doneNotice}>
-            입금자명이 <strong>{depositor}</strong> 와(과) 다를 경우 확인이
-            지연될 수 있습니다.
-            {taxInvoice && (
+            입금자명이 <strong>{completed.depositor}</strong> 와(과) 다를 경우
+            확인이 지연될 수 있습니다.
+            {completed.taxInvoice.requested && (
               <>
                 <br />
                 세금계산서는 입금 확인 후 사업자등록번호{" "}
-                <strong>{bizNo}</strong> 로 발행됩니다.
+                <strong>{completed.taxInvoice.bizNo}</strong> 로 발행됩니다.
               </>
             )}
           </p>
@@ -119,15 +146,12 @@ export default function CheckoutPage() {
             <button
               type="button"
               className={styles.primaryAction}
-              onClick={() => {
-                clearCart();
-                window.location.href = "/";
-              }}
+              onClick={() => (window.location.href = "/")}
             >
-              확인 (견적서 비우기)
+              확인
             </button>
-            <Link href="/quote" className={styles.secondaryAction}>
-              견적서 다시 보기
+            <Link href="/mypage/orders" className={styles.secondaryAction}>
+              주문내역 보기
             </Link>
           </div>
         </div>

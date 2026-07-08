@@ -1,0 +1,264 @@
+.head {
+  margin-bottom: 20px;
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.subnote {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.loading {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.empty {
+  padding: 80px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.emptyLink {
+  margin-top: 8px;
+  padding: 12px 28px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: 700;
+}
+
+.emptyLink:hover {
+  opacity: 0.85;
+}
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid var(--color-border);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.orderNo {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.date {
+  margin-left: 12px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.badge {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+
+.s_pending {
+  color: #b26a00;
+}
+.s_paid {
+  color: #1f6feb;
+}
+.s_preparing {
+  color: #6f42c1;
+}
+.s_shipping {
+  color: #0a7d33;
+}
+.s_delivered {
+  color: var(--color-text-muted);
+}
+
+.items {
+  padding: 8px 20px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itemName {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.itemName:hover {
+  text-decoration: underline;
+}
+
+.itemVariant {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.itemPrice {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.total {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.total strong {
+  margin-left: 6px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.trackButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.trackButton:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+/* 배송 조회 타임라인 */
+.tracking {
+  padding: 20px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.trackingMeta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 20px;
+}
+
+.timeline {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-border);
+}
+
+.step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+}
+
+.stepLabel {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.done .dot {
+  background: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.done .stepLabel {
+  color: var(--color-text);
+}
+
+.current .dot {
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.current .stepLabel {
+  font-weight: 700;
+}
+
+.mockNote {
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}

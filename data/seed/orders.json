@@ -1,0 +1,90 @@
+[
+  {
+    "orderNo": "20260705-101500",
+    "ageMinutes": 4320,
+    "orderer": {
+      "name": "샘플건설",
+      "tel": "010-1234-5678",
+      "address": "서울시 강남구 테헤란로 1",
+      "memo": ""
+    },
+    "depositor": "샘플건설",
+    "taxInvoice": {
+      "requested": true,
+      "bizNo": "123-45-67890",
+      "company": "샘플건설(주)"
+    },
+    "items": [
+      {
+        "productId": "faucet-0001",
+        "variantId": "faucet-0001-default",
+        "productName": "매립 세면대 수전 (물호수+물조절)",
+        "variantName": "기본",
+        "price": 128000,
+        "image": "/images/products/faucet/faucet-0001.jpg",
+        "quantity": 2
+      },
+      {
+        "productId": "faucet-0002",
+        "variantId": "faucet-0002-default",
+        "productName": "매립 샤워믹서 (단독)",
+        "variantName": "기본",
+        "price": 145000,
+        "image": "/images/products/faucet/faucet-0002.png",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "orderNo": "20260708-160000",
+    "ageMinutes": 5,
+    "orderer": {
+      "name": "샘플건설",
+      "tel": "010-1234-5678",
+      "address": "서울시 강남구 테헤란로 1",
+      "memo": "현장 직배송 요청"
+    },
+    "depositor": "샘플건설",
+    "taxInvoice": {
+      "requested": true,
+      "bizNo": "123-45-67890",
+      "company": "샘플건설(주)"
+    },
+    "items": [
+      {
+        "productId": "faucet-0003",
+        "variantId": "faucet-0003-default",
+        "productName": "해바라기 샤워헤드 400",
+        "variantName": "기본",
+        "price": 98000,
+        "image": "/images/products/faucet/faucet-0003.jpg",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "orderNo": "20260708-163000",
+    "ageMinutes": 0,
+    "orderer": {
+      "name": "홍길동",
+      "tel": "010-9999-8888",
+      "address": "서울시 마포구 월드컵로 20",
+      "memo": ""
+    },
+    "depositor": "홍길동",
+    "taxInvoice": {
+      "requested": false
+    },
+    "items": [
+      {
+        "productId": "faucet-0001",
+        "variantId": "faucet-0001-default",
+        "productName": "매립 세면대 수전 (물호수+물조절)",
+        "variantName": "기본",
+        "price": 128000,
+        "image": "/images/products/faucet/faucet-0001.jpg",
+        "quantity": 1
+      }
+    ]
+  }
+]

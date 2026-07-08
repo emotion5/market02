@@ -1,0 +1,96 @@
+.head {
+  margin-bottom: 20px;
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.subnote {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.warnBox {
+  border: 1px solid var(--color-border);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.warnTitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.warnList {
+  list-style: disc;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.agree {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.withdrawButton {
+  height: 48px;
+  padding: 0 32px;
+  border: 1px solid #c0392b;
+  color: #c0392b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.withdrawButton:hover:not(:disabled) {
+  background: #c0392b;
+  color: #fff;
+}
+
+.withdrawButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* 완료 */
+.doneBox {
+  padding: 60px 0;
+  text-align: center;
+}
+
+.doneTitle {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.doneText {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+}
+
+.homeButton {
+  height: 46px;
+  padding: 0 32px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.homeButton:hover {
+  opacity: 0.85;
+}
