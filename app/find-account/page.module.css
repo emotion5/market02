@@ -1,0 +1,106 @@
+.page {
+  display: flex;
+  justify-content: center;
+  padding: 96px 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.notice {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  margin-bottom: 32px;
+}
+
+.notice strong {
+  color: var(--color-text);
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+}
+
+.icon {
+  margin-top: 2px;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.contactLabel {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.contactValue {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.contactValue:hover {
+  text-decoration: underline;
+}
+
+.contactHint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.guide {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.guide strong {
+  color: var(--color-text);
+}
+
+.backLink {
+  display: block;
+  width: 100%;
+  height: 48px;
+  line-height: 48px;
+  margin-top: 28px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.backLink:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}

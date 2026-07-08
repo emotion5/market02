@@ -60,6 +60,9 @@ export default function Header() {
           <Link href="/login" className={styles.navLink} aria-label="로그인" title="로그인">
             <User size={20} strokeWidth={1.75} />
           </Link>
+          <Link href="/business-signup" className={styles.businessLink}>
+            기업회원 가입
+          </Link>
         </nav>
       </div>
     </header>
