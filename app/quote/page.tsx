@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Printer } from "lucide-react";
+import { Printer, X } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import { SUPPLIER, QUOTE_VALID_DAYS as VALID_DAYS } from "@/lib/constants";
@@ -45,7 +45,7 @@ function formatDate(d: Date): string {
 }
 
 export default function QuotePage() {
-  const { items, totalPrice } = useCart();
+  const { items, totalPrice, updateQuantity, removeItem } = useCart();
 
   // 상호/담당자/연락처 등 공급받는 자 정보 (입력)
   const [company, setCompany] = useState("");
@@ -91,8 +91,8 @@ export default function QuotePage() {
     <div className={styles.screen}>
       {/* 화면 전용 툴바 (인쇄 시 숨김) */}
       <div className={styles.toolbar}>
-        <Link href="/cart" className={styles.editLink}>
-          ← 항목 편집
+        <Link href="/products" className={styles.editLink}>
+          ← 상품 더 담기
         </Link>
         <button
           type="button"
@@ -211,9 +211,52 @@ export default function QuotePage() {
             {items.map((item, i) => (
               <tr key={`${item.productId}-${item.variantId}`}>
                 <td className={styles.colNo}>{i + 1}</td>
-                <td className={styles.colName}>{item.productName}</td>
+                <td className={styles.colName}>
+                  {item.productName}
+                  {/* 화면 전용 삭제 버튼 (인쇄 시 숨김) */}
+                  <button
+                    type="button"
+                    className={styles.removeItem}
+                    onClick={() => removeItem(item.productId, item.variantId)}
+                    aria-label={`${item.productName} 삭제`}
+                  >
+                    <X size={14} strokeWidth={2} />
+                  </button>
+                </td>
                 <td className={styles.colSpec}>{item.variantName}</td>
-                <td className={styles.colQty}>{item.quantity}</td>
+                <td className={styles.colQty}>
+                  {/* 화면: 수량 조절 / 인쇄: 숫자만 */}
+                  <span className={styles.qtyEdit}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateQuantity(
+                          item.productId,
+                          item.variantId,
+                          item.quantity - 1,
+                        )
+                      }
+                      aria-label="수량 줄이기"
+                    >
+                      −
+                    </button>
+                    <span className={styles.qtyValue}>{item.quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateQuantity(
+                          item.productId,
+                          item.variantId,
+                          item.quantity + 1,
+                        )
+                      }
+                      aria-label="수량 늘리기"
+                    >
+                      +
+                    </button>
+                  </span>
+                  <span className={styles.qtyPrint}>{item.quantity}</span>
+                </td>
                 <td className={styles.colPrice}>{formatPrice(item.price)}</td>
                 <td className={styles.colAmount}>
                   {formatPrice(item.price * item.quantity)}

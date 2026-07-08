@@ -218,7 +218,7 @@
 }
 
 .colQty {
-  width: 60px;
+  width: 96px;
   text-align: center;
 }
 
@@ -226,6 +226,44 @@
 .colAmount {
   width: 110px;
   text-align: right;
+}
+
+/* 화면 전용 수량 편집 / 삭제 (인쇄 시 숨김) */
+.qtyEdit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qtyEdit button {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-border);
+  line-height: 1;
+  font-size: 14px;
+}
+
+.qtyEdit button:hover {
+  border-color: #111;
+}
+
+.qtyValue {
+  min-width: 20px;
+}
+
+.qtyPrint {
+  display: none;
+}
+
+.removeItem {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 8px;
+  color: #bbb;
+}
+
+.removeItem:hover {
+  color: #c0392b;
 }
 
 .table tfoot td {
@@ -341,6 +379,16 @@
 
   .input {
     border-bottom-color: transparent;
+  }
+
+  /* 인쇄 시 수량 편집·삭제 숨기고 숫자만 표시 */
+  .qtyEdit,
+  .removeItem {
+    display: none;
+  }
+
+  .qtyPrint {
+    display: inline;
   }
 }
 
