@@ -1,0 +1,27 @@
+.shell {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 8px;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.side {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  margin-top: 48px;
+}
+
+/* 좁은 화면에서는 패널을 숨기고 헤더의 장바구니(/cart)로 접근 */
+@media (max-width: 1023px) {
+  .shell {
+    display: block;
+    padding: 0;
+  }
+
+  .side {
+    display: none;
+  }
+}

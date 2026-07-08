@@ -1,0 +1,57 @@
+.summary {
+  border: 1px solid var(--color-border);
+  padding: 24px;
+  height: fit-content;
+  position: sticky;
+  top: 24px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.rows {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.row dt {
+  color: var(--color-text-muted);
+}
+
+.totalRow {
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.totalRow dt {
+  color: var(--color-text);
+}
+
+.totalRow dd {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.checkoutButton {
+  margin-top: 20px;
+  width: 100%;
+  height: 48px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.checkoutButton:hover {
+  opacity: 0.85;
+}

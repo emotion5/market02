@@ -1,0 +1,18 @@
+/* 상품 목록형 페이지(전체 상품/카테고리) 공용 스타일 */
+.page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 48px 24px 0;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.count {
+  margin-top: 6px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}

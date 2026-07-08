@@ -1,0 +1,27 @@
+.card {
+  display: block;
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.card:hover .image {
+  border-color: var(--color-text-muted);
+}
+
+.name {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.price {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
