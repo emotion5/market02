@@ -1,0 +1,350 @@
+/* 화면: 회색 배경 위에 흰 A4 용지 */
+.screen {
+  background: var(--color-surface);
+  min-height: calc(100vh - 64px);
+  padding: 32px 16px 64px;
+}
+
+.toolbar {
+  max-width: 210mm;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editLink {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.editLink:hover {
+  color: var(--color-text);
+}
+
+.printButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.printButton:hover {
+  opacity: 0.85;
+}
+
+/* A4 용지 */
+.sheet {
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20mm 18mm;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+  color: #111;
+}
+
+.docTitle {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #111;
+  margin-bottom: 20px;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.meta {
+  display: flex;
+  gap: 24px;
+  font-size: 13px;
+}
+
+.meta div {
+  display: flex;
+  gap: 8px;
+}
+
+.meta dt {
+  color: #666;
+}
+
+.meta dd {
+  font-weight: 600;
+}
+
+/* 공급자 / 공급받는 자 */
+.parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.party {
+  position: relative;
+  border: 1px solid #333;
+  padding: 14px 16px;
+}
+
+.partyTitle {
+  font-size: 13px;
+  font-weight: 700;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  min-height: 30px;
+}
+
+.field label {
+  width: 64px;
+  flex-shrink: 0;
+  color: #666;
+}
+
+.value {
+  font-weight: 500;
+}
+
+.input {
+  flex: 1;
+  height: 28px;
+  padding: 0 8px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  font-size: 13px;
+  color: #111;
+  background: transparent;
+}
+
+.input:focus {
+  outline: none;
+  border-bottom-color: #111;
+}
+
+.input::placeholder {
+  color: #bbb;
+}
+
+.stamp {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 42px;
+  height: 42px;
+  border: 2px solid #c0392b;
+  border-radius: 50%;
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+}
+
+/* 합계 강조 라인 */
+.amountLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: #f4f4f4;
+  border: 1px solid #333;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.amountLine strong {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* 품목 표 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #333;
+  padding: 8px 10px;
+}
+
+.table thead th {
+  background: #f4f4f4;
+  font-weight: 700;
+  text-align: center;
+}
+
+.table tbody td {
+  height: 40px;
+}
+
+.colNo {
+  width: 40px;
+  text-align: center;
+}
+
+.colName {
+  text-align: left;
+}
+
+.colSpec {
+  width: 22%;
+  text-align: left;
+  color: #555;
+}
+
+.colQty {
+  width: 60px;
+  text-align: center;
+}
+
+.colPrice,
+.colAmount {
+  width: 110px;
+  text-align: right;
+}
+
+.table tfoot td {
+  text-align: right;
+  font-weight: 600;
+  background: #fafafa;
+}
+
+.table tfoot td:first-child {
+  text-align: right;
+  padding-right: 16px;
+}
+
+.grandTotal td {
+  background: #f0f0f0 !important;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #666;
+}
+
+/* 하단 주문 바 */
+.footerBar {
+  max-width: 210mm;
+  margin: 24px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+}
+
+.footerTotal {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.footerTotal strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.orderButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 40px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.orderButton:hover {
+  opacity: 0.85;
+}
+
+/* 빈 상태 */
+.empty {
+  padding: 96px 24px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.emptyLink {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 28px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: 700;
+}
+
+.emptyLink:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+  .parties {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 인쇄: 용지만 남기고 화면 장식 제거 */
+@media print {
+  .screen {
+    background: #fff;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .toolbar,
+  .footerBar {
+    display: none;
+  }
+
+  .sheet {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .input {
+    border-bottom-color: transparent;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 14mm;
+}

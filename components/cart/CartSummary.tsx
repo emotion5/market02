@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import styles from "./CartSummary.module.css";
@@ -24,13 +25,12 @@ export default function CartSummary() {
           <dd>{formatPrice(totalPrice)}</dd>
         </div>
       </dl>
-      <button
-        type="button"
-        className={styles.checkoutButton}
-        onClick={() => alert("주문/결제는 다음 단계에서 구현할 예정입니다.")}
-      >
+      <Link href="/quote" className={styles.quoteButton}>
+        견적서 보기 · 인쇄
+      </Link>
+      <Link href="/checkout" className={styles.checkoutButton}>
         주문하기
-      </button>
+      </Link>
     </aside>
   );
 }

@@ -46,3 +46,11 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/* 인쇄 시에는 전역 헤더/푸터를 숨기고 문서만 출력 */
+@media print {
+  body > header,
+  body > footer {
+    display: none !important;
+  }
+}

@@ -114,7 +114,7 @@ export default function QuotePanel() {
           </dl>
 
           <div className={styles.actions}>
-            <Link href="/cart" className={styles.primaryAction}>
+            <Link href="/quote" className={styles.primaryAction}>
               견적서 보기
             </Link>
             <button
