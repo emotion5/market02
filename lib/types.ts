@@ -9,6 +9,7 @@ export interface Product {
   name: string;
   category: string; // Category slug
   price: number; // 대표 가격 (목록 표시용, 보통 최저 옵션가)
+  summary?: string; // 목록 카드용 한 줄 간단설명
   description: string;
   image: string;
   variants: Variant[];

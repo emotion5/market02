@@ -4,6 +4,7 @@
     "name": "매립 세면대 수전 (물호수+물조절)",
     "category": "faucet",
     "price": 128000,
+    "summary": "벽 매립으로 깔끔하게 마감되는 세면 수전",
     "description": "벽면 매립형 세면대 수전. 스파우트와 물조절 밸브가 분리된 구성으로 깔끔한 시공이 가능합니다.",
     "image": "/images/products/faucet/faucet-0001.jpg",
     "variants": [
@@ -13,13 +14,20 @@
         "price": 128000
       }
     ],
-    "colors": ["#c9ccce", "#1a1a1a", "#c9a86a", "#8c8f91", "#b08d57"]
+    "colors": [
+      "#c9ccce",
+      "#1a1a1a",
+      "#c9a86a",
+      "#8c8f91",
+      "#b08d57"
+    ]
   },
   {
     "id": "faucet-0002",
     "name": "매립 샤워믹서 (단독)",
     "category": "faucet",
     "price": 145000,
+    "summary": "냉온수 조절이 부드러운 매립형 샤워 밸브",
     "description": "매립형 샤워 믹서 밸브 단독 구성. 냉온수 혼합 조절이 가능한 매립 시공용 제품입니다.",
     "image": "/images/products/faucet/faucet-0002.png",
     "variants": [
@@ -35,6 +43,7 @@
     "name": "해바라기 샤워헤드 400",
     "category": "faucet",
     "price": 98000,
+    "summary": "호텔 욕실 느낌의 대형 레인 샤워헤드",
     "description": "지름 400mm 대형 해바라기(레인) 샤워헤드. 넓은 살수 면적으로 호텔식 샤워 환경을 연출합니다.",
     "image": "/images/products/faucet/faucet-0003.jpg",
     "variants": [
@@ -50,6 +59,7 @@
     "name": "클래식 풀다운 주방 수전",
     "category": "faucet",
     "price": 132000,
+    "summary": "헤드를 당겨 쓰는 편리한 풀다운 주방 수전",
     "description": "곡선형 스파우트의 클래식 풀다운 주방 수전. 헤드를 당겨 쓰는 풀다운 방식으로 설거지가 편리합니다.",
     "image": "/images/products/faucet/faucet-0004.png",
     "variants": [
@@ -59,13 +69,18 @@
         "price": 132000
       }
     ],
-    "colors": ["#1a1a1a", "#c9ccce", "#3a4a3f"]
+    "colors": [
+      "#1a1a1a",
+      "#c9ccce",
+      "#3a4a3f"
+    ]
   },
   {
     "id": "faucet-0005",
     "name": "모던 하이아크 풀다운 수전",
     "category": "faucet",
     "price": 168000,
+    "summary": "큰 조리도구도 넉넉한 하이아크 주방 수전",
     "description": "높은 아크 형태의 모던 풀다운 주방 수전. 큰 냄비도 여유롭게 세척할 수 있는 넉넉한 높이입니다.",
     "image": "/images/products/faucet/faucet-0005.webp",
     "variants": [
@@ -81,6 +96,7 @@
     "name": "구스넥 풀다운 주방 수전",
     "category": "faucet",
     "price": 149000,
+    "summary": "군더더기 없는 구스넥 라인의 주방 수전",
     "description": "구스넥 실루엣의 풀다운 주방 수전. 심플한 단일 레버로 직관적인 냉온수 조절이 가능합니다.",
     "image": "/images/products/faucet/faucet-0006.jpeg",
     "variants": [
@@ -96,6 +112,7 @@
     "name": "클래식 풀다운 세면 수전",
     "category": "faucet",
     "price": 118000,
+    "summary": "어디에나 어울리는 우아한 클래식 세면 수전",
     "description": "클래식한 라인의 풀다운 세면 수전. 우아한 곡선 디자인으로 화장실·주방 어디에나 어울립니다.",
     "image": "/images/products/faucet/faucet-0007.jpeg",
     "variants": [
@@ -111,6 +128,7 @@
     "name": "내추럴 우드 마루 (90폭)",
     "category": "flooring",
     "price": 96000,
+    "summary": "밝은 우드 톤의 클릭 시공 마루 (90폭)",
     "description": "밝은 우드 톤의 마루형 바닥재. 클릭 결합으로 시공이 간편합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0001.jpg",
     "variants": [
@@ -120,13 +138,20 @@
         "price": 96000
       }
     ],
-    "colors": ["#d8c3a5", "#b08d57", "#8a6d4b", "#5c4634", "#e8ddca"]
+    "colors": [
+      "#d8c3a5",
+      "#b08d57",
+      "#8a6d4b",
+      "#5c4634",
+      "#e8ddca"
+    ]
   },
   {
     "id": "flooring-0002",
     "name": "내추럴 우드 마루 (120폭)",
     "category": "flooring",
     "price": 108000,
+    "summary": "밝은 우드 톤의 클릭 시공 마루 (120폭)",
     "description": "밝은 우드 톤의 마루형 바닥재. 클릭 결합으로 시공이 간편합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0002.jpg",
     "variants": [
@@ -142,6 +167,7 @@
     "name": "내추럴 우드 마루 (150폭)",
     "category": "flooring",
     "price": 120000,
+    "summary": "밝은 우드 톤의 클릭 시공 마루 (150폭)",
     "description": "밝은 우드 톤의 마루형 바닥재. 클릭 결합으로 시공이 간편합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0003.jpg",
     "variants": [
@@ -157,6 +183,7 @@
     "name": "오크 강마루 (90폭)",
     "category": "flooring",
     "price": 89000,
+    "summary": "은은한 오크 결의 견고한 강마루 (90폭)",
     "description": "오크 톤의 강마루. 내추럴한 우드 그레인으로 어떤 인테리어에도 무난합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0004.jpg",
     "variants": [
@@ -172,6 +199,7 @@
     "name": "오크 강마루 (120폭)",
     "category": "flooring",
     "price": 101000,
+    "summary": "은은한 오크 결의 견고한 강마루 (120폭)",
     "description": "오크 톤의 강마루. 내추럴한 우드 그레인으로 어떤 인테리어에도 무난합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0005.jpg",
     "variants": [
@@ -187,6 +215,7 @@
     "name": "오크 강마루 (150폭)",
     "category": "flooring",
     "price": 113000,
+    "summary": "은은한 오크 결의 견고한 강마루 (150폭)",
     "description": "오크 톤의 강마루. 내추럴한 우드 그레인으로 어떤 인테리어에도 무난합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0006.jpg",
     "variants": [
@@ -202,6 +231,7 @@
     "name": "브라운 오크 원목마루 (90폭)",
     "category": "flooring",
     "price": 158000,
+    "summary": "깊은 브라운 톤의 고급 원목마루 (90폭)",
     "description": "짙은 브라운 오크 원목마루. 깊이 있는 색감으로 고급스러운 공간을 연출합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0007.jpg",
     "variants": [
@@ -217,6 +247,7 @@
     "name": "브라운 오크 원목마루 (120폭)",
     "category": "flooring",
     "price": 170000,
+    "summary": "깊은 브라운 톤의 고급 원목마루 (120폭)",
     "description": "짙은 브라운 오크 원목마루. 깊이 있는 색감으로 고급스러운 공간을 연출합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0008.jpg",
     "variants": [
@@ -232,6 +263,7 @@
     "name": "브라운 오크 원목마루 (150폭)",
     "category": "flooring",
     "price": 182000,
+    "summary": "깊은 브라운 톤의 고급 원목마루 (150폭)",
     "description": "짙은 브라운 오크 원목마루. 깊이 있는 색감으로 고급스러운 공간을 연출합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0009.jpg",
     "variants": [
@@ -247,6 +279,7 @@
     "name": "헤링본 오크 파켓 (90폭)",
     "category": "flooring",
     "price": 172000,
+    "summary": "클래식한 헤링본 패턴 오크 파켓 (90폭)",
     "description": "헤링본 패턴으로 시공하는 오크 파켓 바닥재. 클래식하면서도 감각적인 바닥을 완성합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0010.jpeg",
     "variants": [
@@ -262,6 +295,7 @@
     "name": "헤링본 오크 파켓 (120폭)",
     "category": "flooring",
     "price": 184000,
+    "summary": "클래식한 헤링본 패턴 오크 파켓 (120폭)",
     "description": "헤링본 패턴으로 시공하는 오크 파켓 바닥재. 클래식하면서도 감각적인 바닥을 완성합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0011.jpeg",
     "variants": [
@@ -277,6 +311,7 @@
     "name": "헤링본 오크 파켓 (150폭)",
     "category": "flooring",
     "price": 196000,
+    "summary": "클래식한 헤링본 패턴 오크 파켓 (150폭)",
     "description": "헤링본 패턴으로 시공하는 오크 파켓 바닥재. 클래식하면서도 감각적인 바닥을 완성합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0012.jpeg",
     "variants": [
@@ -292,6 +327,7 @@
     "name": "러스틱 내추럴 오크 마루 (90폭)",
     "category": "flooring",
     "price": 165000,
+    "summary": "자연스러운 옹이결의 러스틱 오크 마루 (90폭)",
     "description": "옹이와 결이 살아있는 러스틱 내추럴 오크 마루. UV 래커 마감으로 관리가 쉽습니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0013.webp",
     "variants": [
@@ -307,6 +343,7 @@
     "name": "러스틱 내추럴 오크 마루 (120폭)",
     "category": "flooring",
     "price": 177000,
+    "summary": "자연스러운 옹이결의 러스틱 오크 마루 (120폭)",
     "description": "옹이와 결이 살아있는 러스틱 내추럴 오크 마루. UV 래커 마감으로 관리가 쉽습니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0014.webp",
     "variants": [
@@ -322,6 +359,7 @@
     "name": "러스틱 내추럴 오크 마루 (150폭)",
     "category": "flooring",
     "price": 189000,
+    "summary": "자연스러운 옹이결의 러스틱 오크 마루 (150폭)",
     "description": "옹이와 결이 살아있는 러스틱 내추럴 오크 마루. UV 래커 마감으로 관리가 쉽습니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
     "image": "/images/products/flooring/flooring-0015.webp",
     "variants": [
@@ -337,6 +375,7 @@
     "name": "오크 내추럴 강마루",
     "category": "gangmaru",
     "price": 92000,
+    "summary": "은은한 오크 결의 내추럴 강마루",
     "description": "내추럴 오크 톤의 강마루. 표면 강화층으로 생활 스크래치에 강하고 열전도가 좋아 난방에 적합합니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0001.svg",
     "variants": [
@@ -352,6 +391,7 @@
     "name": "월넛 브라운 강마루",
     "category": "gangmaru",
     "price": 105000,
+    "summary": "차분한 월넛 브라운 톤 강마루",
     "description": "깊은 월넛 브라운 컬러의 강마루. 무게감 있는 우드 그레인으로 모던·클래식 인테리어에 두루 어울립니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0002.svg",
     "variants": [
@@ -367,6 +407,7 @@
     "name": "그레이 애쉬 강마루",
     "category": "gangmaru",
     "price": 98000,
+    "summary": "모던한 그레이 애쉬 강마루",
     "description": "차분한 그레이 애쉬 톤의 강마루. 톤 다운된 색감으로 넓고 정돈된 공간 연출에 좋습니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0003.svg",
     "variants": [
@@ -382,6 +423,7 @@
     "name": "티크 골드 강마루",
     "category": "gangmaru",
     "price": 112000,
+    "summary": "따뜻한 골드빛 티크 강마루",
     "description": "따뜻한 티크 골드 컬러의 강마루. 은은한 광택과 선명한 결로 고급스러운 분위기를 냅니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0004.svg",
     "variants": [
@@ -397,6 +439,7 @@
     "name": "화이트 워시 강마루",
     "category": "gangmaru",
     "price": 99000,
+    "summary": "밝고 화사한 화이트 워시 강마루",
     "description": "밝은 화이트 워시 톤의 강마루. 공간을 넓고 환하게 보이게 하는 북유럽풍 컬러입니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0005.svg",
     "variants": [
@@ -412,6 +455,7 @@
     "name": "웬지 다크 강마루",
     "category": "gangmaru",
     "price": 118000,
+    "summary": "고급스러운 다크 웬지 강마루",
     "description": "짙은 웬지 다크 컬러의 강마루. 강렬한 대비로 모던하고 시크한 인테리어에 어울립니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0006.svg",
     "variants": [
@@ -427,6 +471,7 @@
     "name": "메이플 라이트 강마루",
     "category": "gangmaru",
     "price": 95000,
+    "summary": "밝은 메이플 톤의 경쾌한 강마루",
     "description": "부드러운 메이플 라이트 톤의 강마루. 밝고 균일한 결로 어떤 가구와도 잘 어울립니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0007.svg",
     "variants": [
@@ -442,6 +487,7 @@
     "name": "히코리 내추럴 강마루",
     "category": "gangmaru",
     "price": 108000,
+    "summary": "자연스러운 히코리 결 강마루",
     "description": "자연스러운 히코리 결의 강마루. 변화감 있는 우드 그레인으로 개성 있는 바닥을 완성합니다. 1박스(약 0.9평) 단위 판매입니다.",
     "image": "/images/products/gangmaru/gangmaru-0008.svg",
     "variants": [
@@ -457,6 +503,7 @@
     "name": "우드패턴 베이지 장판 1.8T",
     "category": "jangpan",
     "price": 34000,
+    "summary": "우드 무늬의 포근한 베이지 장판",
     "description": "우드 무늬 펫트 장판 1.8mm. 매끈한 표면으로 청소가 쉽고 쿠션감이 있어 발이 편합니다. 폭 1.8m 고정, 길이 단위로 판매합니다.",
     "image": "/images/products/jangpan/jangpan-0001.svg",
     "variants": [
@@ -477,6 +524,7 @@
     "name": "모던 그레이 장판 2.2T",
     "category": "jangpan",
     "price": 34000,
+    "summary": "두께감 있는 모던 그레이 장판",
     "description": "무광 그레이 솔리드 톤 장판 2.2mm. 두께감 있는 쿠션층으로 층간소음 완화에 도움을 줍니다. 폭 1.8m 고정, 길이 단위로 판매합니다.",
     "image": "/images/products/jangpan/jangpan-0002.svg",
     "variants": [
@@ -497,6 +545,7 @@
     "name": "라이트 오크 장판 1.8T",
     "category": "jangpan",
     "price": 36000,
+    "summary": "밝은 오크 톤의 라이트 장판",
     "description": "밝은 오크 우드 무늬 장판 1.8mm. 환한 색감으로 좁은 공간도 넓어 보이게 합니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
     "image": "/images/products/jangpan/jangpan-0003.svg",
     "variants": [
@@ -512,6 +561,7 @@
     "name": "웜 그레이 장판 2.2T",
     "category": "jangpan",
     "price": 42000,
+    "summary": "따뜻한 웜 그레이 솔리드 장판",
     "description": "따뜻한 웜 그레이 톤 장판 2.2mm. 어느 벽지와도 무난하게 어울리는 베이직 컬러입니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
     "image": "/images/products/jangpan/jangpan-0004.svg",
     "variants": [
@@ -527,6 +577,7 @@
     "name": "헤링본 우드 장판 2.0T",
     "category": "jangpan",
     "price": 45000,
+    "summary": "헤링본 우드 패턴 장판",
     "description": "헤링본 우드 무늬 장판 2.0mm. 시공 없이 헤링본 패턴 느낌을 낼 수 있어 인기입니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
     "image": "/images/products/jangpan/jangpan-0005.svg",
     "variants": [
@@ -542,6 +593,7 @@
     "name": "아이보리 솔리드 장판 1.8T",
     "category": "jangpan",
     "price": 33000,
+    "summary": "깔끔한 아이보리 솔리드 장판",
     "description": "은은한 아이보리 솔리드 장판 1.8mm. 깔끔한 무지 톤으로 상업 공간에도 두루 쓰입니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
     "image": "/images/products/jangpan/jangpan-0006.svg",
     "variants": [
@@ -557,6 +609,7 @@
     "name": "다크 월넛 장판 2.2T",
     "category": "jangpan",
     "price": 44000,
+    "summary": "차분한 다크 월넛 장판",
     "description": "짙은 월넛 우드 무늬 장판 2.2mm. 차분하고 고급스러운 분위기의 바닥을 연출합니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
     "image": "/images/products/jangpan/jangpan-0007.svg",
     "variants": [
@@ -572,6 +625,7 @@
     "name": "콘크리트 그레이 장판 2.0T",
     "category": "jangpan",
     "price": 43000,
+    "summary": "인더스트리얼 콘크리트 그레이 장판",
     "description": "콘크리트 질감의 그레이 장판 2.0mm. 인더스트리얼·모던 인테리어에 잘 어울립니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
     "image": "/images/products/jangpan/jangpan-0008.svg",
     "variants": [
@@ -587,6 +641,7 @@
     "name": "바지걸이봉 (기본 9개 탑재)",
     "category": "hardware",
     "price": 45000,
+    "summary": "9개 걸이 기본 탑재 바지걸이봉",
     "description": "옷장용 슬라이딩 바지걸이봉. 걸이봉 9개가 기본 탑재되어 바지를 구김 없이 수납할 수 있습니다.",
     "image": "/images/products/hardware/hardware-0001.jpg",
     "variants": [
@@ -602,6 +657,7 @@
     "name": "사각형태 T013",
     "category": "hardware",
     "price": 76000,
+    "summary": "심플한 사각 형태 하드웨어 T013",
     "description": "사각 형태의 매립형 수납 유닛 T013. 스테인리스 재질로 내구성과 위생성이 우수합니다.",
     "image": "/images/products/hardware/hardware-0002.jpg",
     "variants": [
@@ -617,6 +673,7 @@
     "name": "대서랍 (N1303400L)",
     "category": "drawer",
     "price": 180000,
+    "summary": "넉넉한 수납의 대형 서랍",
     "description": "대형 서랍 유닛 N1303400L. 넉넉한 수납 공간으로 옷장/드레스룸 하부 수납에 적합합니다.",
     "image": "/images/products/drawer/drawer-0001.png",
     "variants": [
@@ -632,6 +689,7 @@
     "name": "중서랍 (N1302500L)",
     "category": "drawer",
     "price": 150000,
+    "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302500L. 폭 500 규격으로 다양한 수납장에 조합할 수 있습니다.",
     "image": "/images/products/drawer/drawer-0002.png",
     "variants": [
@@ -647,6 +705,7 @@
     "name": "중서랍 (N1302450L)",
     "category": "drawer",
     "price": 140000,
+    "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302450L. 폭 450 규격으로 좁은 공간에도 설치 가능합니다.",
     "image": "/images/products/drawer/drawer-0003.png",
     "variants": [
@@ -662,6 +721,7 @@
     "name": "소서랍 (N1301450L)",
     "category": "drawer",
     "price": 110000,
+    "summary": "소품 정리에 좋은 소형 서랍",
     "description": "소형 서랍 유닛 N1301450L. 소품/액세서리 수납에 적합한 컴팩트 사이즈입니다.",
     "image": "/images/products/drawer/drawer-0004.png",
     "variants": [
@@ -677,6 +737,7 @@
     "name": "소서랍 (N1301400L)",
     "category": "drawer",
     "price": 105000,
+    "summary": "소품 정리에 좋은 소형 서랍",
     "description": "소형 서랍 유닛 N1301400L. 폭 400 규격으로 자투리 공간 수납에 적합합니다.",
     "image": "/images/products/drawer/drawer-0005.png",
     "variants": [
@@ -692,6 +753,7 @@
     "name": "중서랍 (N1302600L)",
     "category": "drawer",
     "price": 155000,
+    "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302600L. 폭 600 규격으로 넉넉한 수납이 필요한 곳에 알맞습니다.",
     "image": "/images/products/drawer/drawer-0006.png",
     "variants": [
@@ -707,6 +769,7 @@
     "name": "대서랍 (N1303500L)",
     "category": "drawer",
     "price": 190000,
+    "summary": "넉넉한 수납의 대형 서랍",
     "description": "대형 서랍 유닛 N1303500L. 폭 500 규격으로 옷장·드레스룸 하부 수납에 좋습니다.",
     "image": "/images/products/drawer/drawer-0007.png",
     "variants": [
@@ -722,6 +785,7 @@
     "name": "대서랍 (N1303600L)",
     "category": "drawer",
     "price": 205000,
+    "summary": "넉넉한 수납의 대형 서랍",
     "description": "대형 서랍 유닛 N1303600L. 폭 600 규격의 최대 용량으로 부피가 큰 물건도 여유롭게 수납합니다.",
     "image": "/images/products/drawer/drawer-0008.png",
     "variants": [
@@ -737,6 +801,7 @@
     "name": "중서랍 (N1302400L)",
     "category": "drawer",
     "price": 135000,
+    "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302400L. 폭 400 규격으로 좁은 수납장에도 조합하기 좋습니다.",
     "image": "/images/products/drawer/drawer-0009.png",
     "variants": [
@@ -752,6 +817,7 @@
     "name": "소서랍 (N1301350L)",
     "category": "drawer",
     "price": 98000,
+    "summary": "소품 정리에 좋은 소형 서랍",
     "description": "소형 서랍 유닛 N1301350L. 폭 350 컴팩트 규격으로 소품·액세서리 정리에 적합합니다.",
     "image": "/images/products/drawer/drawer-0010.png",
     "variants": [

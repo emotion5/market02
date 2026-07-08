@@ -17,11 +17,20 @@
 .name {
   margin-top: 12px;
   font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
   line-height: 1.4;
 }
 
-.price {
+.summary {
   margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.price {
+  margin-top: 6px;
   font-size: 14px;
   font-weight: 700;
 }
@@ -39,4 +48,20 @@
   height: 16px;
   border-radius: 50%;
   border: 1px solid var(--color-border);
+}
+
+.shipping {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.badge {
+  padding: 1px 6px;
+  border: 1px solid var(--color-border);
+  font-size: 11px;
+  color: var(--color-text);
 }

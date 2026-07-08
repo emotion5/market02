@@ -1,5 +1,5 @@
 import { searchProducts } from "@/lib/data";
-import ProductGrid from "@/components/product/ProductGrid";
+import ProductListing from "@/components/product/ProductListing";
 import styles from "../listing.module.css";
 
 export const metadata = { title: "검색 | MMM MARKET" };
@@ -21,7 +21,7 @@ export default async function SearchPage({
           ? `‘${query}’에 대한 ${products.length}개 상품`
           : "검색어를 입력해주세요."}
       </p>
-      {query && <ProductGrid products={products} />}
+      {query && <ProductListing products={products} />}
     </div>
   );
 }
