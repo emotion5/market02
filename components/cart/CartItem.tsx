@@ -20,7 +20,16 @@ export default function CartItem({ item }: { item: CartItemType }) {
         <Link href={`/products/${item.productId}`} className={styles.name}>
           {item.productName}
         </Link>
-        <p className={styles.variant}>{item.variantName}</p>
+        <p className={styles.variant}>
+          {item.color && (
+            <span
+              className={styles.colorDot}
+              style={{ backgroundColor: item.color }}
+              aria-hidden
+            />
+          )}
+          {item.variantName}
+        </p>
 
         <div className={styles.quantity}>
           <button

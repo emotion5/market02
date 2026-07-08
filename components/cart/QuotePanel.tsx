@@ -47,7 +47,16 @@ export default function QuotePanel() {
                   >
                     {item.productName}
                   </Link>
-                  <p className={styles.itemVariant}>{item.variantName}</p>
+                  <p className={styles.itemVariant}>
+                    {item.color && (
+                      <span
+                        className={styles.colorDot}
+                        style={{ backgroundColor: item.color }}
+                        aria-hidden
+                      />
+                    )}
+                    {item.variantName}
+                  </p>
 
                   <div className={styles.itemRow}>
                     <div className={styles.quantity}>

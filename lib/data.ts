@@ -18,3 +18,14 @@ export async function getProduct(id: string): Promise<Product | undefined> {
 export async function getProductsByCategory(slug: string): Promise<Product[]> {
   return PRODUCTS.filter((p) => p.category === slug);
 }
+
+export async function searchProducts(query: string): Promise<Product[]> {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return PRODUCTS.filter(
+    (p) =>
+      p.name.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q) ||
+      p.variants.some((v) => v.name.toLowerCase().includes(q)),
+  );
+}

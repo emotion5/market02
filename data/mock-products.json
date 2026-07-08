@@ -12,7 +12,8 @@
         "name": "기본",
         "price": 128000
       }
-    ]
+    ],
+    "colors": ["#c9ccce", "#1a1a1a", "#c9a86a", "#8c8f91", "#b08d57"]
   },
   {
     "id": "faucet-0002",
@@ -57,7 +58,8 @@
         "name": "기본",
         "price": 132000
       }
-    ]
+    ],
+    "colors": ["#1a1a1a", "#c9ccce", "#3a4a3f"]
   },
   {
     "id": "faucet-0005",
@@ -117,7 +119,8 @@
         "name": "기본 (90폭)",
         "price": 96000
       }
-    ]
+    ],
+    "colors": ["#d8c3a5", "#b08d57", "#8a6d4b", "#5c4634", "#e8ddca"]
   },
   {
     "id": "flooring-0002",
@@ -454,13 +457,18 @@
     "name": "우드패턴 베이지 장판 1.8T",
     "category": "jangpan",
     "price": 34000,
-    "description": "우드 무늬 펫트 장판 1.8mm. 매끈한 표면으로 청소가 쉽고 쿠션감이 있어 발이 편합니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
+    "description": "우드 무늬 펫트 장판 1.8mm. 매끈한 표면으로 청소가 쉽고 쿠션감이 있어 발이 편합니다. 폭 1.8m 고정, 길이 단위로 판매합니다.",
     "image": "/images/products/jangpan/jangpan-0001.svg",
     "variants": [
       {
-        "id": "jangpan-0001-default",
-        "name": "폭 1.8m / 1m",
+        "id": "jangpan-0001-1m",
+        "name": "폭 1.8m / 길이 1m",
         "price": 34000
+      },
+      {
+        "id": "jangpan-0001-10m",
+        "name": "폭 1.8m / 길이 10m",
+        "price": 310000
       }
     ]
   },
@@ -468,14 +476,19 @@
     "id": "jangpan-0002",
     "name": "모던 그레이 장판 2.2T",
     "category": "jangpan",
-    "price": 41000,
-    "description": "무광 그레이 솔리드 톤 장판 2.2mm. 두께감 있는 쿠션층으로 층간소음 완화에 도움을 줍니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
+    "price": 34000,
+    "description": "무광 그레이 솔리드 톤 장판 2.2mm. 두께감 있는 쿠션층으로 층간소음 완화에 도움을 줍니다. 폭 1.8m 고정, 길이 단위로 판매합니다.",
     "image": "/images/products/jangpan/jangpan-0002.svg",
     "variants": [
       {
-        "id": "jangpan-0002-default",
-        "name": "폭 1.8m / 1m",
-        "price": 41000
+        "id": "jangpan-0002-1m",
+        "name": "폭 1.8m / 길이 1m",
+        "price": 34000
+      },
+      {
+        "id": "jangpan-0002-10m",
+        "name": "폭 1.8m / 길이 10m",
+        "price": 310000
       }
     ]
   },

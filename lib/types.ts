@@ -12,6 +12,7 @@ export interface Product {
   description: string;
   image: string;
   variants: Variant[];
+  colors?: string[]; // 색상 옵션(hex). 있을 때만 원형 스와치로 표시 (현재 표시 전용)
 }
 
 export interface Category {
@@ -21,10 +22,11 @@ export interface Category {
 
 export interface CartItem {
   productId: string;
-  variantId: string;
+  variantId: string; // 색상 옵션이 있으면 "<variantId>::<color>"로 합성되어 색상별 구분
   productName: string;
   variantName: string;
   price: number;
   image: string;
   quantity: number;
+  color?: string; // 선택한 색상(hex). 표시용
 }

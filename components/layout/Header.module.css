@@ -14,14 +14,84 @@
 }
 
 .logo {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoImg {
+  height: 28px;
+  width: auto;
+}
+
+.wordmark {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #9a9a9a;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .wordmark {
+    display: none;
+  }
 }
 
 .nav {
   display: flex;
-  gap: 24px;
+  align-items: center;
+  gap: 20px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.searchInput {
+  width: 200px;
+  height: 100%;
+  padding: 0 12px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.search:focus-within {
+  border-color: var(--color-text);
+}
+
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 100%;
+  color: var(--color-text);
+  border-left: 1px solid var(--color-border);
+}
+
+.searchButton:hover {
+  background: var(--color-surface);
+}
+
+@media (max-width: 600px) {
+  .searchInput {
+    width: 120px;
+  }
 }
 
 .navLink {

@@ -79,6 +79,16 @@
   color: var(--color-text-muted);
 }
 
+.colorDot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
 .itemRow {
   margin-top: 8px;
   display: flex;

@@ -10,6 +10,18 @@ export default function ProductCard({ product }: { product: Product }) {
       <img src={product.image} alt={product.name} className={styles.image} />
       <p className={styles.name}>{product.name}</p>
       <p className={styles.price}>{formatPrice(product.price)}</p>
+      {product.colors && product.colors.length > 0 && (
+        <ul className={styles.colors} aria-label="색상 옵션">
+          {product.colors.map((color) => (
+            <li
+              key={color}
+              className={styles.swatch}
+              style={{ backgroundColor: color }}
+              title={color}
+            />
+          ))}
+        </ul>
+      )}
     </Link>
   );
 }

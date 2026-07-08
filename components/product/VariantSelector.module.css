@@ -25,6 +25,31 @@
   font-size: 14px;
 }
 
+.colors {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  padding: 0;
+  cursor: pointer;
+}
+
+.swatch:hover {
+  border-color: var(--color-text-muted);
+}
+
+.swatchSelected {
+  border-color: var(--color-text);
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 3px var(--color-text);
+}
+
 .quantity {
   display: inline-flex;
   align-items: center;
@@ -49,17 +74,90 @@
   font-size: 14px;
 }
 
+.selectedList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selectedItem {
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.selectedHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selectedColor {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.selectedName {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.selectedRemove {
+  margin-left: auto;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-text-muted);
+  padding: 2px;
+}
+
+.selectedRemove:hover {
+  color: var(--color-text);
+}
+
+.selectedRow {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selectedPrice {
+  font-size: 15px;
+  font-weight: 700;
+}
+
 .total {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.priceRow {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding-top: 16px;
-  border-top: 1px solid var(--color-border);
   font-size: 14px;
 }
 
-.total strong {
-  font-size: 20px;
+.priceLabel {
+  color: var(--color-text-muted);
+}
+
+.consumerPrice {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.memberPrice {
+  font-size: 22px;
+  font-weight: 700;
+  color: #444444;
 }
 
 .addButton {
@@ -72,4 +170,9 @@
 
 .addButton:hover {
   opacity: 0.85;
+}
+
+.addButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
