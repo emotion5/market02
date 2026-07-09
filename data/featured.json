@@ -1,0 +1,61 @@
+{
+  "faucet": [
+    "faucet-0001",
+    "faucet-0002",
+    "faucet-0003",
+    "faucet-0004",
+    "faucet-0005",
+    "faucet-0006",
+    "faucet-0007"
+  ],
+  "flooring": [
+    "flooring-0001",
+    "flooring-0002",
+    "flooring-0003",
+    "flooring-0004",
+    "flooring-0005",
+    "flooring-0006",
+    "flooring-0007",
+    "flooring-0008"
+  ],
+  "gangmaru": [
+    "gangmaru-0001",
+    "gangmaru-0002",
+    "gangmaru-0003",
+    "gangmaru-0004",
+    "gangmaru-0005",
+    "gangmaru-0006",
+    "gangmaru-0007",
+    "gangmaru-0008"
+  ],
+  "jangpan": [
+    "jangpan-0001",
+    "jangpan-0002",
+    "jangpan-0003",
+    "jangpan-0004",
+    "jangpan-0005",
+    "jangpan-0006",
+    "jangpan-0007",
+    "jangpan-0008"
+  ],
+  "hardware": [
+    "hardware-0001",
+    "hardware-0002",
+    "hardware-0003",
+    "hardware-0004",
+    "hardware-0005",
+    "hardware-0006",
+    "hardware-0007",
+    "hardware-0008"
+  ],
+  "drawer": [
+    "drawer-0001",
+    "drawer-0002",
+    "drawer-0003",
+    "drawer-0004",
+    "drawer-0005",
+    "drawer-0006",
+    "drawer-0007",
+    "drawer-0008"
+  ]
+}

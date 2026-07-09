@@ -17,6 +17,10 @@
   align-items: start;
 }
 
+.sidebar {
+  min-width: 0;
+}
+
 .sidebar ul {
   list-style: none;
   display: flex;
@@ -51,25 +55,18 @@
 }
 
 @media (max-width: 720px) {
+  .page {
+    padding: 28px 16px 72px;
+  }
+
+  .title {
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+
+  /* 모바일: 세로 메뉴 리스트를 콘텐츠 위에 그대로 쌓는다(데스크탑과 동일 컴포넌트) */
   .layout {
     grid-template-columns: 1fr;
     gap: 20px;
-  }
-
-  .sidebar ul {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-
-  .menuLink {
-    white-space: nowrap;
-    border-bottom: none;
-    border-right: 1px solid var(--color-border);
-  }
-
-  .active {
-    border-left: none;
-    border-bottom: 3px solid var(--color-text);
-    padding-left: 18px;
   }
 }

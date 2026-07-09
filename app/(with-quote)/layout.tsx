@@ -1,4 +1,5 @@
 import QuotePanel from "@/components/cart/QuotePanel";
+import MobileQuoteBar from "@/components/cart/MobileQuoteBar";
 import CategoryNav from "@/components/layout/CategoryNav";
 import styles from "./layout.module.css";
 
@@ -17,6 +18,7 @@ export default function WithQuoteLayout({
         <CategoryNav />
         {children}
       </div>
+      <MobileQuoteBar />
     </div>
   );
 }

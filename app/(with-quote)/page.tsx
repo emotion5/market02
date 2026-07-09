@@ -1,15 +1,17 @@
-import { getProducts } from "@/lib/data";
-import ProductListing from "@/components/product/ProductListing";
+import { getFeaturedSections } from "@/lib/data";
+import BannerCarousel from "@/components/home/BannerCarousel";
+import FeaturedSection from "@/components/home/FeaturedSection";
 import styles from "./listing.module.css";
 
 export default async function HomePage() {
-  const products = await getProducts();
+  const sections = await getFeaturedSections();
 
   return (
-    <div className={styles.page}>
-      <h1 className={styles.title}>전체 상품</h1>
-      <p className={styles.count}>{products.length}개 상품</p>
-      <ProductListing products={products} />
+    <div className={styles.home}>
+      <BannerCarousel />
+      {sections.map((section) => (
+        <FeaturedSection key={section.category.slug} section={section} />
+      ))}
     </div>
   );
 }

@@ -6,12 +6,13 @@ import { formatPrice } from "@/lib/utils";
 import styles from "./QuotePanel.module.css";
 
 // 리스트/상세 페이지 좌측에 항상 표시되는 견적서 패널
-export default function QuotePanel() {
+// (모바일 바텀시트에서도 재사용 — className으로 외곽선/높이 오버라이드)
+export default function QuotePanel({ className }: { className?: string }) {
   const { items, totalCount, totalPrice, updateQuantity, removeItem, clearCart } =
     useCart();
 
   return (
-    <aside className={styles.panel}>
+    <aside className={`${styles.panel} ${className ?? ""}`}>
       <div className={styles.header}>
         <span className={styles.headerTitle}>견적서</span>
         <span className={styles.headerCount}>{totalCount} ITEMS</span>

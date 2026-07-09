@@ -19,6 +19,8 @@
   .shell {
     display: block;
     padding: 0;
+    /* 하단 고정 견적서 바에 마지막 콘텐츠가 가리지 않도록 여백 */
+    padding-bottom: 76px;
   }
 
   .side {

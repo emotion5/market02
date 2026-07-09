@@ -38,10 +38,18 @@
   opacity: 0.85;
 }
 
-/* A4 용지 */
-.sheet {
+/* A4 용지를 화면 폭에 맞춰 축소하는 컨테이너 */
+.sheetFit {
+  width: 100%;
   max-width: 210mm;
   margin: 0 auto;
+  overflow: hidden; /* 축소 전 원본 폭(794px)이 넘치지 않도록 */
+}
+
+/* A4 용지: 고정 픽셀 폭 + 좌상단 기준 축소 (JS가 transform: scale 주입) */
+.sheet {
+  width: 794px; /* 210mm @ 96dpi */
+  transform-origin: top left;
   background: #fff;
   padding: 20mm 18mm;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
@@ -351,13 +359,21 @@
   opacity: 0.85;
 }
 
+/* 모바일: 종이(용지)는 축소로 동일하게 보이고, 하단 주문 바만 폭에 맞춤 */
 @media (max-width: 640px) {
-  .parties {
-    grid-template-columns: 1fr;
+  .footerBar {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .orderButton {
+    flex: 1;
+    padding: 0 20px;
   }
 }
 
-/* 인쇄: 용지만 남기고 화면 장식 제거 */
+/* 인쇄: 축소를 해제하고 실제 A4로 출력 */
 @media print {
   .screen {
     background: #fff;
@@ -370,8 +386,15 @@
     display: none;
   }
 
-  .sheet {
+  .sheetFit {
     max-width: none;
+    height: auto !important;
+    overflow: visible;
+  }
+
+  .sheet {
+    width: auto;
+    transform: none !important;
     margin: 0;
     padding: 0;
     box-shadow: none;

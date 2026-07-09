@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Printer, X } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
@@ -69,6 +69,30 @@ export default function QuotePage() {
     setIssued({ date: now, number });
   }, []);
 
+  // A4 용지를 재배치(reflow)하지 않고 화면 폭에 맞게 통째로 축소한다.
+  // (PDF 뷰어의 "페이지 폭 맞춤"과 동일 — 데스크톱/모바일이 같은 모양)
+  const A4_WIDTH = 794; // 210mm @ 96dpi
+  const fitRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  const [fitHeight, setFitHeight] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const fit = fitRef.current;
+    const sheet = sheetRef.current;
+    if (!fit || !sheet) return;
+    const recompute = () => {
+      const s = Math.min(1, fit.clientWidth / A4_WIDTH);
+      setScale(s);
+      setFitHeight(sheet.offsetHeight * s);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(fit);
+    ro.observe(sheet);
+    return () => ro.disconnect();
+  }, [items, company, contactName, contactTel, issued]);
+
   const supply = Math.round(totalPrice / 1.1); // 공급가액
   const vat = totalPrice - supply; // 부가세 (10%)
 
@@ -104,8 +128,13 @@ export default function QuotePage() {
         </button>
       </div>
 
-      {/* A4 종이 견적서 */}
-      <div className={styles.sheet}>
+      {/* A4 종이 견적서 (화면 폭에 맞춰 통째로 축소) */}
+      <div ref={fitRef} className={styles.sheetFit} style={{ height: fitHeight }}>
+        <div
+          ref={sheetRef}
+          className={styles.sheet}
+          style={{ transform: `scale(${scale})` }}
+        >
         <h1 className={styles.docTitle}>견 적 서</h1>
 
         <div className={styles.metaRow}>
@@ -284,6 +313,7 @@ export default function QuotePage() {
           ※ 상기 단가 및 금액은 부가가치세가 포함된 금액입니다.
           <br />※ 본 견적서의 유효기간은 발행일로부터 {VALID_DAYS}일입니다.
         </p>
+        </div>
       </div>
 
       {/* 화면 전용 하단 주문 바 (인쇄 시 숨김) */}

@@ -669,6 +669,166 @@
     ]
   },
   {
+    "id": "hardware-0003",
+    "name": "브라스 페이퍼타월 홀더 선반",
+    "category": "hardware",
+    "price": 38000,
+    "summary": "선반 일체형 황동 키친타월 홀더",
+    "description": "벽면 고정형 브라스(황동) 페이퍼타월 홀더. 상단에 소품을 올릴 수 있는 선반이 일체형으로 제작되어 주방과 욕실 어디에나 잘 어울립니다.",
+    "image": "/images/products/hardware/hardware-0003.webp",
+    "variants": [
+      {
+        "id": "hardware-0003-default",
+        "name": "브라스",
+        "price": 38000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0004",
+    "name": "무프레임 벽거울",
+    "category": "hardware",
+    "price": 52000,
+    "summary": "군더더기 없는 무프레임 벽거울",
+    "description": "프레임을 없앤 미니멀 디자인의 벽걸이 거울. 방습 코팅 처리로 욕실과 세면대 주변에서도 오래도록 선명한 반사를 유지합니다.",
+    "image": "/images/products/hardware/hardware-0004.jpg",
+    "variants": [
+      {
+        "id": "hardware-0004-default",
+        "name": "기본",
+        "price": 52000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0005",
+    "name": "스테인리스 수건걸이 (싱글바)",
+    "category": "hardware",
+    "price": 21000,
+    "summary": "녹슬지 않는 싱글바 수건걸이",
+    "description": "SUS304 스테인리스 소재의 싱글바 수건걸이. 부식과 변색에 강해 욕실 습기 환경에서도 오래 사용할 수 있으며, 매립 없이 벽면 타공으로 간편하게 설치됩니다.",
+    "image": "/images/products/hardware/hardware-0005.jpg",
+    "variants": [
+      {
+        "id": "hardware-0005-default",
+        "name": "크롬",
+        "price": 21000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0006",
+    "name": "2단 선반형 수건걸이",
+    "category": "hardware",
+    "price": 34000,
+    "summary": "선반과 걸이바를 겸한 2단 수건걸이",
+    "description": "상단 선반과 하단 걸이바를 함께 갖춘 2단 구조의 수건걸이. 수건과 목욕용품을 한 곳에 정리할 수 있어 협소한 욕실 공간을 효율적으로 활용합니다.",
+    "image": "/images/products/hardware/hardware-0006.jpg",
+    "variants": [
+      {
+        "id": "hardware-0006-default",
+        "name": "크롬",
+        "price": 34000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0007",
+    "name": "바지걸이봉 (슬림형 12걸이)",
+    "category": "hardware",
+    "price": 49000,
+    "summary": "12개 걸이 슬림형 바지걸이봉",
+    "description": "좁은 옷장에도 설치 가능한 슬림형 슬라이딩 바지걸이봉. 걸이 12개를 촘촘히 배치해 더 많은 바지를 구김 없이 걸어 보관할 수 있습니다.",
+    "image": "/images/products/hardware/hardware-0007.jpg",
+    "variants": [
+      {
+        "id": "hardware-0007-default",
+        "name": "기본",
+        "price": 49000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0008",
+    "name": "사각 매립 수납 유닛 T016",
+    "category": "hardware",
+    "price": 82000,
+    "summary": "대형 사이즈 사각 매립 수납 유닛",
+    "description": "T013의 대형 버전인 사각 매립형 수납 유닛 T016. 넉넉한 수납 깊이와 스테인리스 마감으로 세면대 하부나 주방 벽면 수납에 적합합니다.",
+    "image": "/images/products/hardware/hardware-0008.jpg",
+    "variants": [
+      {
+        "id": "hardware-0008-default",
+        "name": "기본",
+        "price": 82000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0009",
+    "name": "브라스 페이퍼타월 홀더 (와이드 선반)",
+    "category": "hardware",
+    "price": 42000,
+    "summary": "와이드 선반형 황동 타월 홀더",
+    "description": "선반 폭을 넓힌 와이드 타입의 브라스 페이퍼타월 홀더. 여유로운 상판에 화분이나 디퓨저 등을 함께 올려 연출할 수 있는 인테리어 소품입니다.",
+    "image": "/images/products/hardware/hardware-0009.webp",
+    "variants": [
+      {
+        "id": "hardware-0009-default",
+        "name": "브라스",
+        "price": 42000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0010",
+    "name": "라운드 벽거울 (방습형)",
+    "category": "hardware",
+    "price": 58000,
+    "summary": "모서리를 둥글린 방습형 벽거울",
+    "description": "모서리를 부드럽게 라운드 처리한 방습형 벽거울. 안전한 곡선 마감과 방습 코팅으로 욕실과 파우더룸 어디에 걸어도 세련된 분위기를 연출합니다.",
+    "image": "/images/products/hardware/hardware-0010.jpg",
+    "variants": [
+      {
+        "id": "hardware-0010-default",
+        "name": "기본",
+        "price": 58000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0011",
+    "name": "스테인리스 수건걸이 (더블바)",
+    "category": "hardware",
+    "price": 27000,
+    "summary": "수건을 두 줄로 거는 더블바 걸이",
+    "description": "SUS304 스테인리스 소재의 더블바 수건걸이. 두 개의 걸이바로 수건을 나눠 걸 수 있어 건조가 빠르며, 견고한 브래킷으로 흔들림 없이 고정됩니다.",
+    "image": "/images/products/hardware/hardware-0011.jpg",
+    "variants": [
+      {
+        "id": "hardware-0011-default",
+        "name": "크롬",
+        "price": 27000
+      }
+    ]
+  },
+  {
+    "id": "hardware-0012",
+    "name": "선반형 수건걸이 (블랙 에디션)",
+    "category": "hardware",
+    "price": 39000,
+    "summary": "무광 블랙 마감의 2단 수건걸이",
+    "description": "무광 블랙으로 마감한 2단 선반형 수건걸이. 모던한 다크 톤이 화이트 타일 욕실에 포인트를 더하며, 선반과 걸이바로 수납과 건조를 동시에 해결합니다.",
+    "image": "/images/products/hardware/hardware-0012.jpg",
+    "variants": [
+      {
+        "id": "hardware-0012-default",
+        "name": "무광 블랙",
+        "price": 39000
+      }
+    ]
+  },
+  {
     "id": "drawer-0001",
     "name": "대서랍 (N1303400L)",
     "category": "drawer",

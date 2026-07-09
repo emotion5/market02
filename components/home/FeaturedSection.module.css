@@ -1,0 +1,29 @@
+.section {
+  margin-top: 56px;
+  /* 고정된 헤더(≈64px) + 카테고리 바(≈48px) 아래로 앵커 스크롤이 가려지지 않도록 */
+  scroll-margin-top: 124px;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.more:hover {
+  color: var(--color-text);
+}

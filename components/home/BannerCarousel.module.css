@@ -1,0 +1,227 @@
+.carousel {
+  position: relative;
+  margin-top: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide {
+  flex: 0 0 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 300px;
+  padding: 48px 40px;
+}
+
+/* 밝은 브랜드 슬라이드 — 오른쪽으로 갈수록 흰색이라 흰 배경 이미지가 자연스럽게 이어짐 */
+.brand {
+  background: linear-gradient(90deg, #e8edf2 0%, #f3f6fa 38%, #ffffff 68%);
+  color: #1a1a1a;
+}
+
+/* 다크 제품 슬라이드 — 딥 차콜 그라데이션 (프리미엄 톤) */
+.product {
+  background: linear-gradient(120deg, #16171a 0%, #23262b 60%, #2d3137 100%);
+  color: #f4f5f6;
+}
+
+.product .eyebrow {
+  color: #9aa0a8;
+}
+
+.product .title {
+  color: #ffffff;
+}
+
+.product .desc {
+  color: #c4c8ce;
+}
+
+.product .note {
+  color: #ffffff;
+}
+
+/* 다크 배경에선 CTA를 라이트 버튼으로 반전 */
+.product .cta {
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  max-width: 620px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #7a7f85;
+}
+
+.title {
+  margin-top: 12px;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.desc {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #4a4d52;
+}
+
+.note {
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 22px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cta:hover {
+  opacity: 0.85;
+}
+
+/* 제품 이미지 — 액자 없이 배경에 녹아들도록. 왼쪽 가장자리를 마스크로 페이드 */
+.media {
+  flex-shrink: 0;
+  width: 36%;
+  max-width: 330px;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 22%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 22%);
+}
+
+.media img {
+  max-width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  display: block;
+}
+
+/* 흰 배경 사진 전용: 흰색을 배경과 곱해 사각 경계를 지운다 (투명 PNG엔 미적용) */
+.media img.multiply {
+  mix-blend-mode: multiply;
+}
+
+/* 좌우 화살표 */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  color: #1a1a1a;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+}
+
+.arrow:hover {
+  background: #fff;
+}
+
+.arrowLeft {
+  left: 16px;
+}
+
+.arrowRight {
+  right: 16px;
+}
+
+/* 인디케이터 점 */
+.dots {
+  position: absolute;
+  left: 40px;
+  bottom: 22px;
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  transition:
+    width 0.2s ease,
+    background 0.2s ease;
+}
+
+.dotActive {
+  width: 22px;
+  border-radius: 4px;
+  background: var(--color-text);
+}
+
+/* 다크 슬라이드 위에서는 점을 밝게 */
+.dotsLight .dot {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.dotsLight .dotActive {
+  background: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .slide {
+    min-height: 0;
+    padding: 32px 24px;
+    gap: 18px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .desc {
+    font-size: 14px;
+  }
+
+  .media {
+    width: 34%;
+  }
+
+  .media img {
+    max-height: 150px;
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .dots {
+    left: 24px;
+    bottom: 16px;
+  }
+}
