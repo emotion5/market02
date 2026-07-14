@@ -11,7 +11,8 @@ export interface Product {
   price: number; // 대표 가격 (목록 표시용, 보통 최저 옵션가)
   summary?: string; // 목록 카드용 한 줄 간단설명
   description: string;
-  image: string;
+  image: string; // 대표 이미지(썸네일). 목록 카드에 사용
+  images?: string[]; // 상세 갤러리용 이미지들. getProduct에서 파일명 규칙으로 자동 구성
   variants: Variant[];
   colors?: string[]; // 색상 옵션(hex). 있을 때만 원형 스와치로 표시 (현재 표시 전용)
 }

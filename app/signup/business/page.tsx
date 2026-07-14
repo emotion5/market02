@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import styles from "./page.module.css";
+import styles from "../signup.module.css";
 
 // 사업자등록번호 10자리를 000-00-00000 형태로 표시
 function formatBizNo(value: string) {
@@ -11,20 +11,25 @@ function formatBizNo(value: string) {
   return parts.filter(Boolean).join("-");
 }
 
+// 사업자회원: 사업자등록번호를 아이디로, 등록증 업로드 후 승인
 export default function BusinessSignupPage() {
+  const [email, setEmail] = useState("");
   const [bizNo, setBizNo] = useState("");
   const [password, setPassword] = useState("");
   const [license, setLicense] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  // 숫자만 10자리인지 검사 (아이디 = 사업자등록번호)
+  // 이메일이 계정의 primary key(아이디·연락 수단)
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // 사업자등록번호는 사업자 확인용 (숫자 10자리)
   const bizDigits = bizNo.replace(/\D/g, "");
   const bizValid = bizDigits.length === 10;
+  const canSubmit = emailValid && bizValid;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bizValid) return;
-    // TODO: 백엔드 연동 (사업자등록번호를 아이디로 저장·비밀번호 해시·사업자등록증 업로드) — 현재는 UI만 구성
+    if (!canSubmit) return;
+    // TODO: 백엔드 연동 (이메일을 아이디로 저장·비밀번호 해시·사업자등록번호/등록증으로 확인) — 현재는 UI만 구성
     setSubmitted(true);
   };
 
@@ -34,7 +39,7 @@ export default function BusinessSignupPage() {
         <div className={styles.card}>
           <h1 className={styles.title}>가입 신청 완료</h1>
           <p className={styles.doneText}>
-            기업회원 가입 신청이 접수되었습니다.
+            사업자회원 가입 신청이 접수되었습니다.
             <br />
             제출하신 자료를 확인한 뒤{" "}
             <strong>영업일 1일 이내</strong>에 승인 처리됩니다.
@@ -50,26 +55,28 @@ export default function BusinessSignupPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h1 className={styles.title}>기업회원 가입</h1>
+        <Link href="/signup" className={styles.back}>
+          ← 회원 유형 선택
+        </Link>
+        <h1 className={styles.title}>사업자회원 가입</h1>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.field}>
-            <span className={styles.label}>사업자등록번호 (아이디)</span>
+            <span className={styles.label}>이메일 (아이디)</span>
             <input
-              type="text"
-              inputMode="numeric"
+              type="email"
               className={styles.input}
-              placeholder="000-00-00000"
-              value={bizNo}
-              onChange={(e) => setBizNo(formatBizNo(e.target.value))}
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
-              aria-invalid={bizNo.length > 0 && !bizValid}
+              aria-invalid={email.length > 0 && !emailValid}
               required
             />
             <span className={styles.hint}>
-              {bizNo.length > 0 && !bizValid
-                ? "사업자등록번호 10자리를 정확히 입력해주세요."
-                : "사업자등록번호가 로그인 아이디로 사용됩니다."}
+              {email.length > 0 && !emailValid
+                ? "올바른 이메일 형식을 입력해주세요."
+                : "이메일이 로그인 아이디로 사용됩니다."}
             </span>
           </label>
 
@@ -84,6 +91,26 @@ export default function BusinessSignupPage() {
               autoComplete="new-password"
               required
             />
+          </label>
+
+          <label className={styles.field}>
+            <span className={styles.label}>사업자등록번호</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              className={styles.input}
+              placeholder="000-00-00000"
+              value={bizNo}
+              onChange={(e) => setBizNo(formatBizNo(e.target.value))}
+              autoComplete="off"
+              aria-invalid={bizNo.length > 0 && !bizValid}
+              required
+            />
+            <span className={styles.hint}>
+              {bizNo.length > 0 && !bizValid
+                ? "사업자등록번호 10자리를 정확히 입력해주세요."
+                : "사업자 확인용입니다."}
+            </span>
           </label>
 
           <label className={styles.field}>
@@ -106,7 +133,7 @@ export default function BusinessSignupPage() {
             자료 입력 후 <strong>영업일 1일 이내</strong>에 승인됩니다.
           </p>
 
-          <button type="submit" className={styles.submit} disabled={!bizValid}>
+          <button type="submit" className={styles.submit} disabled={!canSubmit}>
             가입 신청
           </button>
         </form>

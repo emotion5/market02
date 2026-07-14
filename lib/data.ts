@@ -1,7 +1,46 @@
+import fs from "node:fs";
+import path from "node:path";
 import products from "@/data/mock-products.json";
 import featured from "@/data/featured.json";
 import { CATEGORIES } from "./constants";
 import type { Category, Product } from "./types";
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// 상세 갤러리 이미지들을 파일명 규칙으로 자동 수집한다.
+// 대표: {id}.ext, 추가: {id}-1.ext, {id}-2.ext … (같은 폴더)
+// 반환 순서: 대표 → 1 → 2 … (대표 파일이 없으면 product.image로 폴백)
+function resolveImages(product: Product): string[] {
+  const webPath = product.image; // 예: /images/products/faucet/faucet-0001.jpg
+  const slash = webPath.lastIndexOf("/");
+  if (slash < 0) return [product.image];
+  const dirWeb = webPath.slice(0, slash);
+  const dirFs = path.join(process.cwd(), "public", dirWeb);
+
+  let files: string[];
+  try {
+    files = fs.readdirSync(dirFs);
+  } catch {
+    return [product.image];
+  }
+
+  const re = new RegExp(
+    `^${escapeRegExp(product.id)}(?:-(\\d+))?\\.(?:jpe?g|png|webp|avif)$`,
+    "i",
+  );
+  const matched = files
+    .map((file) => {
+      const m = re.exec(file);
+      return m ? { file, order: m[1] ? parseInt(m[1], 10) : 0 } : null;
+    })
+    .filter((x): x is { file: string; order: number } => x !== null)
+    .sort((a, b) => a.order - b.order)
+    .map((x) => `${dirWeb}/${x.file}`);
+
+  return matched.length > 0 ? matched : [product.image];
+}
 
 // ★ 백엔드 교체 지점
 // 지금은 mock JSON을 읽지만, 나중에 이 파일의 함수 내부만
@@ -14,7 +53,10 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getProduct(id: string): Promise<Product | undefined> {
-  return PRODUCTS.find((p) => p.id === id);
+  const product = PRODUCTS.find((p) => p.id === id);
+  if (!product) return undefined;
+  // 상세에서만 갤러리 이미지를 폴더 스캔으로 채운다(목록엔 불필요).
+  return { ...product, images: resolveImages(product) };
 }
 
 export async function getProductsByCategory(slug: string): Promise<Product[]> {

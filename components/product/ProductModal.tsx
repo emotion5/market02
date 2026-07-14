@@ -48,7 +48,7 @@ export default function ProductModal({
           onClick={close}
           aria-label="닫기"
         >
-          <X size={20} strokeWidth={1.75} />
+          <X size={16} strokeWidth={2} />
         </button>
         <div className={styles.body}>{children}</div>
       </div>

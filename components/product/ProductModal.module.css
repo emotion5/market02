@@ -17,32 +17,37 @@
 .dialog {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 1060px;
   margin: auto;
-  background: var(--color-bg);
+  /* 화면 높이 안으로 제한(안전장치) — 실제 높이 제어는 오른쪽 info의 max-height */
+  max-height: calc(100vh - 96px);
+  overflow: hidden;
+  /* 살짝 그레이 톤의 다이얼로그 표면 (surface보다 조금 더 또렷한 회색) */
+  background: #ededed;
   border-radius: 12px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
   animation: dialogIn 0.2s ease;
 }
 
+/* 우측 상단 코너의 진한 원형 닫기 버튼 */
 .close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 16px;
+  right: 16px;
   z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  color: var(--color-text);
-  background: var(--color-bg);
-  transition: background 0.15s ease;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  color: var(--color-bg);
+  background: var(--color-text);
+  transition: opacity 0.15s ease;
 }
 
 .close:hover {
-  background: var(--color-surface);
+  opacity: 0.85;
 }
 
 .body {
@@ -57,6 +62,9 @@
   .dialog {
     max-width: none;
     min-height: 100%;
+    /* 모바일은 전체 화면 — 높이 고정/내부 스크롤 해제 */
+    max-height: none;
+    overflow: visible;
     border-radius: 0;
   }
 

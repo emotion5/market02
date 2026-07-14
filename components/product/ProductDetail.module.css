@@ -1,12 +1,48 @@
 .layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* 오른쪽 info 열을 이미지보다 조금 더 넓게 */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   gap: 48px;
 }
 
 @media (max-width: 800px) {
   .layout {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 모달: 이미지는 위 정렬로 고정, 오른쪽 info 열만 뷰포트 높이 기준으로 내부 스크롤.
+   높이 = 100vh - 오버레이 상하 패딩(96) - body 상하 패딩(80) */
+.layoutModal {
+  align-items: start;
+}
+
+.galleryCol {
+  min-width: 0;
+}
+
+.layoutModal .info {
+  max-height: calc(100vh - 176px);
+  overflow-y: auto;
+  /* 스크롤바는 숨기고 스크롤(휠·드래그) 기능만 유지 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.layoutModal .info::-webkit-scrollbar {
+  display: none;
+}
+
+/* 모달 내부 스크롤은 좁은 화면(세로 1단)에선 해제 — 전체 모달이 스크롤되도록 */
+@media (max-width: 800px) {
+  .layoutModal {
+    height: auto;
+  }
+
+  .layoutModal .info {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
   }
 }
 

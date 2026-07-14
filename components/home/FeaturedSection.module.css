@@ -1,22 +1,25 @@
 .section {
+  display: grid;
+  /* 좌: 카테고리명 열(썸네일 1개의 절반 폭), 우: 상품 그리드 */
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 24px;
   margin-top: 56px;
   /* 고정된 헤더(≈64px) + 카테고리 바(≈48px) 아래로 앵커 스크롤이 가려지지 않도록 */
   scroll-margin-top: 124px;
 }
 
-.header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 20px;
+.aside {
+  align-self: start;
 }
 
 .title {
   font-size: 20px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .more {
+  margin-top: 12px;
   display: inline-flex;
   align-items: center;
   gap: 2px;
@@ -26,4 +29,16 @@
 
 .more:hover {
   color: var(--color-text);
+}
+
+.products {
+  min-width: 0;
+}
+
+/* 모바일: 카테고리명을 그리드 위로 올리는 1단 레이아웃 */
+@media (max-width: 640px) {
+  .section {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }

@@ -4,13 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 
+// 이메일을 공용 primary key로 사용 — 개인·사업자 구분 없이 이메일+비밀번호로 로그인
 export default function LoginPage() {
-  const [loginId, setLoginId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 인증 연동 (백엔드/세션) — 현재는 UI만 구성
+    // TODO: 인증 연동 (email + password) — 현재는 UI만 구성
     alert("로그인 처리는 다음 단계에서 구현할 예정입니다.");
   };
 
@@ -21,14 +22,13 @@ export default function LoginPage() {
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.field}>
-            <span className={styles.label}>아이디 (사업자등록번호)</span>
+            <span className={styles.label}>이메일</span>
             <input
-              type="text"
-              inputMode="numeric"
+              type="email"
               className={styles.input}
-              placeholder="사업자등록번호를 입력해주세요"
-              value={loginId}
-              onChange={(e) => setLoginId(e.target.value)}
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
               required
             />

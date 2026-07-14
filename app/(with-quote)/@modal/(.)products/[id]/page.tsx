@@ -16,7 +16,7 @@ export default async function ProductModalPage({
 
   return (
     <ProductModal>
-      <ProductDetail product={product} />
+      <ProductDetail product={product} variant="modal" />
     </ProductModal>
   );
 }

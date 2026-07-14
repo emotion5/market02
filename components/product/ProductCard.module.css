@@ -1,17 +1,102 @@
 .card {
+  position: relative;
   display: block;
+  /* padding + 음수 margin: 기본 레이아웃(콘텐츠 위치)은 그대로 두고,
+     hover 시 콘텐츠보다 살짝 넓은 흰 패널 + 그림자로 떠오르게 한다. */
+  padding: 14px;
+  margin: -14px;
+  border-radius: 4px;
+  transition:
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.card:hover {
+  z-index: 1;
+  background: var(--color-bg);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.13);
+}
+
+.thumb {
+  position: relative;
 }
 
 .image {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  border: 1px solid var(--color-border);
   background: var(--color-surface);
 }
 
-.card:hover .image {
-  border-color: var(--color-text-muted);
+/* 썸네일 우측 상단 빠른 추가 아이콘 */
+.quickAdd {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.quickAdd:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+}
+
+/* hover/focus 시 뜨는 툴팁 ("견적서에 추가") */
+.quickAdd::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 3;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.quickAdd:hover::after,
+.quickAdd:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.quickAddDone {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+}
+
+/* 카드 전체를 덮는 클릭 영역(스트레치드 링크). 빠른 추가 버튼(z-index 2)은 그 위. */
+.body {
+  display: block;
+}
+
+.body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .name {
