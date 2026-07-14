@@ -18,7 +18,8 @@ export interface Product {
 
 export interface Category {
   slug: string;
-  name: string;
+  name: string; // 한글 표시명 (칩 hover 시 노출)
+  en: string; // 영문 표시명 (칩 기본 노출)
 }
 
 export interface CartItem {

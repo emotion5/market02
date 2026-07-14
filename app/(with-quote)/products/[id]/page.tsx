@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProduct } from "@/lib/data";
 import { getCategory } from "@/lib/constants";
-import VariantSelector from "@/components/product/VariantSelector";
+import ProductDetail from "@/components/product/ProductDetail";
 import styles from "./page.module.css";
 
 export default async function ProductDetailPage({
@@ -34,17 +34,7 @@ export default async function ProductDetailPage({
         <span className={styles.current}>{product.name}</span>
       </nav>
 
-      <div className={styles.layout}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={product.image} alt={product.name} className={styles.image} />
-
-        <div className={styles.info}>
-          {category && <p className={styles.category}>{category.name}</p>}
-          <h1 className={styles.name}>{product.name}</h1>
-          <p className={styles.description}>{product.description}</p>
-          <VariantSelector product={product} />
-        </div>
-      </div>
+      <ProductDetail product={product} />
     </div>
   );
 }

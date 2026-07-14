@@ -1,12 +1,12 @@
 import type { Category } from "./types";
 
 export const CATEGORIES: Category[] = [
-  { slug: "faucet", name: "수전" },
-  { slug: "flooring", name: "바닥재" },
-  { slug: "gangmaru", name: "강마루" },
-  { slug: "jangpan", name: "장판" },
-  { slug: "hardware", name: "하드웨어" },
-  { slug: "drawer", name: "서랍" },
+  { slug: "faucet", name: "수전", en: "Faucet" },
+  { slug: "flooring", name: "바닥재", en: "Flooring" },
+  { slug: "gangmaru", name: "강마루", en: "Hardwood" },
+  { slug: "jangpan", name: "장판", en: "Vinyl" },
+  { slug: "hardware", name: "하드웨어", en: "Hardware" },
+  { slug: "drawer", name: "서랍", en: "Drawer" },
 ];
 
 export function getCategory(slug: string): Category | undefined {

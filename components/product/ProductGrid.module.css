@@ -1,15 +1,11 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* 모니터 폭에 따라 열 수 자동 증가. 260px 기준이라 ~1200px에서 4열, 초광폭에서 6열+ */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 32px 20px;
 }
 
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
+/* 모바일은 좁은 화면에서도 2열 유지 */
 @media (max-width: 640px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);

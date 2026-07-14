@@ -1,28 +1,37 @@
 .nav {
   position: sticky;
   /* 고정된 헤더 바로 아래에 딱 붙여 함께 고정. JS가 헤더 실제 높이를 --header-h로 넣고,
-     JS 적용 전에는 브레이크포인트별 fallback을 쓴다. -1px로 살짝 겹쳐 틈을 없앤다. */
-  top: calc(var(--header-h, 64px) - 1px);
+     JS 적용 전에는 브레이크포인트별 fallback을 쓴다. */
+  top: var(--header-h, 64px);
   z-index: 10;
   display: flex;
-  align-items: center;
-  /* 반투명 + 블러(프로스티드 글래스) — 뒤 콘텐츠가 비쳐 덜 거슬림 */
-  background: rgba(255, 255, 255, 0.5);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
-  backdrop-filter: blur(16px) saturate(1.3);
-  border-bottom: 1px solid var(--color-border);
+  justify-content: center;
+  /* 회색 콘텐츠 배경이 비치도록 배경 없음 */
+  padding: 14px 16px;
 }
 
 /* JS 적용 전 fallback을 실제 모바일 헤더 높이(≈48px)에 맞춤 */
 @media (max-width: 600px) {
   .nav {
-    top: calc(var(--header-h, 48px) - 1px);
+    top: var(--header-h, 48px);
   }
+}
+
+/* 흰색 알약(pill) 바 — 회색 배경 위에 떠 있는 카드 */
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
 /* 가로 스크롤 영역 (스크롤바 숨김) */
 .scroller {
-  flex: 1;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -38,41 +47,82 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  min-height: 48px;
+  gap: 4px;
+  padding: 6px 8px;
 }
 
 .list li {
   flex-shrink: 0;
 }
 
-/* 칩(pill) */
+/* 칩(pill) — 테두리 없는 텍스트, 활성 시에만 옅은 회색 배경 */
 .chip {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
-  padding: 7px 14px;
-  border: 1px solid var(--color-border);
+  padding: 8px 16px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-text);
-  background: var(--color-bg);
+  background: transparent;
   transition:
     background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.chip:hover {
-  border-color: var(--color-text);
+    color 0.15s ease;
 }
 
 .active {
-  background: var(--color-text);
-  color: var(--color-bg);
-  border-color: var(--color-text);
+  color: var(--color-text);
   font-weight: 600;
+}
+
+/* 영문↔한글 슬라이드 전환: 두 라벨을 같은 칸에 겹쳐두고 세로 이동 */
+.label {
+  display: inline-grid;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.labelEn,
+.labelKo {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  text-align: center;
+  transition:
+    transform 0.28s ease,
+    opacity 0.28s ease;
+}
+
+.labelEn {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.labelKo {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.chip:hover .labelEn {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.chip:hover .labelKo {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* 접근성용 시각적 숨김 (스크린리더는 한글 명칭을 읽음) */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* 데스크톱 좌우 화살표 (모바일은 스와이프하므로 숨김) */
@@ -83,24 +133,14 @@
   display: none;
   align-items: center;
   justify-content: center;
-  width: 40px;
+  width: 38px;
   align-self: stretch;
-  background: rgba(255, 255, 255, 0.62);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: var(--color-bg);
   color: var(--color-text);
 }
 
 .arrow:hover {
   color: var(--color-text-muted);
-}
-
-.arrowLeft {
-  border-right: 1px solid var(--color-border);
-}
-
-.arrowRight {
-  border-left: 1px solid var(--color-border);
 }
 
 .arrowHidden {
@@ -115,33 +155,41 @@
 
 /* 모바일: 더 스크롤할 콘텐츠가 있음을 알리는 가장자리 페이드 */
 @media (max-width: 1023px) {
-  .nav::before,
-  .nav::after {
+  .bar::before,
+  .bar::after {
     content: "";
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 28px;
+    width: 24px;
     pointer-events: none;
     z-index: 1;
     transition: opacity 0.2s ease;
   }
 
-  .nav::before {
+  .bar::before {
     left: 0;
-    background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+    background: linear-gradient(
+      to right,
+      var(--color-bg),
+      rgba(255, 255, 255, 0)
+    );
   }
 
-  .nav::after {
+  .bar::after {
     right: 0;
-    background: linear-gradient(to left, #ffffff, rgba(255, 255, 255, 0));
+    background: linear-gradient(
+      to left,
+      var(--color-bg),
+      rgba(255, 255, 255, 0)
+    );
   }
 
-  .nav.atStart::before {
+  .nav.atStart .bar::before {
     opacity: 0;
   }
 
-  .nav.atEnd::after {
+  .nav.atEnd .bar::after {
     opacity: 0;
   }
 }

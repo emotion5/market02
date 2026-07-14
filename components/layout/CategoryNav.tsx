@@ -17,9 +17,8 @@ export default function CategoryNav() {
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
-  // 표시할 활성 칩: /products → "전체", 홈 → 스크롤 스파이, 그 외 → 없음
-  const active =
-    pathname === "/products" ? "all" : pathname === "/" ? spyActive : null;
+  // 표시할 활성 칩: 홈 → 스크롤 스파이, 그 외 → 없음
+  const active = pathname === "/" ? spyActive : null;
 
   // 홈에서는 스크롤 위치에 따라 화면 상단의 카테고리 섹션을 활성화(스크롤 스파이)
   useEffect(() => {
@@ -97,56 +96,54 @@ export default function CategoryNav() {
       }`}
       aria-label="카테고리"
     >
-      <button
-        type="button"
-        className={`${styles.arrow} ${styles.arrowLeft} ${
-          atStart ? styles.arrowHidden : ""
-        }`}
-        onClick={() => scrollByStep(-1)}
-        aria-label="이전 카테고리"
-        tabIndex={atStart ? -1 : 0}
-      >
-        <ChevronLeft size={18} strokeWidth={2} />
-      </button>
+      <div className={styles.bar}>
+        <button
+          type="button"
+          className={`${styles.arrow} ${styles.arrowLeft} ${
+            atStart ? styles.arrowHidden : ""
+          }`}
+          onClick={() => scrollByStep(-1)}
+          aria-label="이전 카테고리"
+          tabIndex={atStart ? -1 : 0}
+        >
+          <ChevronLeft size={18} strokeWidth={2} />
+        </button>
 
-      <div className={styles.scroller} ref={scrollerRef}>
-        <ul className={styles.list}>
-          <li data-key="all">
-            <Link
-              href="/products"
-              className={`${styles.chip} ${
-                active === "all" ? styles.active : ""
-              }`}
-            >
-              전체
-            </Link>
-          </li>
-          {CATEGORIES.map((category) => (
-            <li key={category.slug} data-key={category.slug}>
-              <Link
-                href={`/#category-${category.slug}`}
-                className={`${styles.chip} ${
-                  active === category.slug ? styles.active : ""
-                }`}
-              >
-                {category.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className={styles.scroller} ref={scrollerRef}>
+          <ul className={styles.list}>
+            {CATEGORIES.map((category) => (
+              <li key={category.slug} data-key={category.slug}>
+                <Link
+                  href={`/#category-${category.slug}`}
+                  className={`${styles.chip} ${
+                    active === category.slug ? styles.active : ""
+                  }`}
+                >
+                  {/* 기본은 영문, hover 시 영문이 위로 사라지고 한글이 올라옴 */}
+                  <span className={styles.label} aria-hidden="true">
+                    <span className={styles.labelEn}>{category.en}</span>
+                    <span className={styles.labelKo}>{category.name}</span>
+                  </span>
+                  {/* 스크린리더/접근성용: 한글 명칭 */}
+                  <span className={styles.srOnly}>{category.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <button
+          type="button"
+          className={`${styles.arrow} ${styles.arrowRight} ${
+            atEnd ? styles.arrowHidden : ""
+          }`}
+          onClick={() => scrollByStep(1)}
+          aria-label="다음 카테고리"
+          tabIndex={atEnd ? -1 : 0}
+        >
+          <ChevronRight size={18} strokeWidth={2} />
+        </button>
       </div>
-
-      <button
-        type="button"
-        className={`${styles.arrow} ${styles.arrowRight} ${
-          atEnd ? styles.arrowHidden : ""
-        }`}
-        onClick={() => scrollByStep(1)}
-        aria-label="다음 카테고리"
-        tabIndex={atEnd ? -1 : 0}
-      >
-        <ChevronRight size={18} strokeWidth={2} />
-      </button>
     </nav>
   );
 }

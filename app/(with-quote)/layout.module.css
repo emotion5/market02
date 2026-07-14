@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   gap: 8px;
-  max-width: 1560px;
+  max-width: 1960px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -12,6 +12,11 @@
   top: 24px;
   align-self: start;
   margin-top: 48px;
+}
+
+/* 오른쪽 콘텐츠 영역: 흐린 회색 배경으로 좌측 흰색 견적서와 구분 */
+.content {
+  background: var(--color-surface);
 }
 
 /* 좁은 화면에서는 패널을 숨기고 헤더의 장바구니(/cart)로 접근 */

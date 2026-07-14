@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    line { stroke: #000; }
+    @media (prefers-color-scheme: dark) {
+      line { stroke: #fff; }
+    }
+  </style>
+  <g stroke-width="2.2" stroke-linecap="butt">
+    <line x1="4" y1="6" x2="4" y2="26" />
+    <line x1="8.8" y1="6" x2="8.8" y2="26" />
+    <line x1="13.6" y1="6" x2="13.6" y2="26" />
+    <line x1="18.4" y1="6" x2="18.4" y2="26" />
+    <line x1="23.2" y1="6" x2="23.2" y2="26" />
+    <line x1="28" y1="6" x2="28" y2="26" />
+  </g>
+</svg>
