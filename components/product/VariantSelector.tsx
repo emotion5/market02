@@ -13,7 +13,114 @@ interface Selection {
   quantity: number;
 }
 
+// 옵션이 하나뿐인 단독 상품: 옵션 선택 없이 소비자가·회원도매가와 수량만 노출
+function SingleVariantSelector({ product }: { product: Product }) {
+  const { addItem } = useCart();
+  const hasColors = !!(product.colors && product.colors.length > 0);
+  const [color, setColor] = useState(product.colors?.[0] ?? "");
+  const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+
+  const variant = product.variants[0];
+  const consumerTotal = getConsumerPrice(variant.price) * quantity;
+  const memberTotal = variant.price * quantity;
+
+  const handleAdd = () => {
+    addItem(
+      {
+        productId: product.id,
+        variantId: color ? `${variant.id}::${color}` : variant.id,
+        productName: product.name,
+        variantName: variant.name,
+        price: variant.price,
+        image: product.image,
+        color: color || undefined,
+      },
+      quantity,
+    );
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
+
+  return (
+    <div className={styles.selector}>
+      {hasColors && (
+        <div className={styles.field}>
+          <span className={styles.label}>색상</span>
+          <ul className={styles.colors}>
+            {product.colors!.map((c) => (
+              <li key={c}>
+                <button
+                  type="button"
+                  className={`${styles.swatch} ${
+                    color === c ? styles.swatchSelected : ""
+                  }`}
+                  style={{ backgroundColor: c }}
+                  onClick={() => setColor(c)}
+                  aria-label={`색상 ${c}`}
+                  aria-pressed={color === c}
+                  title={c}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className={styles.field}>
+        <span className={styles.label}>수량</span>
+        <div className={styles.quantity}>
+          <button
+            type="button"
+            className={styles.quantityButton}
+            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            aria-label="수량 줄이기"
+          >
+            −
+          </button>
+          <span className={styles.quantityValue}>{quantity}</span>
+          <button
+            type="button"
+            className={styles.quantityButton}
+            onClick={() => setQuantity((q) => q + 1)}
+            aria-label="수량 늘리기"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.total}>
+        <div className={styles.priceRow}>
+          <span className={styles.priceLabel}>소비자가</span>
+          <span className={styles.consumerPrice}>
+            {formatPrice(consumerTotal)}
+          </span>
+        </div>
+        <div className={styles.priceRow}>
+          <span className={styles.priceLabel}>회원도매가</span>
+          <strong className={styles.memberPrice}>
+            {formatPrice(memberTotal)}
+          </strong>
+        </div>
+      </div>
+
+      <button type="button" className={styles.addButton} onClick={handleAdd}>
+        {added ? "견적서에 추가했습니다" : "견적서에 추가"}
+      </button>
+    </div>
+  );
+}
+
+// 옵션 개수에 따라 단독/다중 선택 UI로 분기
 export default function VariantSelector({ product }: { product: Product }) {
+  if (product.variants.length === 1) {
+    return <SingleVariantSelector product={product} />;
+  }
+  return <MultiVariantSelector product={product} />;
+}
+
+function MultiVariantSelector({ product }: { product: Product }) {
   const { addItem } = useCart();
   const hasColors = !!(product.colors && product.colors.length > 0);
   const [color, setColor] = useState(product.colors?.[0] ?? "");
