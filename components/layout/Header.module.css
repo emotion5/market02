@@ -19,25 +19,18 @@
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
 }
 
-.logoImg {
-  height: 28px;
+/* 원본 1727x120(14.4:1) — 높이로만 크기를 정한다. 16px = 폭 약 230px */
+.logoMain {
+  height: 16px;
   width: auto;
 }
 
-.wordmark {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: #9a9a9a;
-  white-space: nowrap;
-}
-
+/* 좁은 화면에선 우측 내비와 부딪히므로 한 단계 더 줄인다 */
 @media (max-width: 600px) {
-  .wordmark {
-    display: none;
+  .logoMain {
+    height: 11px;
   }
 }
 

@@ -69,14 +69,14 @@ export default function Header() {
   return (
     <header ref={headerRef} className={styles.header}>
       <div className={styles.inner}>
-        <Link href="/" className={styles.logo}>
+        <Link href="/" className={styles.logo} aria-label="MMM MARKET">
+          {/* 심볼(symbol.svg)은 현재 미노출 — 파일은 그대로 두고 마크업에서만 뺐다 */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/images/brand/symbol.svg"
+            src="/images/brand/logo_main.png"
             alt="MMM MARKET"
-            className={styles.logoImg}
+            className={styles.logoMain}
           />
-          <span className={styles.wordmark}>Made Make Material Market</span>
         </Link>
         <nav className={styles.nav}>
           <button

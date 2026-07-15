@@ -2,7 +2,8 @@
   display: grid;
   /* 모니터 폭에 따라 열 수 자동 증가. 기본 260px 기준(--min-col로 재정의 가능) */
   grid-template-columns: repeat(auto-fill, minmax(var(--min-col, 260px), 1fr));
-  gap: 32px 20px;
+  /* 열 간격은 hover 패널(카드당 10px 확장)이 서로 닿지 않는 20px 이상을 유지 */
+  gap: 26px 20px;
 }
 
 /* 모바일은 좁은 화면에서도 2열 유지 */

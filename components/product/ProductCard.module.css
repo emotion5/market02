@@ -3,8 +3,8 @@
   display: block;
   /* padding + 음수 margin: 기본 레이아웃(콘텐츠 위치)은 그대로 두고,
      hover 시 콘텐츠보다 살짝 넓은 흰 패널 + 그림자로 떠오르게 한다. */
-  padding: 14px;
-  margin: -14px;
+  padding: 10px;
+  margin: -10px;
   border-radius: 4px;
   transition:
     box-shadow 0.2s ease,
@@ -14,7 +14,7 @@
 .card:hover {
   z-index: 1;
   background: var(--color-bg);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.13);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.09);
 }
 
 .thumb {

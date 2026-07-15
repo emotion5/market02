@@ -29,7 +29,7 @@
     "price": 145000,
     "summary": "냉온수 조절이 부드러운 매립형 샤워 밸브",
     "description": "매립형 샤워 믹서 밸브 단독 구성. 냉온수 혼합 조절이 가능한 매립 시공용 제품입니다.",
-    "image": "/images/products/faucet/faucet-0002.png",
+    "image": "/images/products/faucet/faucet-0002.avif",
     "variants": [
       {
         "id": "faucet-0002-default",
@@ -45,7 +45,7 @@
     "price": 98000,
     "summary": "호텔 욕실 느낌의 대형 레인 샤워헤드",
     "description": "지름 400mm 대형 해바라기(레인) 샤워헤드. 넓은 살수 면적으로 호텔식 샤워 환경을 연출합니다.",
-    "image": "/images/products/faucet/faucet-0003.jpg",
+    "image": "/images/products/faucet/faucet-0003.avif",
     "variants": [
       {
         "id": "faucet-0003-default",
@@ -61,7 +61,7 @@
     "price": 132000,
     "summary": "헤드를 당겨 쓰는 편리한 풀다운 주방 수전",
     "description": "곡선형 스파우트의 클래식 풀다운 주방 수전. 헤드를 당겨 쓰는 풀다운 방식으로 설거지가 편리합니다.",
-    "image": "/images/products/faucet/faucet-0004.png",
+    "image": "/images/products/faucet/faucet-0004.jpeg",
     "variants": [
       {
         "id": "faucet-0004-default",
@@ -82,7 +82,7 @@
     "price": 168000,
     "summary": "큰 조리도구도 넉넉한 하이아크 주방 수전",
     "description": "높은 아크 형태의 모던 풀다운 주방 수전. 큰 냄비도 여유롭게 세척할 수 있는 넉넉한 높이입니다.",
-    "image": "/images/products/faucet/faucet-0005.webp",
+    "image": "/images/products/faucet/faucet-0005.jpeg",
     "variants": [
       {
         "id": "faucet-0005-default",
@@ -120,6 +120,70 @@
         "id": "faucet-0007-default",
         "name": "기본",
         "price": 118000
+      }
+    ]
+  },
+  {
+    "id": "faucet-0008",
+    "name": "구스넥 원홀 세면 수전",
+    "category": "faucet",
+    "price": 112000,
+    "summary": "얇은 레버가 돋보이는 크롬 구스넥 수전",
+    "description": "높은 구스넥 스파우트의 원홀 세면 수전. 가는 원형 레버로 냉온수를 부드럽게 조절하며, 스파우트가 좌우로 회전합니다.",
+    "image": "/images/products/faucet/faucet-0008.jpg",
+    "variants": [
+      {
+        "id": "faucet-0008-default",
+        "name": "기본",
+        "price": 112000
+      }
+    ]
+  },
+  {
+    "id": "faucet-0009",
+    "name": "무광 스테인리스 구스넥 주방 수전",
+    "category": "faucet",
+    "price": 139000,
+    "summary": "지문이 덜 남는 무광 스테인리스 마감",
+    "description": "브러시드(무광) 스테인리스 마감의 구스넥 주방 수전. 지문과 물자국이 잘 드러나지 않아 관리가 쉽습니다.",
+    "image": "/images/products/faucet/faucet-0009.png",
+    "variants": [
+      {
+        "id": "faucet-0009-default",
+        "name": "기본",
+        "price": 139000
+      }
+    ]
+  },
+  {
+    "id": "faucet-0010",
+    "name": "크롬 구스넥 주방 수전",
+    "category": "faucet",
+    "price": 124000,
+    "summary": "넓은 레버로 조작이 편한 기본형 주방 수전",
+    "description": "크롬 도금 구스넥 주방 수전. 납작하고 넓은 레버로 젖은 손이나 팔로도 조작하기 편합니다.",
+    "image": "/images/products/faucet/faucet-0010.jpg",
+    "variants": [
+      {
+        "id": "faucet-0010-default",
+        "name": "기본",
+        "price": 124000
+      }
+    ]
+  },
+  {
+    "id": "faucet-0011",
+    "name": "스퀘어 풀다운 주방 수전",
+    "category": "faucet",
+    "price": 156000,
+    "summary": "각진 베이스가 단정한 풀다운 주방 수전",
+    "description": "사각 베이스와 각진 레버로 마감한 풀다운 주방 수전. 헤드를 당겨 쓸 수 있어 싱크대 구석까지 세척이 편리합니다.",
+    "image": "/images/products/faucet/faucet-0011.png",
+    "variants": [
+      {
+        "id": "faucet-0011-default",
+        "name": "기본",
+        "price": 156000
       }
     ]
   },
