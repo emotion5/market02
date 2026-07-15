@@ -88,7 +88,7 @@ export default function Header() {
             aria-expanded={searchOpen}
             title="검색"
           >
-            <Search size={20} strokeWidth={1.75} />
+            <Search size={20} strokeWidth={1.25} />
           </button>
           <form
             ref={formRef}
@@ -111,11 +111,11 @@ export default function Header() {
               aria-label="검색"
               title="검색"
             >
-              <Search size={18} strokeWidth={1.75} />
+              <Search size={18} strokeWidth={1.25} />
             </button>
           </form>
           <Link href="/quote" className={styles.navLink} aria-label="견적서" title="견적서">
-            <FileText size={20} strokeWidth={1.75} />
+            <FileText size={20} strokeWidth={1.25} />
             {totalCount > 0 && <span className={styles.badge}>{totalCount}</span>}
           </Link>
           <Link
@@ -124,10 +124,10 @@ export default function Header() {
             aria-label="마이페이지"
             title="마이페이지"
           >
-            <CircleUserRound size={20} strokeWidth={1.75} />
+            <CircleUserRound size={20} strokeWidth={1.25} />
           </Link>
           <Link href="/login" className={styles.navLink} aria-label="로그인" title="로그인">
-            <User size={20} strokeWidth={1.75} />
+            <User size={20} strokeWidth={1.25} />
           </Link>
           <Link href="/signup" className={styles.businessLink}>
             회원가입

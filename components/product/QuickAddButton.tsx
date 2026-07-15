@@ -44,9 +44,9 @@ export default function QuickAddButton({ product }: { product: Product }) {
       data-tip="견적서에 추가"
     >
       {added ? (
-        <Check size={16} strokeWidth={2} />
+        <Check size={13} strokeWidth={2} />
       ) : (
-        <FileText size={16} strokeWidth={1.75} />
+        <FileText size={13} strokeWidth={1.75} />
       )}
     </button>
   );

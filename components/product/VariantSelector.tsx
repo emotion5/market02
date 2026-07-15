@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatPrice, getConsumerPrice } from "@/lib/utils";
 import { useCart } from "@/hooks/useCart";
@@ -18,8 +19,12 @@ function SingleVariantSelector({ product }: { product: Product }) {
   const { addItem } = useCart();
   const hasColors = !!(product.colors && product.colors.length > 0);
   const [color, setColor] = useState(product.colors?.[0] ?? "");
-  const [quantity, setQuantity] = useState(1);
+  // 입력 중 빈 값을 허용하려고 문자열로 두고, 실제 수량은 여기서 파생시킨다
+  const [qtyInput, setQtyInput] = useState("1");
   const [added, setAdded] = useState(false);
+
+  const quantity = Math.max(1, parseInt(qtyInput, 10) || 1);
+  const setQuantity = (q: number) => setQtyInput(String(Math.max(1, q)));
 
   const variant = product.variants[0];
   const consumerTotal = getConsumerPrice(variant.price) * quantity;
@@ -69,23 +74,32 @@ function SingleVariantSelector({ product }: { product: Product }) {
 
       <div className={styles.field}>
         <span className={styles.label}>수량</span>
-        <div className={styles.quantity}>
+        <div className={styles.qty}>
           <button
             type="button"
-            className={styles.quantityButton}
-            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            className={styles.qtyButton}
+            onClick={() => setQuantity(quantity - 1)}
+            disabled={quantity <= 1}
             aria-label="수량 줄이기"
           >
-            −
+            <Minus size={18} strokeWidth={1.25} />
           </button>
-          <span className={styles.quantityValue}>{quantity}</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            className={styles.qtyInput}
+            value={qtyInput}
+            onChange={(e) => setQtyInput(e.target.value.replace(/[^0-9]/g, ""))}
+            onBlur={() => setQtyInput(String(quantity))}
+            aria-label="수량"
+          />
           <button
             type="button"
-            className={styles.quantityButton}
-            onClick={() => setQuantity((q) => q + 1)}
+            className={styles.qtyButton}
+            onClick={() => setQuantity(quantity + 1)}
             aria-label="수량 늘리기"
           >
-            +
+            <Plus size={18} strokeWidth={1.25} />
           </button>
         </div>
       </div>

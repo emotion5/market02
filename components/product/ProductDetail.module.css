@@ -24,6 +24,12 @@
 .layoutModal .info {
   max-height: calc(100vh - 176px);
   overflow-y: auto;
+  /* overflow-y만 auto로 둬도 overflow-x가 visible -> auto로 계산돼 가로로도 잘린다.
+     첫 색상 스와치는 이 열의 왼쪽 경계에 딱 붙어 있어 선택 링(box-shadow 3px)이 잘렸다.
+     클리핑 경계(padding edge)를 4px 바깥으로 밀고 같은 값을 padding으로 되돌려
+     콘텐츠 위치는 그대로 두면서 링이 그려질 자리를 확보한다. */
+  margin-left: -4px;
+  padding-left: 4px;
   /* 스크롤바는 숨기고 스크롤(휠·드래그) 기능만 유지 */
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -43,6 +49,9 @@
     max-height: none;
     overflow-y: visible;
     padding-right: 0;
+    /* 1단에선 클리핑이 없으므로 링 확보용 여백도 되돌린다 */
+    margin-left: 0;
+    padding-left: 0;
   }
 }
 

@@ -102,10 +102,14 @@
 
 /* 시트 안에서는 패널 외곽선을 지우고, 시트 높이에 맞춰 내부 목록만 스크롤 */
 .sheetPanel {
-  border: none !important;
   max-height: none !important;
   flex: 1;
   min-height: 0;
+}
+
+/* 바텀시트는 화면 폭을 꽉 채우므로 패널 외곽 그라데이션 링을 숨긴다 (내부 구분선은 유지) */
+.sheetPanel::before {
+  display: none !important;
 }
 
 @keyframes slideUp {

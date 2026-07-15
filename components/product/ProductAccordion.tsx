@@ -27,9 +27,9 @@ export default function ProductAccordion({ items }: { items: AccordionItem[] }) 
             >
               <span className={styles.title}>{item.title}</span>
               {isOpen ? (
-                <Minus size={20} strokeWidth={1.75} />
+                <Minus size={18} strokeWidth={1.25} />
               ) : (
-                <Plus size={20} strokeWidth={1.75} />
+                <Plus size={18} strokeWidth={1.25} />
               )}
             </button>
             <div className={`${styles.panel} ${isOpen ? styles.panelOpen : ""}`}>
