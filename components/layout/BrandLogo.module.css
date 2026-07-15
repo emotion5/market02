@@ -1,0 +1,17 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 원본 1727x120(14.4:1) — 높이로만 크기를 정한다. 16px = 폭 약 230px */
+.img {
+  height: 16px;
+  width: auto;
+}
+
+/* 좁은 화면에선 우측 내비와 부딪히므로 한 단계 더 줄인다 */
+@media (max-width: 600px) {
+  .img {
+    height: 11px;
+  }
+}

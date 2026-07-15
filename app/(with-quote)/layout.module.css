@@ -1,34 +1,91 @@
+/* 2열 × 2행 격자. 위 행은 로고 / 아이콘, 아래 행은 견적서 / 콘텐츠.
+   왼쪽 열(로고+견적서)만 흰색이라 화면 맨 위부터 아래까지 흰 세로 밴드가 이어지고,
+   오른쪽은 body의 회색이 그대로 비쳐 헤더와 상품 리스트가 한 배경으로 읽힌다. */
 .shell {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  gap: 8px;
+  /* 324px = 왼쪽 여백 24 + 견적서 패널 300. 여백을 열 안에 넣어야 흰 밴드가 화면 끝에 닿는다 */
+  grid-template-columns: 324px minmax(0, 1fr);
+  grid-template-areas:
+    "logo  nav"
+    "panel main";
+  column-gap: 8px;
   max-width: 1960px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding-right: 24px;
 }
 
-.side {
+/* 흰 밴드 — 위아래로 맞붙은 두 칸이 하나의 열처럼 보인다 */
+.logoCell,
+.panel {
+  background: var(--color-bg);
+  padding-left: 24px;
+}
+
+/* 로고는 열 안에서 가운데 — 패딩 안쪽 폭이 견적서 패널과 같으므로 패널 중심과 맞는다 */
+.logoCell {
+  grid-area: logo;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+}
+
+.navCell {
+  grid-area: nav;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 64px;
+}
+
+.panel {
+  grid-area: panel;
+}
+
+/* 배경(흰 밴드)은 칸 전체를 덮고, 패널만 스크롤을 따라온다 */
+.panelInner {
   position: sticky;
   top: 24px;
-  align-self: start;
   margin-top: 48px;
+  padding-bottom: 24px;
 }
 
-/* 오른쪽 콘텐츠 영역: 흐린 회색 배경으로 좌측 흰색 견적서와 구분 */
 .content {
-  background: var(--color-surface);
+  grid-area: main;
+  min-width: 0;
 }
 
-/* 좁은 화면에서는 패널을 숨기고 헤더의 장바구니(/cart)로 접근 */
+/* 좁은 화면: 견적서 패널은 숨기고(하단 고정 MobileQuoteBar가 대신함)
+   로고와 아이콘만 한 줄로 남긴다 — 흰 밴드도 받쳐줄 열이 없으므로 없앤다 */
 @media (max-width: 1023px) {
   .shell {
-    display: block;
-    padding: 0;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "logo nav"
+      "main main";
+    padding-right: 0;
     /* 하단 고정 견적서 바에 마지막 콘텐츠가 가리지 않도록 여백 */
     padding-bottom: 76px;
   }
 
-  .side {
+  .logoCell,
+  .panel {
+    background: none;
+  }
+
+  /* 모바일엔 받쳐줄 열이 없으므로 가운데 정렬을 풀고 왼쪽으로 */
+  .logoCell {
+    justify-content: flex-start;
+    height: auto;
+    padding: 8px 0 8px 14px;
+  }
+
+  .navCell {
+    height: auto;
+    padding: 8px 14px 8px 0;
+  }
+
+  .panel {
     display: none;
   }
 }

@@ -4,8 +4,8 @@
   grid-template-columns: 130px minmax(0, 1fr);
   gap: 24px;
   margin-top: 56px;
-  /* 고정된 헤더(≈64px) + 카테고리 바(≈48px) 아래로 앵커 스크롤이 가려지지 않도록 */
-  scroll-margin-top: 124px;
+  /* 헤더는 함께 스크롤되므로, 상단에 남는 카테고리 바(≈76px)만큼만 비켜준다 */
+  scroll-margin-top: 84px;
 }
 
 .aside {
