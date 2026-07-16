@@ -13,7 +13,7 @@ function escapeRegExp(value: string): string {
 // 대표: {id}.ext, 추가: {id}-1.ext, {id}-2.ext … (같은 폴더)
 // 반환 순서: 대표 → 1 → 2 … (대표 파일이 없으면 product.image로 폴백)
 function resolveImages(product: Product): string[] {
-  const webPath = product.image; // 예: /images/products/faucet/faucet-0001.jpg
+  const webPath = product.image; // 예: /images/products/bathmatch/bathmatch-0001.jpg
   const slash = webPath.lastIndexOf("/");
   if (slash < 0) return [product.image];
   const dirWeb = webPath.slice(0, slash);

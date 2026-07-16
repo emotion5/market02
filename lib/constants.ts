@@ -4,11 +4,11 @@ import type { Category } from "./types";
 // slug는 URL·상품 데이터·이미지 폴더를 잇는 내부 키라 표시 이름과 별개로 유지한다.
 export const CATEGORIES: Category[] = [
   { slug: "hardware", name: "하드웨어", en: "Hardware" },
-  { slug: "drawer", name: "가구재", en: "Panel" },
-  { slug: "flooring", name: "바닥재", en: "PressBevel" },
-  { slug: "jangpan", name: "장판", en: "AntiPress" },
-  { slug: "faucet", name: "위생", en: "BathMatch" },
-  { slug: "gangmaru", name: "건자재", en: "StableCore" },
+  { slug: "panel", name: "가구재", en: "Panel" },
+  { slug: "pressbevel", name: "바닥재", en: "PressBevel" },
+  { slug: "antipress", name: "장판", en: "AntiPress" },
+  { slug: "bathmatch", name: "위생", en: "BathMatch" },
+  { slug: "stablecore", name: "건자재", en: "StableCore" },
 ];
 
 export function getCategory(slug: string): Category | undefined {

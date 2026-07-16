@@ -1,15 +1,15 @@
 [
   {
-    "id": "faucet-0001",
+    "id": "bathmatch-0001",
     "name": "변기(스마트)",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 128000,
-    "summary": "벽 매립으로 깔끔하게 마감되는 세면 수전",
-    "description": "벽면 매립형 세면대 수전. 스파우트와 물조절 밸브가 분리된 구성으로 깔끔한 시공이 가능합니다.",
-    "image": "/images/products/faucet/faucet-0001.jpg",
+    "summary": "자동 세정과 온열 착좌를 갖춘 스마트 변기",
+    "description": "비데 일체형 스마트 변기. 리모컨으로 세정·건조·착좌 온도를 조절하며 자동 개폐를 지원합니다.",
+    "image": "/images/products/bathmatch/bathmatch-0001.jpg",
     "variants": [
       {
-        "id": "faucet-0001-default",
+        "id": "bathmatch-0001-default",
         "name": "기본",
         "price": 128000
       }
@@ -23,48 +23,48 @@
     ]
   },
   {
-    "id": "faucet-0002",
+    "id": "bathmatch-0002",
     "name": "변기(일반형)",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 145000,
-    "summary": "냉온수 조절이 부드러운 매립형 샤워 밸브",
-    "description": "매립형 샤워 믹서 밸브 단독 구성. 냉온수 혼합 조절이 가능한 매립 시공용 제품입니다.",
-    "image": "/images/products/faucet/faucet-0002.avif",
+    "summary": "군더더기 없는 투피스 일반형 양변기",
+    "description": "물탱크와 도기가 분리된 투피스 일반형 양변기. 절수형 사이펀 배수 방식으로 관리가 쉽습니다.",
+    "image": "/images/products/bathmatch/bathmatch-0002.avif",
     "variants": [
       {
-        "id": "faucet-0002-default",
+        "id": "bathmatch-0002-default",
         "name": "기본",
         "price": 145000
       }
     ]
   },
   {
-    "id": "faucet-0003",
+    "id": "bathmatch-0003",
     "name": "세면대",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 98000,
-    "summary": "호텔 욕실 느낌의 대형 레인 샤워헤드",
-    "description": "지름 400mm 대형 해바라기(레인) 샤워헤드. 넓은 살수 면적으로 호텔식 샤워 환경을 연출합니다.",
-    "image": "/images/products/faucet/faucet-0003.avif",
+    "summary": "매끈한 백색 도기 세면대",
+    "description": "백색 도기 세면대. 오버플로우 홀이 있으며 벽걸이·반다리 시공 모두 가능합니다.",
+    "image": "/images/products/bathmatch/bathmatch-0003.avif",
     "variants": [
       {
-        "id": "faucet-0003-default",
+        "id": "bathmatch-0003-default",
         "name": "기본",
         "price": 98000
       }
     ]
   },
   {
-    "id": "faucet-0004",
+    "id": "bathmatch-0004",
     "name": "망치트랩",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 132000,
-    "summary": "헤드를 당겨 쓰는 편리한 풀다운 주방 수전",
-    "description": "곡선형 스파우트의 클래식 풀다운 주방 수전. 헤드를 당겨 쓰는 풀다운 방식으로 설거지가 편리합니다.",
-    "image": "/images/products/faucet/faucet-0004.jpeg",
+    "summary": "배수구 냄새를 막아주는 망치형 트랩",
+    "description": "세면대 배수용 망치형 트랩. 봉수로 하수 냄새와 벌레 유입을 막고, 청소를 위한 분해가 간편합니다.",
+    "image": "/images/products/bathmatch/bathmatch-0004.jpeg",
     "variants": [
       {
-        "id": "faucet-0004-default",
+        "id": "bathmatch-0004-default",
         "name": "기본",
         "price": 132000
       }
@@ -76,129 +76,129 @@
     ]
   },
   {
-    "id": "faucet-0005",
+    "id": "bathmatch-0005",
     "name": "세면대수전",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 168000,
-    "summary": "큰 조리도구도 넉넉한 하이아크 주방 수전",
-    "description": "높은 아크 형태의 모던 풀다운 주방 수전. 큰 냄비도 여유롭게 세척할 수 있는 넉넉한 높이입니다.",
-    "image": "/images/products/faucet/faucet-0005.jpeg",
+    "summary": "단일 레버로 조절하는 원홀 세면대 수전",
+    "description": "원홀 타입 세면대 수전. 하나의 레버로 냉온수와 수압을 함께 조절하며 급수 호스가 포함됩니다.",
+    "image": "/images/products/bathmatch/bathmatch-0005.jpeg",
     "variants": [
       {
-        "id": "faucet-0005-default",
+        "id": "bathmatch-0005-default",
         "name": "기본",
         "price": 168000
       }
     ]
   },
   {
-    "id": "faucet-0006",
+    "id": "bathmatch-0006",
     "name": "믹서",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 149000,
-    "summary": "군더더기 없는 구스넥 라인의 주방 수전",
-    "description": "구스넥 실루엣의 풀다운 주방 수전. 심플한 단일 레버로 직관적인 냉온수 조절이 가능합니다.",
-    "image": "/images/products/faucet/faucet-0006.jpeg",
+    "summary": "냉온수를 섞어주는 매립형 믹서 밸브",
+    "description": "매립 시공용 냉온수 혼합 믹서 밸브. 샤워기나 해바라기 헤드와 연결해 사용합니다.",
+    "image": "/images/products/bathmatch/bathmatch-0006.jpeg",
     "variants": [
       {
-        "id": "faucet-0006-default",
+        "id": "bathmatch-0006-default",
         "name": "기본",
         "price": 149000
       }
     ]
   },
   {
-    "id": "faucet-0007",
+    "id": "bathmatch-0007",
     "name": "샤워기",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 118000,
-    "summary": "어디에나 어울리는 우아한 클래식 세면 수전",
-    "description": "클래식한 라인의 풀다운 세면 수전. 우아한 곡선 디자인으로 화장실·주방 어디에나 어울립니다.",
-    "image": "/images/products/faucet/faucet-0007.jpeg",
+    "summary": "물줄기를 바꿔 쓰는 핸드 샤워기 세트",
+    "description": "핸드 샤워기 헤드와 호스, 거치대로 구성된 세트. 물줄기 형태를 여러 단계로 전환할 수 있습니다.",
+    "image": "/images/products/bathmatch/bathmatch-0007.jpeg",
     "variants": [
       {
-        "id": "faucet-0007-default",
+        "id": "bathmatch-0007-default",
         "name": "기본",
         "price": 118000
       }
     ]
   },
   {
-    "id": "faucet-0008",
+    "id": "bathmatch-0008",
     "name": "해바라기 헤드",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 112000,
-    "summary": "얇은 레버가 돋보이는 크롬 구스넥 수전",
-    "description": "높은 구스넥 스파우트의 원홀 세면 수전. 가는 원형 레버로 냉온수를 부드럽게 조절하며, 스파우트가 좌우로 회전합니다.",
-    "image": "/images/products/faucet/faucet-0008.jpg",
+    "summary": "호텔 욕실 느낌의 대형 레인 샤워헤드",
+    "description": "지름 400mm 대형 해바라기(레인) 샤워헤드. 넓은 살수 면적으로 호텔식 샤워 환경을 연출합니다.",
+    "image": "/images/products/bathmatch/bathmatch-0008.jpg",
     "variants": [
       {
-        "id": "faucet-0008-default",
+        "id": "bathmatch-0008-default",
         "name": "기본",
         "price": 112000
       }
     ]
   },
   {
-    "id": "faucet-0009",
+    "id": "bathmatch-0009",
     "name": "무광 스테인리스 구스넥 주방 수전",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 139000,
     "summary": "지문이 덜 남는 무광 스테인리스 마감",
     "description": "브러시드(무광) 스테인리스 마감의 구스넥 주방 수전. 지문과 물자국이 잘 드러나지 않아 관리가 쉽습니다.",
-    "image": "/images/products/faucet/faucet-0009.png",
+    "image": "/images/products/bathmatch/bathmatch-0009.png",
     "variants": [
       {
-        "id": "faucet-0009-default",
+        "id": "bathmatch-0009-default",
         "name": "기본",
         "price": 139000
       }
     ]
   },
   {
-    "id": "faucet-0010",
+    "id": "bathmatch-0010",
     "name": "크롬 구스넥 주방 수전",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 124000,
     "summary": "넓은 레버로 조작이 편한 기본형 주방 수전",
     "description": "크롬 도금 구스넥 주방 수전. 납작하고 넓은 레버로 젖은 손이나 팔로도 조작하기 편합니다.",
-    "image": "/images/products/faucet/faucet-0010.jpg",
+    "image": "/images/products/bathmatch/bathmatch-0010.jpg",
     "variants": [
       {
-        "id": "faucet-0010-default",
+        "id": "bathmatch-0010-default",
         "name": "기본",
         "price": 124000
       }
     ]
   },
   {
-    "id": "faucet-0011",
+    "id": "bathmatch-0011",
     "name": "스퀘어 풀다운 주방 수전",
-    "category": "faucet",
+    "category": "bathmatch",
     "price": 156000,
     "summary": "각진 베이스가 단정한 풀다운 주방 수전",
     "description": "사각 베이스와 각진 레버로 마감한 풀다운 주방 수전. 헤드를 당겨 쓸 수 있어 싱크대 구석까지 세척이 편리합니다.",
-    "image": "/images/products/faucet/faucet-0011.png",
+    "image": "/images/products/bathmatch/bathmatch-0011.png",
     "variants": [
       {
-        "id": "faucet-0011-default",
+        "id": "bathmatch-0011-default",
         "name": "기본",
         "price": 156000
       }
     ]
   },
   {
-    "id": "flooring-0001",
+    "id": "pressbevel-0001",
     "name": "라이트우드",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 96000,
-    "summary": "밝은 우드 톤의 클릭 시공 마루 (90폭)",
-    "description": "밝은 우드 톤의 마루형 바닥재. 클릭 결합으로 시공이 간편합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0001.jpg",
+    "summary": "밝은 우드 톤의 클릭 시공 바닥재",
+    "description": "밝은 우드 톤의 마루형 바닥재. 클릭 결합으로 시공이 간편합니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/pressbevel/pressbevel-0001.jpg",
     "variants": [
       {
-        "id": "flooring-0001-default",
-        "name": "기본 (90폭)",
+        "id": "pressbevel-0001-default",
+        "name": "기본 (1박스)",
         "price": 96000
       }
     ],
@@ -211,490 +211,490 @@
     ]
   },
   {
-    "id": "flooring-0002",
+    "id": "pressbevel-0002",
     "name": "리얼우드",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 108000,
-    "summary": "밝은 우드 톤의 클릭 시공 마루 (120폭)",
-    "description": "밝은 우드 톤의 마루형 바닥재. 클릭 결합으로 시공이 간편합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0002.jpg",
+    "summary": "원목 질감을 살린 리얼 우드 그레인 바닥재",
+    "description": "실제 나무결의 요철을 재현한 리얼 우드 그레인 바닥재. 낮은 광택으로 원목에 가까운 질감을 냅니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/pressbevel/pressbevel-0002.jpg",
     "variants": [
       {
-        "id": "flooring-0002-default",
-        "name": "기본 (120폭)",
+        "id": "pressbevel-0002-default",
+        "name": "기본 (1박스)",
         "price": 108000
       }
     ]
   },
   {
-    "id": "flooring-0003",
+    "id": "pressbevel-0003",
     "name": "다크우드",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 120000,
-    "summary": "밝은 우드 톤의 클릭 시공 마루 (150폭)",
-    "description": "밝은 우드 톤의 마루형 바닥재. 클릭 결합으로 시공이 간편합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0003.jpg",
+    "summary": "무게감 있는 다크 톤 우드 바닥재",
+    "description": "짙은 다크 우드 톤의 마루형 바닥재. 차분한 색감으로 모던한 공간에 어울립니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/pressbevel/pressbevel-0003.jpg",
     "variants": [
       {
-        "id": "flooring-0003-default",
-        "name": "기본 (150폭)",
+        "id": "pressbevel-0003-default",
+        "name": "기본 (1박스)",
         "price": 120000
       }
     ]
   },
   {
-    "id": "flooring-0004",
+    "id": "pressbevel-0004",
     "name": "스톤",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 89000,
-    "summary": "은은한 오크 결의 견고한 강마루 (90폭)",
-    "description": "오크 톤의 강마루. 내추럴한 우드 그레인으로 어떤 인테리어에도 무난합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0004.jpg",
+    "summary": "석재 질감을 살린 스톤 패턴 바닥재",
+    "description": "대리석·콘크리트 느낌의 스톤 패턴 바닥재. 물과 오염에 강해 주방과 현관에도 쓸 수 있습니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/pressbevel/pressbevel-0004.jpg",
     "variants": [
       {
-        "id": "flooring-0004-default",
-        "name": "기본 (90폭)",
+        "id": "pressbevel-0004-default",
+        "name": "기본 (1박스)",
         "price": 89000
       }
     ]
   },
   {
-    "id": "flooring-0005",
+    "id": "pressbevel-0005",
     "name": "오크 강마루 (120폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 101000,
     "summary": "은은한 오크 결의 견고한 강마루 (120폭)",
     "description": "오크 톤의 강마루. 내추럴한 우드 그레인으로 어떤 인테리어에도 무난합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0005.jpg",
+    "image": "/images/products/pressbevel/pressbevel-0005.jpg",
     "variants": [
       {
-        "id": "flooring-0005-default",
+        "id": "pressbevel-0005-default",
         "name": "기본 (120폭)",
         "price": 101000
       }
     ]
   },
   {
-    "id": "flooring-0006",
+    "id": "pressbevel-0006",
     "name": "오크 강마루 (150폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 113000,
     "summary": "은은한 오크 결의 견고한 강마루 (150폭)",
     "description": "오크 톤의 강마루. 내추럴한 우드 그레인으로 어떤 인테리어에도 무난합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0006.jpg",
+    "image": "/images/products/pressbevel/pressbevel-0006.jpg",
     "variants": [
       {
-        "id": "flooring-0006-default",
+        "id": "pressbevel-0006-default",
         "name": "기본 (150폭)",
         "price": 113000
       }
     ]
   },
   {
-    "id": "flooring-0007",
+    "id": "pressbevel-0007",
     "name": "브라운 오크 원목마루 (90폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 158000,
     "summary": "깊은 브라운 톤의 고급 원목마루 (90폭)",
     "description": "짙은 브라운 오크 원목마루. 깊이 있는 색감으로 고급스러운 공간을 연출합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0007.jpg",
+    "image": "/images/products/pressbevel/pressbevel-0007.jpg",
     "variants": [
       {
-        "id": "flooring-0007-default",
+        "id": "pressbevel-0007-default",
         "name": "기본 (90폭)",
         "price": 158000
       }
     ]
   },
   {
-    "id": "flooring-0008",
+    "id": "pressbevel-0008",
     "name": "브라운 오크 원목마루 (120폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 170000,
     "summary": "깊은 브라운 톤의 고급 원목마루 (120폭)",
     "description": "짙은 브라운 오크 원목마루. 깊이 있는 색감으로 고급스러운 공간을 연출합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0008.jpg",
+    "image": "/images/products/pressbevel/pressbevel-0008.jpg",
     "variants": [
       {
-        "id": "flooring-0008-default",
+        "id": "pressbevel-0008-default",
         "name": "기본 (120폭)",
         "price": 170000
       }
     ]
   },
   {
-    "id": "flooring-0009",
+    "id": "pressbevel-0009",
     "name": "브라운 오크 원목마루 (150폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 182000,
     "summary": "깊은 브라운 톤의 고급 원목마루 (150폭)",
     "description": "짙은 브라운 오크 원목마루. 깊이 있는 색감으로 고급스러운 공간을 연출합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0009.jpg",
+    "image": "/images/products/pressbevel/pressbevel-0009.jpg",
     "variants": [
       {
-        "id": "flooring-0009-default",
+        "id": "pressbevel-0009-default",
         "name": "기본 (150폭)",
         "price": 182000
       }
     ]
   },
   {
-    "id": "flooring-0010",
+    "id": "pressbevel-0010",
     "name": "헤링본 오크 파켓 (90폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 172000,
     "summary": "클래식한 헤링본 패턴 오크 파켓 (90폭)",
     "description": "헤링본 패턴으로 시공하는 오크 파켓 바닥재. 클래식하면서도 감각적인 바닥을 완성합니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0010.jpeg",
+    "image": "/images/products/pressbevel/pressbevel-0010.jpeg",
     "variants": [
       {
-        "id": "flooring-0010-default",
+        "id": "pressbevel-0010-default",
         "name": "기본 (90폭)",
         "price": 172000
       }
     ]
   },
   {
-    "id": "flooring-0011",
+    "id": "pressbevel-0011",
     "name": "헤링본 오크 파켓 (120폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 184000,
     "summary": "클래식한 헤링본 패턴 오크 파켓 (120폭)",
     "description": "헤링본 패턴으로 시공하는 오크 파켓 바닥재. 클래식하면서도 감각적인 바닥을 완성합니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0011.jpeg",
+    "image": "/images/products/pressbevel/pressbevel-0011.jpeg",
     "variants": [
       {
-        "id": "flooring-0011-default",
+        "id": "pressbevel-0011-default",
         "name": "기본 (120폭)",
         "price": 184000
       }
     ]
   },
   {
-    "id": "flooring-0012",
+    "id": "pressbevel-0012",
     "name": "헤링본 오크 파켓 (150폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 196000,
     "summary": "클래식한 헤링본 패턴 오크 파켓 (150폭)",
     "description": "헤링본 패턴으로 시공하는 오크 파켓 바닥재. 클래식하면서도 감각적인 바닥을 완성합니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0012.jpeg",
+    "image": "/images/products/pressbevel/pressbevel-0012.jpeg",
     "variants": [
       {
-        "id": "flooring-0012-default",
+        "id": "pressbevel-0012-default",
         "name": "기본 (150폭)",
         "price": 196000
       }
     ]
   },
   {
-    "id": "flooring-0013",
+    "id": "pressbevel-0013",
     "name": "러스틱 내추럴 오크 마루 (90폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 165000,
     "summary": "자연스러운 옹이결의 러스틱 오크 마루 (90폭)",
     "description": "옹이와 결이 살아있는 러스틱 내추럴 오크 마루. UV 래커 마감으로 관리가 쉽습니다. 판재 폭 90폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0013.webp",
+    "image": "/images/products/pressbevel/pressbevel-0013.webp",
     "variants": [
       {
-        "id": "flooring-0013-default",
+        "id": "pressbevel-0013-default",
         "name": "기본 (90폭)",
         "price": 165000
       }
     ]
   },
   {
-    "id": "flooring-0014",
+    "id": "pressbevel-0014",
     "name": "러스틱 내추럴 오크 마루 (120폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 177000,
     "summary": "자연스러운 옹이결의 러스틱 오크 마루 (120폭)",
     "description": "옹이와 결이 살아있는 러스틱 내추럴 오크 마루. UV 래커 마감으로 관리가 쉽습니다. 판재 폭 120폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0014.webp",
+    "image": "/images/products/pressbevel/pressbevel-0014.webp",
     "variants": [
       {
-        "id": "flooring-0014-default",
+        "id": "pressbevel-0014-default",
         "name": "기본 (120폭)",
         "price": 177000
       }
     ]
   },
   {
-    "id": "flooring-0015",
+    "id": "pressbevel-0015",
     "name": "러스틱 내추럴 오크 마루 (150폭)",
-    "category": "flooring",
+    "category": "pressbevel",
     "price": 189000,
     "summary": "자연스러운 옹이결의 러스틱 오크 마루 (150폭)",
     "description": "옹이와 결이 살아있는 러스틱 내추럴 오크 마루. UV 래커 마감으로 관리가 쉽습니다. 판재 폭 150폭 규격, 1박스 단위 판매입니다.",
-    "image": "/images/products/flooring/flooring-0015.webp",
+    "image": "/images/products/pressbevel/pressbevel-0015.webp",
     "variants": [
       {
-        "id": "flooring-0015-default",
+        "id": "pressbevel-0015-default",
         "name": "기본 (150폭)",
         "price": 189000
       }
     ]
   },
   {
-    "id": "gangmaru-0001",
+    "id": "stablecore-0001",
     "name": "실리콘",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 92000,
-    "summary": "은은한 오크 결의 내추럴 강마루",
-    "description": "내추럴 오크 톤의 강마루. 표면 강화층으로 생활 스크래치에 강하고 열전도가 좋아 난방에 적합합니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0001.svg",
+    "summary": "곰팡이에 강한 욕실·주방용 실리콘",
+    "description": "타일과 도기 틈새 마감용 방수 실리콘. 습기가 많은 욕실·주방에서도 곰팡이가 잘 슬지 않습니다. 1박스(25개입) 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0001.svg",
     "variants": [
       {
-        "id": "gangmaru-0001-default",
+        "id": "stablecore-0001-default",
         "name": "기본 (1박스)",
         "price": 92000
       }
     ]
   },
   {
-    "id": "gangmaru-0002",
+    "id": "stablecore-0002",
     "name": "본드",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 105000,
-    "summary": "차분한 월넛 브라운 톤 강마루",
-    "description": "깊은 월넛 브라운 컬러의 강마루. 무게감 있는 우드 그레인으로 모던·클래식 인테리어에 두루 어울립니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0002.svg",
+    "summary": "초기 접착력이 높은 건축용 본드",
+    "description": "몰딩·판재 부착용 건축용 본드. 초기 접착력이 높아 별도 고정 없이 자리를 잡습니다. 1박스(20개입) 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0002.svg",
     "variants": [
       {
-        "id": "gangmaru-0002-default",
+        "id": "stablecore-0002-default",
         "name": "기본 (1박스)",
         "price": 105000
       }
     ]
   },
   {
-    "id": "gangmaru-0003",
+    "id": "stablecore-0003",
     "name": "실리콘본드422J",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 98000,
-    "summary": "모던한 그레이 애쉬 강마루",
-    "description": "차분한 그레이 애쉬 톤의 강마루. 톤 다운된 색감으로 넓고 정돈된 공간 연출에 좋습니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0003.svg",
+    "summary": "방수와 접착을 겸하는 다목적 실란트",
+    "description": "실리콘의 방수성과 본드의 접착력을 함께 갖춘 422J 다목적 실란트. 마감과 부착을 한 번에 처리합니다. 1박스(25개입) 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0003.svg",
     "variants": [
       {
-        "id": "gangmaru-0003-default",
+        "id": "stablecore-0003-default",
         "name": "기본 (1박스)",
         "price": 98000
       }
     ]
   },
   {
-    "id": "gangmaru-0004",
+    "id": "stablecore-0004",
     "name": "F30",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 112000,
-    "summary": "따뜻한 골드빛 티크 강마루",
-    "description": "따뜻한 티크 골드 컬러의 강마루. 은은한 광택과 선명한 결로 고급스러운 분위기를 냅니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0004.svg",
+    "summary": "몰딩 고정에 쓰는 30mm F형 타카핀",
+    "description": "길이 30mm의 F형 타카핀. 몰딩과 걸레받이 등 얇은 마감재 고정에 사용합니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0004.svg",
     "variants": [
       {
-        "id": "gangmaru-0004-default",
+        "id": "stablecore-0004-default",
         "name": "기본 (1박스)",
         "price": 112000
       }
     ]
   },
   {
-    "id": "gangmaru-0005",
+    "id": "stablecore-0005",
     "name": "F50",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 99000,
-    "summary": "밝고 화사한 화이트 워시 강마루",
-    "description": "밝은 화이트 워시 톤의 강마루. 공간을 넓고 환하게 보이게 하는 북유럽풍 컬러입니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0005.svg",
+    "summary": "두꺼운 목재까지 잡는 50mm F형 타카핀",
+    "description": "길이 50mm의 F형 타카핀. 두께가 있는 판재나 목재를 고정할 때 사용합니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0005.svg",
     "variants": [
       {
-        "id": "gangmaru-0005-default",
+        "id": "stablecore-0005-default",
         "name": "기본 (1박스)",
         "price": 99000
       }
     ]
   },
   {
-    "id": "gangmaru-0006",
+    "id": "stablecore-0006",
     "name": "ST32",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 118000,
-    "summary": "고급스러운 다크 웬지 강마루",
-    "description": "짙은 웬지 다크 컬러의 강마루. 강렬한 대비로 모던하고 시크한 인테리어에 어울립니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0006.svg",
+    "summary": "넓게 물리는 32mm ST형 타카핀",
+    "description": "길이 32mm의 ST형 타카핀. 넓은 머리로 물려 목재와 판재를 단단히 고정합니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0006.svg",
     "variants": [
       {
-        "id": "gangmaru-0006-default",
+        "id": "stablecore-0006-default",
         "name": "기본 (1박스)",
         "price": 118000
       }
     ]
   },
   {
-    "id": "gangmaru-0007",
+    "id": "stablecore-0007",
     "name": "ST38",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 95000,
-    "summary": "밝은 메이플 톤의 경쾌한 강마루",
-    "description": "부드러운 메이플 라이트 톤의 강마루. 밝고 균일한 결로 어떤 가구와도 잘 어울립니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0007.svg",
+    "summary": "각재 고정용 38mm ST형 타카핀",
+    "description": "길이 38mm의 ST형 타카핀. 벽면에 각재나 합판을 고정하는 하지 작업에 사용합니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0007.svg",
     "variants": [
       {
-        "id": "gangmaru-0007-default",
+        "id": "stablecore-0007-default",
         "name": "기본 (1박스)",
         "price": 95000
       }
     ]
   },
   {
-    "id": "gangmaru-0008",
+    "id": "stablecore-0008",
     "name": "DT64",
-    "category": "gangmaru",
+    "category": "stablecore",
     "price": 108000,
-    "summary": "자연스러운 히코리 결 강마루",
-    "description": "자연스러운 히코리 결의 강마루. 변화감 있는 우드 그레인으로 개성 있는 바닥을 완성합니다. 1박스(약 0.9평) 단위 판매입니다.",
-    "image": "/images/products/gangmaru/gangmaru-0008.svg",
+    "summary": "구조재까지 닿는 64mm DT형 타카핀",
+    "description": "길이 64mm의 DT형 타카핀. 길이가 길어 구조재나 두꺼운 목재 고정에 적합합니다. 1박스 단위 판매입니다.",
+    "image": "/images/products/stablecore/stablecore-0008.svg",
     "variants": [
       {
-        "id": "gangmaru-0008-default",
+        "id": "stablecore-0008-default",
         "name": "기본 (1박스)",
         "price": 108000
       }
     ]
   },
   {
-    "id": "jangpan-0001",
+    "id": "antipress-0001",
     "name": "우드패턴 베이지 장판 1.8T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 34000,
     "summary": "우드 무늬의 포근한 베이지 장판",
     "description": "우드 무늬 펫트 장판 1.8mm. 매끈한 표면으로 청소가 쉽고 쿠션감이 있어 발이 편합니다. 폭 1.8m 고정, 길이 단위로 판매합니다.",
-    "image": "/images/products/jangpan/jangpan-0001.svg",
+    "image": "/images/products/antipress/antipress-0001.svg",
     "variants": [
       {
-        "id": "jangpan-0001-1m",
+        "id": "antipress-0001-1m",
         "name": "폭 1.8m / 길이 1m",
         "price": 34000
       },
       {
-        "id": "jangpan-0001-10m",
+        "id": "antipress-0001-10m",
         "name": "폭 1.8m / 길이 10m",
         "price": 310000
       }
     ]
   },
   {
-    "id": "jangpan-0002",
+    "id": "antipress-0002",
     "name": "모던 그레이 장판 2.2T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 34000,
     "summary": "두께감 있는 모던 그레이 장판",
     "description": "무광 그레이 솔리드 톤 장판 2.2mm. 두께감 있는 쿠션층으로 층간소음 완화에 도움을 줍니다. 폭 1.8m 고정, 길이 단위로 판매합니다.",
-    "image": "/images/products/jangpan/jangpan-0002.svg",
+    "image": "/images/products/antipress/antipress-0002.svg",
     "variants": [
       {
-        "id": "jangpan-0002-1m",
+        "id": "antipress-0002-1m",
         "name": "폭 1.8m / 길이 1m",
         "price": 34000
       },
       {
-        "id": "jangpan-0002-10m",
+        "id": "antipress-0002-10m",
         "name": "폭 1.8m / 길이 10m",
         "price": 310000
       }
     ]
   },
   {
-    "id": "jangpan-0003",
+    "id": "antipress-0003",
     "name": "라이트 오크 장판 1.8T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 36000,
     "summary": "밝은 오크 톤의 라이트 장판",
     "description": "밝은 오크 우드 무늬 장판 1.8mm. 환한 색감으로 좁은 공간도 넓어 보이게 합니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
-    "image": "/images/products/jangpan/jangpan-0003.svg",
+    "image": "/images/products/antipress/antipress-0003.svg",
     "variants": [
       {
-        "id": "jangpan-0003-default",
+        "id": "antipress-0003-default",
         "name": "폭 1.8m / 1m",
         "price": 36000
       }
     ]
   },
   {
-    "id": "jangpan-0004",
+    "id": "antipress-0004",
     "name": "웜 그레이 장판 2.2T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 42000,
     "summary": "따뜻한 웜 그레이 솔리드 장판",
     "description": "따뜻한 웜 그레이 톤 장판 2.2mm. 어느 벽지와도 무난하게 어울리는 베이직 컬러입니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
-    "image": "/images/products/jangpan/jangpan-0004.svg",
+    "image": "/images/products/antipress/antipress-0004.svg",
     "variants": [
       {
-        "id": "jangpan-0004-default",
+        "id": "antipress-0004-default",
         "name": "폭 1.8m / 1m",
         "price": 42000
       }
     ]
   },
   {
-    "id": "jangpan-0005",
+    "id": "antipress-0005",
     "name": "헤링본 우드 장판 2.0T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 45000,
     "summary": "헤링본 우드 패턴 장판",
     "description": "헤링본 우드 무늬 장판 2.0mm. 시공 없이 헤링본 패턴 느낌을 낼 수 있어 인기입니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
-    "image": "/images/products/jangpan/jangpan-0005.svg",
+    "image": "/images/products/antipress/antipress-0005.svg",
     "variants": [
       {
-        "id": "jangpan-0005-default",
+        "id": "antipress-0005-default",
         "name": "폭 1.8m / 1m",
         "price": 45000
       }
     ]
   },
   {
-    "id": "jangpan-0006",
+    "id": "antipress-0006",
     "name": "아이보리 솔리드 장판 1.8T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 33000,
     "summary": "깔끔한 아이보리 솔리드 장판",
     "description": "은은한 아이보리 솔리드 장판 1.8mm. 깔끔한 무지 톤으로 상업 공간에도 두루 쓰입니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
-    "image": "/images/products/jangpan/jangpan-0006.svg",
+    "image": "/images/products/antipress/antipress-0006.svg",
     "variants": [
       {
-        "id": "jangpan-0006-default",
+        "id": "antipress-0006-default",
         "name": "폭 1.8m / 1m",
         "price": 33000
       }
     ]
   },
   {
-    "id": "jangpan-0007",
+    "id": "antipress-0007",
     "name": "다크 월넛 장판 2.2T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 44000,
     "summary": "차분한 다크 월넛 장판",
     "description": "짙은 월넛 우드 무늬 장판 2.2mm. 차분하고 고급스러운 분위기의 바닥을 연출합니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
-    "image": "/images/products/jangpan/jangpan-0007.svg",
+    "image": "/images/products/antipress/antipress-0007.svg",
     "variants": [
       {
-        "id": "jangpan-0007-default",
+        "id": "antipress-0007-default",
         "name": "폭 1.8m / 1m",
         "price": 44000
       }
     ]
   },
   {
-    "id": "jangpan-0008",
+    "id": "antipress-0008",
     "name": "콘크리트 그레이 장판 2.0T",
-    "category": "jangpan",
+    "category": "antipress",
     "price": 43000,
     "summary": "인더스트리얼 콘크리트 그레이 장판",
     "description": "콘크리트 질감의 그레이 장판 2.0mm. 인더스트리얼·모던 인테리어에 잘 어울립니다. 폭 1.8m, 1m 단위 재단 판매입니다.",
-    "image": "/images/products/jangpan/jangpan-0008.svg",
+    "image": "/images/products/antipress/antipress-0008.svg",
     "variants": [
       {
-        "id": "jangpan-0008-default",
+        "id": "antipress-0008-default",
         "name": "폭 1.8m / 1m",
         "price": 43000
       }
@@ -893,160 +893,160 @@
     ]
   },
   {
-    "id": "drawer-0001",
+    "id": "panel-0001",
     "name": "대서랍 (N1303400L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 180000,
     "summary": "넉넉한 수납의 대형 서랍",
     "description": "대형 서랍 유닛 N1303400L. 넉넉한 수납 공간으로 옷장/드레스룸 하부 수납에 적합합니다.",
-    "image": "/images/products/drawer/drawer-0001.png",
+    "image": "/images/products/panel/panel-0001.png",
     "variants": [
       {
-        "id": "drawer-0001-default",
+        "id": "panel-0001-default",
         "name": "기본",
         "price": 180000
       }
     ]
   },
   {
-    "id": "drawer-0002",
+    "id": "panel-0002",
     "name": "중서랍 (N1302500L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 150000,
     "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302500L. 폭 500 규격으로 다양한 수납장에 조합할 수 있습니다.",
-    "image": "/images/products/drawer/drawer-0002.png",
+    "image": "/images/products/panel/panel-0002.png",
     "variants": [
       {
-        "id": "drawer-0002-default",
+        "id": "panel-0002-default",
         "name": "기본",
         "price": 150000
       }
     ]
   },
   {
-    "id": "drawer-0003",
+    "id": "panel-0003",
     "name": "중서랍 (N1302450L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 140000,
     "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302450L. 폭 450 규격으로 좁은 공간에도 설치 가능합니다.",
-    "image": "/images/products/drawer/drawer-0003.png",
+    "image": "/images/products/panel/panel-0003.png",
     "variants": [
       {
-        "id": "drawer-0003-default",
+        "id": "panel-0003-default",
         "name": "기본",
         "price": 140000
       }
     ]
   },
   {
-    "id": "drawer-0004",
+    "id": "panel-0004",
     "name": "소서랍 (N1301450L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 110000,
     "summary": "소품 정리에 좋은 소형 서랍",
     "description": "소형 서랍 유닛 N1301450L. 소품/액세서리 수납에 적합한 컴팩트 사이즈입니다.",
-    "image": "/images/products/drawer/drawer-0004.png",
+    "image": "/images/products/panel/panel-0004.png",
     "variants": [
       {
-        "id": "drawer-0004-default",
+        "id": "panel-0004-default",
         "name": "기본",
         "price": 110000
       }
     ]
   },
   {
-    "id": "drawer-0005",
+    "id": "panel-0005",
     "name": "소서랍 (N1301400L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 105000,
     "summary": "소품 정리에 좋은 소형 서랍",
     "description": "소형 서랍 유닛 N1301400L. 폭 400 규격으로 자투리 공간 수납에 적합합니다.",
-    "image": "/images/products/drawer/drawer-0005.png",
+    "image": "/images/products/panel/panel-0005.png",
     "variants": [
       {
-        "id": "drawer-0005-default",
+        "id": "panel-0005-default",
         "name": "기본",
         "price": 105000
       }
     ]
   },
   {
-    "id": "drawer-0006",
+    "id": "panel-0006",
     "name": "중서랍 (N1302600L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 155000,
     "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302600L. 폭 600 규격으로 넉넉한 수납이 필요한 곳에 알맞습니다.",
-    "image": "/images/products/drawer/drawer-0006.png",
+    "image": "/images/products/panel/panel-0006.png",
     "variants": [
       {
-        "id": "drawer-0006-default",
+        "id": "panel-0006-default",
         "name": "기본",
         "price": 155000
       }
     ]
   },
   {
-    "id": "drawer-0007",
+    "id": "panel-0007",
     "name": "대서랍 (N1303500L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 190000,
     "summary": "넉넉한 수납의 대형 서랍",
     "description": "대형 서랍 유닛 N1303500L. 폭 500 규격으로 옷장·드레스룸 하부 수납에 좋습니다.",
-    "image": "/images/products/drawer/drawer-0007.png",
+    "image": "/images/products/panel/panel-0007.png",
     "variants": [
       {
-        "id": "drawer-0007-default",
+        "id": "panel-0007-default",
         "name": "기본",
         "price": 190000
       }
     ]
   },
   {
-    "id": "drawer-0008",
+    "id": "panel-0008",
     "name": "대서랍 (N1303600L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 205000,
     "summary": "넉넉한 수납의 대형 서랍",
     "description": "대형 서랍 유닛 N1303600L. 폭 600 규격의 최대 용량으로 부피가 큰 물건도 여유롭게 수납합니다.",
-    "image": "/images/products/drawer/drawer-0008.png",
+    "image": "/images/products/panel/panel-0008.png",
     "variants": [
       {
-        "id": "drawer-0008-default",
+        "id": "panel-0008-default",
         "name": "기본",
         "price": 205000
       }
     ]
   },
   {
-    "id": "drawer-0009",
+    "id": "panel-0009",
     "name": "중서랍 (N1302400L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 135000,
     "summary": "활용도 높은 중형 서랍",
     "description": "중형 서랍 유닛 N1302400L. 폭 400 규격으로 좁은 수납장에도 조합하기 좋습니다.",
-    "image": "/images/products/drawer/drawer-0009.png",
+    "image": "/images/products/panel/panel-0009.png",
     "variants": [
       {
-        "id": "drawer-0009-default",
+        "id": "panel-0009-default",
         "name": "기본",
         "price": 135000
       }
     ]
   },
   {
-    "id": "drawer-0010",
+    "id": "panel-0010",
     "name": "소서랍 (N1301350L)",
-    "category": "drawer",
+    "category": "panel",
     "price": 98000,
     "summary": "소품 정리에 좋은 소형 서랍",
     "description": "소형 서랍 유닛 N1301350L. 폭 350 컴팩트 규격으로 소품·액세서리 정리에 적합합니다.",
-    "image": "/images/products/drawer/drawer-0010.png",
+    "image": "/images/products/panel/panel-0010.png",
     "variants": [
       {
-        "id": "drawer-0010-default",
+        "id": "panel-0010-default",
         "name": "기본",
         "price": 98000
       }

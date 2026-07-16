@@ -1,46 +1,46 @@
 {
-  "faucet": [
-    "faucet-0001",
-    "faucet-0002",
-    "faucet-0003",
-    "faucet-0004",
-    "faucet-0005",
-    "faucet-0006",
-    "faucet-0007",
-    "faucet-0008",
-    "faucet-0009",
-    "faucet-0010",
-    "faucet-0011"
+  "bathmatch": [
+    "bathmatch-0001",
+    "bathmatch-0002",
+    "bathmatch-0003",
+    "bathmatch-0004",
+    "bathmatch-0005",
+    "bathmatch-0006",
+    "bathmatch-0007",
+    "bathmatch-0008",
+    "bathmatch-0009",
+    "bathmatch-0010",
+    "bathmatch-0011"
   ],
-  "flooring": [
-    "flooring-0001",
-    "flooring-0002",
-    "flooring-0003",
-    "flooring-0004",
-    "flooring-0005",
-    "flooring-0006",
-    "flooring-0007",
-    "flooring-0008"
+  "pressbevel": [
+    "pressbevel-0001",
+    "pressbevel-0002",
+    "pressbevel-0003",
+    "pressbevel-0004",
+    "pressbevel-0005",
+    "pressbevel-0006",
+    "pressbevel-0007",
+    "pressbevel-0008"
   ],
-  "gangmaru": [
-    "gangmaru-0001",
-    "gangmaru-0002",
-    "gangmaru-0003",
-    "gangmaru-0004",
-    "gangmaru-0005",
-    "gangmaru-0006",
-    "gangmaru-0007",
-    "gangmaru-0008"
+  "stablecore": [
+    "stablecore-0001",
+    "stablecore-0002",
+    "stablecore-0003",
+    "stablecore-0004",
+    "stablecore-0005",
+    "stablecore-0006",
+    "stablecore-0007",
+    "stablecore-0008"
   ],
-  "jangpan": [
-    "jangpan-0001",
-    "jangpan-0002",
-    "jangpan-0003",
-    "jangpan-0004",
-    "jangpan-0005",
-    "jangpan-0006",
-    "jangpan-0007",
-    "jangpan-0008"
+  "antipress": [
+    "antipress-0001",
+    "antipress-0002",
+    "antipress-0003",
+    "antipress-0004",
+    "antipress-0005",
+    "antipress-0006",
+    "antipress-0007",
+    "antipress-0008"
   ],
   "hardware": [
     "hardware-0001",
@@ -52,14 +52,14 @@
     "hardware-0007",
     "hardware-0008"
   ],
-  "drawer": [
-    "drawer-0001",
-    "drawer-0002",
-    "drawer-0003",
-    "drawer-0004",
-    "drawer-0005",
-    "drawer-0006",
-    "drawer-0007",
-    "drawer-0008"
+  "panel": [
+    "panel-0001",
+    "panel-0002",
+    "panel-0003",
+    "panel-0004",
+    "panel-0005",
+    "panel-0006",
+    "panel-0007",
+    "panel-0008"
   ]
 }
