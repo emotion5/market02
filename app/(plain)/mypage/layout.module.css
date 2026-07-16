@@ -6,7 +6,7 @@
 
 .title {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   margin-bottom: 24px;
 }
 
@@ -45,7 +45,7 @@
 }
 
 .active {
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   border-left: 3px solid var(--color-text);
   padding-left: 15px;
 }

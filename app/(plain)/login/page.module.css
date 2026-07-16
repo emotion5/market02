@@ -11,7 +11,7 @@
 
 .title {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   text-align: center;
   margin-bottom: 36px;
 }
@@ -30,7 +30,7 @@
 
 .label {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .input {
@@ -57,7 +57,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .submit:hover {

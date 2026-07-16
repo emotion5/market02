@@ -4,7 +4,7 @@
 
 .heading {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .subnote {
@@ -34,7 +34,7 @@
   width: 150px;
   flex-shrink: 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .input {
@@ -73,7 +73,7 @@
 .savedMsg {
   font-size: 13px;
   color: #0a7d33;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .submit {
@@ -82,7 +82,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .submit:hover {

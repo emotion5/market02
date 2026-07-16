@@ -6,6 +6,15 @@
   --color-text-muted: #8a8a8a;
   --color-border: #e5e5e5;
   --max-width: 1600px;
+  /* 화면 최상단 여백. 고정된 카테고리 알약과 격자 위 행(로고·아이콘)이 함께 쓴다 */
+  --top-gap: 16px;
+
+  /* 폰트 웨이트 척도. 개별 CSS 모듈은 숫자를 직접 쓰지 않고 이 셋만 참조한다 —
+     사이트 전체 굵기 인상은 여기 세 값으로 조절된다.
+     위계는 "대부분 평평하게, 대제목만 확실히 굵게"로 잡는다. */
+  --fw-body: 300; /* 본문·상품명·라벨·내비 — 기본값 */
+  --fw-emphasis: 400; /* 가격, 소제목, 버튼 */
+  --fw-display: 700; /* 페이지 대제목, 합계 금액 */
 }
 
 * {
@@ -28,11 +37,30 @@ body {
      견적서 패널, 카드 hover)만 각자 칠한다 — 헤더/내비가 리스트와 이어져 보인다. */
   background: var(--color-surface);
   color: var(--color-text);
+  /* Pretendard Variable은 app/fonts/pretendard.css에서 자체 호스팅한다(유니코드 범위별
+     분할 로드). 폰트가 뜨기 전/실패 시 시스템 폰트로 흘러내린다. */
   font-family:
-    -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard",
-    "Noto Sans KR", "Segoe UI", sans-serif;
+    "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+  font-weight: var(--fw-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 브라우저 기본 bold(700)는 위 척도 바깥이라 h1·strong·th만 혼자 두꺼워진다.
+   타입 셀렉터(0,0,1)라서 CSS 모듈의 클래스 규칙이 언제나 이 값을 이긴다 —
+   명시적으로 지정되지 않은 것들만 척도 안으로 끌어들이는 안전망이다. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+th {
+  font-weight: var(--fw-emphasis);
 }
 
 a {

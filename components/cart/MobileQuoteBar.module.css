@@ -21,7 +21,7 @@
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .barCount {
@@ -32,7 +32,7 @@
   background: var(--color-bg);
   color: var(--color-text);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -46,7 +46,7 @@
 }
 
 .barRight strong {
-  font-weight: 800;
+  font-weight: var(--fw-display);
 }
 
 /* 바텀시트 */
@@ -100,16 +100,12 @@
   color: var(--color-text);
 }
 
-/* 시트 안에서는 패널 외곽선을 지우고, 시트 높이에 맞춰 내부 목록만 스크롤 */
+/* 시트 높이에 맞춰 패널 내부 목록만 스크롤. 회색 면이 시트 가장자리에 닿지 않게 여백을 준다 */
 .sheetPanel {
   max-height: none !important;
   flex: 1;
   min-height: 0;
-}
-
-/* 바텀시트는 화면 폭을 꽉 채우므로 패널 외곽 그라데이션 링을 숨긴다 (내부 구분선은 유지) */
-.sheetPanel::before {
-  display: none !important;
+  padding: 0 16px 16px;
 }
 
 @keyframes slideUp {

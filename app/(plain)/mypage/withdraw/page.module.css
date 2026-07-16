@@ -4,7 +4,7 @@
 
 .heading {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .subnote {
@@ -21,7 +21,7 @@
 
 .warnTitle {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   margin-bottom: 12px;
 }
 
@@ -51,7 +51,7 @@
   border: 1px solid #c0392b;
   color: #c0392b;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .withdrawButton:hover:not(:disabled) {
@@ -72,7 +72,7 @@
 
 .doneTitle {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: var(--fw-display);
   margin-bottom: 12px;
 }
 
@@ -88,7 +88,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .homeButton:hover {

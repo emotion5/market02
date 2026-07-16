@@ -11,7 +11,7 @@
 
 .brand {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   letter-spacing: 0.08em;
 }
 

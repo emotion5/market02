@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CartProvider } from "@/hooks/useCart";
 import Footer from "@/components/layout/Footer";
+import "./fonts/pretendard.css";
 import "./globals.css";
 
 export const metadata: Metadata = {

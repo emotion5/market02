@@ -1,14 +1,11 @@
-/* 상품 목록형 페이지(전체 상품/카테고리) 공용 스타일 */
+/* 상품 목록형 페이지(전체 상품/카테고리) 공용 스타일.
+   폭은 셸의 25% : 75% 비율이 정하므로 여기선 여백만 잡는다 */
 .page {
-  max-width: var(--max-width);
-  margin: 0 auto;
   padding: 48px 24px 0;
 }
 
 /* 메인 페이지: 배너 + 카테고리별 추천 세트 */
 .home {
-  max-width: var(--max-width);
-  margin: 0 auto;
   padding: 24px 24px 0;
 }
 
@@ -19,7 +16,9 @@
 
 .heroTitle {
   font-size: clamp(27px, 6.2vw, 86px);
-  font-weight: 700;
+  /* 페이지에서 유일하게 굵은 요소. 나머지를 평평하게 두고 이것만 세우는 게
+     레퍼런스의 위계다 */
+  font-weight: var(--fw-display);
   letter-spacing: -0.04em;
   line-height: 0.9;
   color: var(--color-text);
@@ -27,7 +26,7 @@
 
 .title {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .count {

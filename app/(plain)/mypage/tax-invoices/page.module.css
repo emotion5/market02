@@ -4,7 +4,7 @@
 
 .heading {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .subnote {
@@ -55,7 +55,7 @@
 
 .table thead th {
   background: var(--color-surface);
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .right {
@@ -70,7 +70,7 @@
   display: inline-block;
   padding: 3px 10px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   border: 1px solid currentColor;
   border-radius: 2px;
 }

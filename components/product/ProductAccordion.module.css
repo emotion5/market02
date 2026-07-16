@@ -23,7 +23,7 @@
 
 .title {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 /* grid-template-rows 0fr↔1fr 트릭으로 높이 애니메이션 */

@@ -11,7 +11,7 @@
 
 .title {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   text-align: center;
   margin-bottom: 32px;
 }
@@ -55,7 +55,7 @@
 
 .choiceName {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .choiceDesc {
@@ -86,12 +86,12 @@
   background: var(--color-surface);
   text-align: center;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
   color: var(--color-text);
 }
 
 .approval strong {
-  font-weight: 800;
+  font-weight: var(--fw-display);
 }
 
 .form {
@@ -108,7 +108,7 @@
 
 .label {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .input {
@@ -153,7 +153,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .submit:hover {
@@ -186,7 +186,7 @@
 }
 
 .doneText strong {
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .homeLink {
@@ -198,7 +198,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .homeLink:hover {

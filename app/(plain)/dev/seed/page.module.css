@@ -10,14 +10,14 @@
   background: #c0392b;
   color: #fff;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   border-radius: 2px;
   margin-bottom: 12px;
 }
 
 .title {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   margin-bottom: 12px;
 }
 
@@ -57,7 +57,7 @@
 
 .counts dd {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: var(--fw-display);
 }
 
 .actions {
@@ -71,7 +71,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .seedButton:hover {
@@ -83,7 +83,7 @@
   height: 50px;
   border: 1px solid var(--color-border);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .resetButton:hover {
@@ -95,7 +95,7 @@
   padding: 12px 16px;
   background: var(--color-surface);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .links {
@@ -104,7 +104,7 @@
   gap: 16px;
   margin-top: 28px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .links a:hover {

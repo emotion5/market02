@@ -108,7 +108,7 @@
   background: none;
   text-align: center;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
   color: var(--color-text);
   font-family: inherit;
 }
@@ -147,7 +147,7 @@
 
 .selectedName {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .selectedRemove {
@@ -171,7 +171,7 @@
 
 .selectedPrice {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .total {
@@ -200,7 +200,7 @@
 
 .memberPrice {
   font-size: 22px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   color: #444444;
 }
 
@@ -209,7 +209,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .addButton:hover {
