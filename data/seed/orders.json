@@ -18,7 +18,6 @@
       {
         "productId": "bathmatch-0001",
         "variantId": "bathmatch-0001-default",
-        "productName": "매립 세면대 수전 (물호수+물조절)",
         "variantName": "기본",
         "price": 128000,
         "quantity": 2
@@ -26,7 +25,6 @@
       {
         "productId": "bathmatch-0002",
         "variantId": "bathmatch-0002-default",
-        "productName": "매립 샤워믹서 (단독)",
         "variantName": "기본",
         "price": 145000,
         "quantity": 1
@@ -52,7 +50,6 @@
       {
         "productId": "bathmatch-0003",
         "variantId": "bathmatch-0003-default",
-        "productName": "해바라기 샤워헤드 400",
         "variantName": "기본",
         "price": 98000,
         "quantity": 3
@@ -76,7 +73,6 @@
       {
         "productId": "bathmatch-0001",
         "variantId": "bathmatch-0001-default",
-        "productName": "매립 세면대 수전 (물호수+물조절)",
         "variantName": "기본",
         "price": 128000,
         "quantity": 1

@@ -564,7 +564,7 @@
   },
   {
     "id": "antipress-0001",
-    "name": "우드패턴 베이지 장판 1.8T",
+    "name": "장판 웜그레이",
     "category": "antipress",
     "price": 34000,
     "summary": "우드 무늬의 포근한 베이지 장판",
@@ -585,7 +585,7 @@
   },
   {
     "id": "antipress-0002",
-    "name": "모던 그레이 장판 2.2T",
+    "name": "장판 다크그레이",
     "category": "antipress",
     "price": 34000,
     "summary": "두께감 있는 모던 그레이 장판",
@@ -894,7 +894,7 @@
   },
   {
     "id": "panel-0001",
-    "name": "대서랍 (N1303400L)",
+    "name": "화이트레더 후면 블랙스톤",
     "category": "panel",
     "price": 180000,
     "summary": "넉넉한 수납의 대형 서랍",
@@ -910,7 +910,7 @@
   },
   {
     "id": "panel-0002",
-    "name": "중서랍 (N1302500L)",
+    "name": "라이트우드 후면 블랙스톤",
     "category": "panel",
     "price": 150000,
     "summary": "활용도 높은 중형 서랍",
@@ -926,7 +926,7 @@
   },
   {
     "id": "panel-0003",
-    "name": "중서랍 (N1302450L)",
+    "name": "다크우드 후면 블랙스톤",
     "category": "panel",
     "price": 140000,
     "summary": "활용도 높은 중형 서랍",
@@ -942,7 +942,7 @@
   },
   {
     "id": "panel-0004",
-    "name": "소서랍 (N1301450L)",
+    "name": "블랙스톤 후면 블랙스톤",
     "category": "panel",
     "price": 110000,
     "summary": "소품 정리에 좋은 소형 서랍",
@@ -958,7 +958,7 @@
   },
   {
     "id": "panel-0005",
-    "name": "소서랍 (N1301400L)",
+    "name": "디지털 패브릭",
     "category": "panel",
     "price": 105000,
     "summary": "소품 정리에 좋은 소형 서랍",
@@ -974,7 +974,7 @@
   },
   {
     "id": "panel-0006",
-    "name": "중서랍 (N1302600L)",
+    "name": "디지털 라이트우드",
     "category": "panel",
     "price": 155000,
     "summary": "활용도 높은 중형 서랍",
@@ -990,7 +990,7 @@
   },
   {
     "id": "panel-0007",
-    "name": "대서랍 (N1303500L)",
+    "name": "디지털 리얼우드",
     "category": "panel",
     "price": 190000,
     "summary": "넉넉한 수납의 대형 서랍",
@@ -1006,7 +1006,7 @@
   },
   {
     "id": "panel-0008",
-    "name": "대서랍 (N1303600L)",
+    "name": "디지털 다크우드",
     "category": "panel",
     "price": 205000,
     "summary": "넉넉한 수납의 대형 서랍",
