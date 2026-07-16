@@ -4,7 +4,7 @@
 
 .heading {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .subnote {
@@ -35,7 +35,7 @@
   padding: 12px 28px;
   background: var(--color-text);
   color: var(--color-bg);
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .emptyLink:hover {
@@ -43,6 +43,7 @@
 }
 
 .orderList {
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -63,7 +64,7 @@
 
 .orderNo {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .date {
@@ -75,7 +76,7 @@
 .badge {
   padding: 4px 12px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   border: 1px solid currentColor;
   border-radius: 2px;
 }
@@ -97,6 +98,7 @@
 }
 
 .items {
+  list-style: none;
   padding: 8px 20px;
 }
 
@@ -130,7 +132,7 @@
 
 .itemName {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .itemName:hover {
@@ -144,7 +146,7 @@
 
 .itemPrice {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   white-space: nowrap;
 }
 
@@ -164,7 +166,7 @@
 .total strong {
   margin-left: 6px;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: var(--fw-display);
   color: var(--color-text);
 }
 
@@ -176,7 +178,7 @@
   padding: 0 18px;
   border: 1px solid var(--color-text);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .trackButton:hover {
@@ -254,7 +256,7 @@
 }
 
 .current .stepLabel {
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .mockNote {

@@ -6,17 +6,24 @@ import type { CartItem } from "@/lib/types";
 import ordersSeed from "@/data/seed/orders.json";
 import addressesSeed from "@/data/seed/addresses.json";
 import profileSeed from "@/data/seed/profile.json";
+import products from "@/data/mock-products.json";
 import styles from "./page.module.css";
 
 // 시드 JSON의 주문 한 건 형태 (createdAt 대신 ageMinutes로 저장)
+// 이미지는 상품 데이터에서 productId로 끌어온다 — 시드에 경로를 복제해두면
+// 상품 이미지 파일이 바뀔 때 시드만 옛 경로에 남아 깨진다(실제로 그랬다).
 interface SeedOrder {
   orderNo: string;
   ageMinutes: number;
   orderer: { name: string; tel: string; address: string; memo?: string };
   depositor: string;
   taxInvoice: { requested: boolean; bizNo?: string; company?: string };
-  items: CartItem[];
+  items: Omit<CartItem, "image">[];
 }
+
+const PRODUCT_IMAGES = new Map(
+  (products as { id: string; image: string }[]).map((p) => [p.id, p.image]),
+);
 
 const KEYS = {
   cart: "market02-cart",
@@ -30,10 +37,14 @@ function buildOrders() {
   return (ordersSeed as SeedOrder[]).map((o) => {
     const total = o.items.reduce((s, i) => s + i.price * i.quantity, 0);
     const supply = Math.round(total / 1.1);
+    const items: CartItem[] = o.items.map((i) => ({
+      ...i,
+      image: PRODUCT_IMAGES.get(i.productId) ?? "",
+    }));
     return {
       orderNo: o.orderNo,
       createdAt: new Date(Date.now() - o.ageMinutes * 60000).toISOString(),
-      items: o.items,
+      items,
       total,
       supply,
       vat: total - supply,

@@ -1,5 +1,4 @@
 .nav {
-  /* 헤더는 함께 스크롤되어 사라지고, 이 알약만 화면 최상단에 남는다 */
   position: sticky;
   top: 0;
   z-index: 10;
@@ -7,6 +6,22 @@
   justify-content: center;
   /* 회색 콘텐츠 배경이 비치도록 배경 없음 */
   padding: 14px 16px;
+  /* 이 상자는 알약을 가운데 두기 위한 투명 영역일 뿐인데, 데스크톱에서 화면 전폭을
+     덮으므로(left:0/right:0) 그대로 두면 같은 높이 띠에 있는 로고·아이콘의 클릭을
+     가로챈다. 클릭은 알약(.bar)만 받고 빈 좌우는 통과시킨다. */
+  pointer-events: none;
+}
+
+/* 데스크톱: 격자 밖으로 빼서 오른쪽 열이 아니라 화면 전체 기준으로 가운데 정렬하고,
+   로고·아이콘과 같은 줄(높이 76px)에 항상 고정한다. 로고와 아이콘은 스크롤되어 사라지고
+   이 알약만 남아, 뒤로 지나가는 상품이 유리에 비친다. */
+@media (min-width: 1024px) {
+  .nav {
+    position: fixed;
+    top: var(--top-gap);
+    left: 0;
+    right: 0;
+  }
 }
 
 /* 반투명 유리 알약(pill) 바 — 뒤로 지나가는 콘텐츠가 흐릿하게 비친다.
@@ -14,6 +29,8 @@
    backdrop-filter가 뒷배경을 흐리게+진하게 굴절시킨다. */
 .bar {
   position: relative;
+  /* .nav에서 끈 클릭을 알약 안에서만 되살린다 (칩·화살표가 모두 이 안에 있다) */
+  pointer-events: auto;
   display: flex;
   align-items: center;
   max-width: 100%;
@@ -84,7 +101,7 @@
 
 .active {
   color: var(--color-text);
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 /* 영문↔한글 슬라이드 전환: 두 라벨을 같은 칸에 겹쳐두고 세로 이동 */

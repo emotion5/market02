@@ -21,7 +21,6 @@
         "productName": "매립 세면대 수전 (물호수+물조절)",
         "variantName": "기본",
         "price": 128000,
-        "image": "/images/products/faucet/faucet-0001.jpg",
         "quantity": 2
       },
       {
@@ -30,7 +29,6 @@
         "productName": "매립 샤워믹서 (단독)",
         "variantName": "기본",
         "price": 145000,
-        "image": "/images/products/faucet/faucet-0002.png",
         "quantity": 1
       }
     ]
@@ -57,7 +55,6 @@
         "productName": "해바라기 샤워헤드 400",
         "variantName": "기본",
         "price": 98000,
-        "image": "/images/products/faucet/faucet-0003.jpg",
         "quantity": 3
       }
     ]
@@ -82,7 +79,6 @@
         "productName": "매립 세면대 수전 (물호수+물조절)",
         "variantName": "기본",
         "price": 128000,
-        "image": "/images/products/faucet/faucet-0001.jpg",
         "quantity": 1
       }
     ]
