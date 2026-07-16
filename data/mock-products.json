@@ -1,7 +1,7 @@
 [
   {
     "id": "faucet-0001",
-    "name": "매립 세면대 수전 (물호수+물조절)",
+    "name": "변기(스마트)",
     "category": "faucet",
     "price": 128000,
     "summary": "벽 매립으로 깔끔하게 마감되는 세면 수전",
@@ -24,7 +24,7 @@
   },
   {
     "id": "faucet-0002",
-    "name": "매립 샤워믹서 (단독)",
+    "name": "변기(일반형)",
     "category": "faucet",
     "price": 145000,
     "summary": "냉온수 조절이 부드러운 매립형 샤워 밸브",
@@ -40,7 +40,7 @@
   },
   {
     "id": "faucet-0003",
-    "name": "해바라기 샤워헤드 400",
+    "name": "세면대",
     "category": "faucet",
     "price": 98000,
     "summary": "호텔 욕실 느낌의 대형 레인 샤워헤드",
@@ -56,7 +56,7 @@
   },
   {
     "id": "faucet-0004",
-    "name": "클래식 풀다운 주방 수전",
+    "name": "망치트랩",
     "category": "faucet",
     "price": 132000,
     "summary": "헤드를 당겨 쓰는 편리한 풀다운 주방 수전",
@@ -77,7 +77,7 @@
   },
   {
     "id": "faucet-0005",
-    "name": "모던 하이아크 풀다운 수전",
+    "name": "세면대수전",
     "category": "faucet",
     "price": 168000,
     "summary": "큰 조리도구도 넉넉한 하이아크 주방 수전",
@@ -93,7 +93,7 @@
   },
   {
     "id": "faucet-0006",
-    "name": "구스넥 풀다운 주방 수전",
+    "name": "믹서",
     "category": "faucet",
     "price": 149000,
     "summary": "군더더기 없는 구스넥 라인의 주방 수전",
@@ -109,7 +109,7 @@
   },
   {
     "id": "faucet-0007",
-    "name": "클래식 풀다운 세면 수전",
+    "name": "샤워기",
     "category": "faucet",
     "price": 118000,
     "summary": "어디에나 어울리는 우아한 클래식 세면 수전",
@@ -125,7 +125,7 @@
   },
   {
     "id": "faucet-0008",
-    "name": "구스넥 원홀 세면 수전",
+    "name": "해바라기 헤드",
     "category": "faucet",
     "price": 112000,
     "summary": "얇은 레버가 돋보이는 크롬 구스넥 수전",
@@ -189,7 +189,7 @@
   },
   {
     "id": "flooring-0001",
-    "name": "내추럴 우드 마루 (90폭)",
+    "name": "라이트우드",
     "category": "flooring",
     "price": 96000,
     "summary": "밝은 우드 톤의 클릭 시공 마루 (90폭)",
@@ -212,7 +212,7 @@
   },
   {
     "id": "flooring-0002",
-    "name": "내추럴 우드 마루 (120폭)",
+    "name": "리얼우드",
     "category": "flooring",
     "price": 108000,
     "summary": "밝은 우드 톤의 클릭 시공 마루 (120폭)",
@@ -228,7 +228,7 @@
   },
   {
     "id": "flooring-0003",
-    "name": "내추럴 우드 마루 (150폭)",
+    "name": "다크우드",
     "category": "flooring",
     "price": 120000,
     "summary": "밝은 우드 톤의 클릭 시공 마루 (150폭)",
@@ -244,7 +244,7 @@
   },
   {
     "id": "flooring-0004",
-    "name": "오크 강마루 (90폭)",
+    "name": "스톤",
     "category": "flooring",
     "price": 89000,
     "summary": "은은한 오크 결의 견고한 강마루 (90폭)",
@@ -436,7 +436,7 @@
   },
   {
     "id": "gangmaru-0001",
-    "name": "오크 내추럴 강마루",
+    "name": "실리콘",
     "category": "gangmaru",
     "price": 92000,
     "summary": "은은한 오크 결의 내추럴 강마루",
@@ -452,7 +452,7 @@
   },
   {
     "id": "gangmaru-0002",
-    "name": "월넛 브라운 강마루",
+    "name": "본드",
     "category": "gangmaru",
     "price": 105000,
     "summary": "차분한 월넛 브라운 톤 강마루",
@@ -468,7 +468,7 @@
   },
   {
     "id": "gangmaru-0003",
-    "name": "그레이 애쉬 강마루",
+    "name": "실리콘본드422J",
     "category": "gangmaru",
     "price": 98000,
     "summary": "모던한 그레이 애쉬 강마루",
@@ -484,7 +484,7 @@
   },
   {
     "id": "gangmaru-0004",
-    "name": "티크 골드 강마루",
+    "name": "F30",
     "category": "gangmaru",
     "price": 112000,
     "summary": "따뜻한 골드빛 티크 강마루",
@@ -500,7 +500,7 @@
   },
   {
     "id": "gangmaru-0005",
-    "name": "화이트 워시 강마루",
+    "name": "F50",
     "category": "gangmaru",
     "price": 99000,
     "summary": "밝고 화사한 화이트 워시 강마루",
@@ -516,7 +516,7 @@
   },
   {
     "id": "gangmaru-0006",
-    "name": "웬지 다크 강마루",
+    "name": "ST32",
     "category": "gangmaru",
     "price": 118000,
     "summary": "고급스러운 다크 웬지 강마루",
@@ -532,7 +532,7 @@
   },
   {
     "id": "gangmaru-0007",
-    "name": "메이플 라이트 강마루",
+    "name": "ST38",
     "category": "gangmaru",
     "price": 95000,
     "summary": "밝은 메이플 톤의 경쾌한 강마루",
@@ -548,7 +548,7 @@
   },
   {
     "id": "gangmaru-0008",
-    "name": "히코리 내추럴 강마루",
+    "name": "DT64",
     "category": "gangmaru",
     "price": 108000,
     "summary": "자연스러운 히코리 결 강마루",
@@ -702,7 +702,7 @@
   },
   {
     "id": "hardware-0001",
-    "name": "바지걸이봉 (기본 9개 탑재)",
+    "name": "서랍조명",
     "category": "hardware",
     "price": 45000,
     "summary": "9개 걸이 기본 탑재 바지걸이봉",
@@ -718,7 +718,7 @@
   },
   {
     "id": "hardware-0002",
-    "name": "사각형태 T013",
+    "name": "휴지걸이",
     "category": "hardware",
     "price": 76000,
     "summary": "심플한 사각 형태 하드웨어 T013",
@@ -734,7 +734,7 @@
   },
   {
     "id": "hardware-0003",
-    "name": "브라스 페이퍼타월 홀더 선반",
+    "name": "옷봉",
     "category": "hardware",
     "price": 38000,
     "summary": "선반 일체형 황동 키친타월 홀더",
@@ -750,7 +750,7 @@
   },
   {
     "id": "hardware-0004",
-    "name": "무프레임 벽거울",
+    "name": "바지걸이",
     "category": "hardware",
     "price": 52000,
     "summary": "군더더기 없는 무프레임 벽거울",
@@ -766,7 +766,7 @@
   },
   {
     "id": "hardware-0005",
-    "name": "스테인리스 수건걸이 (싱글바)",
+    "name": "보석함",
     "category": "hardware",
     "price": 21000,
     "summary": "녹슬지 않는 싱글바 수건걸이",
@@ -782,7 +782,7 @@
   },
   {
     "id": "hardware-0006",
-    "name": "2단 선반형 수건걸이",
+    "name": "다보",
     "category": "hardware",
     "price": 34000,
     "summary": "선반과 걸이바를 겸한 2단 수건걸이",
@@ -798,7 +798,7 @@
   },
   {
     "id": "hardware-0007",
-    "name": "바지걸이봉 (슬림형 12걸이)",
+    "name": "악실로",
     "category": "hardware",
     "price": 49000,
     "summary": "12개 걸이 슬림형 바지걸이봉",
@@ -814,7 +814,7 @@
   },
   {
     "id": "hardware-0008",
-    "name": "사각 매립 수납 유닛 T016",
+    "name": "악실로 조절기계",
     "category": "hardware",
     "price": 82000,
     "summary": "대형 사이즈 사각 매립 수납 유닛",
