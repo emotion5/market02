@@ -65,6 +65,14 @@
   color: var(--color-text-muted);
 }
 
+/* 아이콘 링크와 나란히 놓이는 버튼(로그아웃)의 기본 버튼 스타일 리셋 */
+.navButton {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 .businessLink {
   display: inline-flex;
   align-items: center;

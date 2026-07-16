@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { CartItem } from "@/lib/types";
+import { useAuth } from "@/hooks/useAuth";
 import { makeQuoteNumber, quoteTotals, type SavedQuote } from "@/lib/quotes";
 import ordersSeed from "@/data/seed/orders.json";
 import addressesSeed from "@/data/seed/addresses.json";
@@ -58,6 +59,7 @@ const KEYS = {
   addresses: "market02-addresses",
   profile: "market02-profile",
   quotes: "market02-quotes",
+  auth: "market02-auth",
 };
 
 // ageMinutes → 실제 주문 시각으로 변환하고 total/supply/vat 계산
@@ -97,6 +99,7 @@ function buildQuotes(): SavedQuote[] {
 }
 
 export default function DevSeedPage() {
+  const { login, logout } = useAuth();
   const [message, setMessage] = useState("");
   const [counts, setCounts] = useState<Record<string, number>>({});
 
@@ -130,12 +133,16 @@ export default function DevSeedPage() {
     localStorage.setItem(KEYS.quotes, JSON.stringify(buildQuotes()));
     localStorage.setItem(KEYS.addresses, JSON.stringify(addressesSeed));
     localStorage.setItem(KEYS.profile, JSON.stringify(profileSeed));
+    // 회원정보를 심으면 그 사용자로 로그인시킨다 — login()이 auth를 저장하고
+    // 헤더(상주 AuthProvider)도 즉시 로그아웃 버튼으로 토글된다.
+    login(profileSeed.email);
     refresh();
     setMessage("✅ 목업 데이터를 주입했습니다. 마이페이지에서 확인하세요.");
   };
 
   const reset = () => {
     Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
+    logout(); // 상주 AuthProvider의 로그인 상태까지 해제
     refresh();
     setMessage("🧹 모든 목업 데이터를 초기화했습니다.");
   };

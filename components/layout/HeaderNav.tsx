@@ -3,14 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, FileText, User, CircleUserRound } from "lucide-react";
+import { Search, FileText, User, CircleUserRound, LogOut } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import styles from "./HeaderNav.module.css";
 
 // 검색 + 유틸 아이콘(견적서·마이페이지·로그인·회원가입) 묶음.
 // 셸 페이지에서는 콘텐츠 우측 상단, 그 외 페이지에서는 헤더 바 오른쪽에 놓인다.
 export default function HeaderNav() {
   const { totalCount } = useCart();
+  const { isLoggedIn, logout } = useAuth();
   const router = useRouter();
   const [query, setQuery] = useState("");
   // 모바일: 돋보기 아이콘 탭 시 검색창을 펼친다 (데스크톱은 항상 펼침)
@@ -100,12 +102,34 @@ export default function HeaderNav() {
       >
         <CircleUserRound size={20} strokeWidth={1.25} />
       </Link>
-      <Link href="/login" className={styles.navLink} aria-label="로그인" title="로그인">
-        <User size={20} strokeWidth={1.25} />
-      </Link>
-      <Link href="/signup" className={styles.businessLink}>
-        회원가입
-      </Link>
+      {isLoggedIn ? (
+        <button
+          type="button"
+          onClick={() => {
+            logout();
+            router.push("/");
+          }}
+          className={`${styles.navLink} ${styles.navButton}`}
+          aria-label="로그아웃"
+          title="로그아웃"
+        >
+          <LogOut size={20} strokeWidth={1.25} />
+        </button>
+      ) : (
+        <>
+          <Link
+            href="/login"
+            className={styles.navLink}
+            aria-label="로그인"
+            title="로그인"
+          >
+            <User size={20} strokeWidth={1.25} />
+          </Link>
+          <Link href="/signup" className={styles.businessLink}>
+            회원가입
+          </Link>
+        </>
+      )}
     </nav>
   );
 }
