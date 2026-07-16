@@ -1,12 +1,14 @@
 import type { Category } from "./types";
 
+// 배열 순서 = 상단 내비 칩 순서 = 홈 카테고리 섹션 순서.
+// slug는 URL·상품 데이터·이미지 폴더를 잇는 내부 키라 표시 이름과 별개로 유지한다.
 export const CATEGORIES: Category[] = [
-  { slug: "faucet", name: "수전", en: "Faucet" },
-  { slug: "flooring", name: "바닥재", en: "Flooring" },
-  { slug: "gangmaru", name: "강마루", en: "Hardwood" },
-  { slug: "jangpan", name: "장판", en: "Vinyl" },
   { slug: "hardware", name: "하드웨어", en: "Hardware" },
-  { slug: "drawer", name: "서랍", en: "Drawer" },
+  { slug: "drawer", name: "가구재", en: "Panel" },
+  { slug: "flooring", name: "바닥재", en: "PressBevel" },
+  { slug: "jangpan", name: "장판", en: "AntiPress" },
+  { slug: "faucet", name: "위생", en: "BathMatch" },
+  { slug: "gangmaru", name: "건자재", en: "StableCore" },
 ];
 
 export function getCategory(slug: string): Category | undefined {

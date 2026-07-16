@@ -1,15 +1,15 @@
 .grid {
   display: grid;
-  /* 모니터 폭에 따라 열 수 자동 증가. 기본 260px 기준(--min-col로 재정의 가능) */
-  grid-template-columns: repeat(auto-fill, minmax(var(--min-col, 260px), 1fr));
+  /* 항상 4열. 카드 폭은 셸의 25%:75% 비율을 따라 같이 늘고 줄어든다 */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   /* 열 간격은 hover 패널(카드당 10px 확장)이 서로 닿지 않는 20px 이상을 유지 */
   gap: 26px 20px;
 }
 
-/* 모바일은 좁은 화면에서도 2열 유지 */
-@media (max-width: 640px) {
+/* 태블릿·모바일(견적서 열이 숨겨지는 구간과 동일)은 4열이 너무 좁으므로 2열 */
+@media (max-width: 1023px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
