@@ -25,11 +25,6 @@ export default function ProductListItem({ product }: { product: Product }) {
               ))}
             </ul>
           )}
-
-          <p className={styles.shipping}>
-            <span className={styles.badge}>오늘출발</span>
-            평일 14시 마감
-          </p>
         </div>
 
         <p className={styles.price}>{formatPrice(product.price)}</p>

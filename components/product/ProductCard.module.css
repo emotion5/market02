@@ -37,8 +37,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 27px;
-  height: 27px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--color-bg);
   color: var(--color-text);
@@ -68,7 +68,7 @@
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -81,10 +81,12 @@
   visibility: visible;
 }
 
-.quickAddDone {
-  background: var(--color-surface);
-  color: var(--color-text);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+/* 견적서에 담긴 상태 — 빨간 원 + 흰 하트. 견적서에서 빼기 전까지 유지된다 */
+.quickAddDone,
+.quickAddDone:hover {
+  background: #ee3124;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(238, 49, 36, 0.35);
 }
 
 /* 카드 전체를 덮는 클릭 영역(스트레치드 링크). 빠른 추가 버튼(z-index 2)은 그 위. */
@@ -102,7 +104,7 @@
 .name {
   margin-top: 12px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
   color: var(--color-text);
   line-height: 1.4;
 }
@@ -117,7 +119,7 @@
 .price {
   margin-top: 6px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
 }
 
 .colors {
@@ -133,20 +135,4 @@
   height: 16px;
   border-radius: 50%;
   border: 1px solid var(--color-border);
-}
-
-.shipping {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
-.badge {
-  padding: 1px 6px;
-  border: 1px solid var(--color-border);
-  font-size: 11px;
-  color: var(--color-text);
 }

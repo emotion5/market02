@@ -12,15 +12,18 @@ export default function FeaturedSection({ section }: { section: Section }) {
   return (
     <section id={`category-${category.slug}`} className={styles.section}>
       <aside className={styles.aside}>
-        <h2 className={styles.title}>{category.name}</h2>
+        <h2 className={styles.title}>
+          {category.name}
+          {/* 영문명은 제목의 일부다 — 읽는 순서(한글 → 영문)를 유지하려 h2 안에 둔다 */}
+          <span className={styles.titleEn}>{category.en}</span>
+        </h2>
         <Link href={`/category/${category.slug}`} className={styles.more}>
           전체보기
           <ChevronRight size={16} strokeWidth={1.75} />
         </Link>
       </aside>
       <div className={styles.products}>
-        {/* 좁은 홈 그리드 영역에서도 4열이 들어가도록 최소 카드 폭을 낮춤 */}
-        <ProductGrid products={products} minColWidth={200} />
+        <ProductGrid products={products} />
       </div>
     </section>
   );

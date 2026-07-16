@@ -25,7 +25,7 @@
 
 .name {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: var(--fw-body);
 }
 
 .link:hover .name {
@@ -57,25 +57,9 @@
   border: 1px solid var(--color-border);
 }
 
-.shipping {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
-.badge {
-  padding: 1px 6px;
-  border: 1px solid var(--color-border);
-  font-size: 11px;
-  color: var(--color-text);
-}
-
 .price {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   flex-shrink: 0;
   white-space: nowrap;
 }

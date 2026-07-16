@@ -14,8 +14,18 @@
 
 .title {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: var(--fw-emphasis);
   line-height: 1.25;
+}
+
+/* 한글 아래 영문 보조 표기. 굵기·크기·색을 모두 낮춰 한글이 주(主)로 남게 한다 */
+.titleEn {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: var(--fw-body);
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
 }
 
 .more {
