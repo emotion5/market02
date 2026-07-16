@@ -1,104 +1,65 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Printer, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Printer, FileCheck } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
-import { SUPPLIER, QUOTE_VALID_DAYS as VALID_DAYS } from "@/lib/constants";
+import QuoteSheet from "@/components/quote/QuoteSheet";
+import {
+  makeQuoteNumber,
+  quoteTotals,
+  saveQuote,
+  type QuoteCustomer,
+} from "@/lib/quotes";
 import styles from "./page.module.css";
 
-// 숫자를 한글 금액 표기로 변환 (예: 128000 → "일십이만팔천")
-function numberToKorean(num: number): string {
-  if (num === 0) return "영";
-  const digits = ["", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"];
-  const small = ["", "십", "백", "천"];
-  const big = ["", "만", "억", "조"];
-  let result = "";
-  let bigIdx = 0;
-  let n = num;
-  while (n > 0) {
-    const chunk = n % 10000;
-    if (chunk > 0) {
-      let chunkStr = "";
-      let c = chunk;
-      let smallIdx = 0;
-      while (c > 0) {
-        const d = c % 10;
-        if (d > 0) chunkStr = digits[d] + small[smallIdx] + chunkStr;
-        c = Math.floor(c / 10);
-        smallIdx++;
-      }
-      result = chunkStr + big[bigIdx] + result;
-    }
-    n = Math.floor(n / 10000);
-    bigIdx++;
-  }
-  return result;
-}
-
-function formatDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}. ${m}. ${day}`;
-}
-
+// 작성 중인 견적서 = 담아둔 상품(장바구니). 화면에 보이는 견적번호·발행일은
+// 아직 확정되지 않은 미리보기이며, "견적서 발행"을 눌러야 그 시점 값으로 굳어
+// 저장된다 (그 뒤로는 /quotes/[number]에서 그대로 다시 열린다).
 export default function QuotePage() {
+  const router = useRouter();
   const { items, totalPrice, updateQuantity, removeItem } = useCart();
 
-  // 상호/담당자/연락처 등 공급받는 자 정보 (입력)
-  const [company, setCompany] = useState("");
-  const [contactName, setContactName] = useState("");
-  const [contactTel, setContactTel] = useState("");
+  const [customer, setCustomer] = useState<QuoteCustomer>({
+    company: "",
+    contactName: "",
+    contactTel: "",
+  });
+  const [error, setError] = useState("");
 
-  // 발행일·견적번호는 하이드레이션 불일치를 피하려 mount 이후 생성
-  const [issued, setIssued] = useState<{ date: Date; number: string } | null>(
+  // 발행일·견적번호 미리보기는 하이드레이션 불일치를 피하려 mount 이후 생성
+  const [preview, setPreview] = useState<{ date: Date; number: string } | null>(
     null,
   );
 
   useEffect(() => {
     const now = new Date();
-    const number = `Q-${now.getFullYear()}${String(now.getMonth() + 1).padStart(
-      2,
-      "0",
-    )}${String(now.getDate()).padStart(2, "0")}-${String(
-      now.getHours(),
-    ).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIssued({ date: now, number });
+    setPreview({ date: now, number: makeQuoteNumber(now) });
   }, []);
 
-  // A4 용지를 재배치(reflow)하지 않고 화면 폭에 맞게 통째로 축소한다.
-  // (PDF 뷰어의 "페이지 폭 맞춤"과 동일 — 데스크톱/모바일이 같은 모양)
-  const A4_WIDTH = 794; // 210mm @ 96dpi
-  const fitRef = useRef<HTMLDivElement>(null);
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
-  const [fitHeight, setFitHeight] = useState<number | undefined>(undefined);
-
-  useEffect(() => {
-    const fit = fitRef.current;
-    const sheet = sheetRef.current;
-    if (!fit || !sheet) return;
-    const recompute = () => {
-      const s = Math.min(1, fit.clientWidth / A4_WIDTH);
-      setScale(s);
-      setFitHeight(sheet.offsetHeight * s);
-    };
-    recompute();
-    const ro = new ResizeObserver(recompute);
-    ro.observe(fit);
-    ro.observe(sheet);
-    return () => ro.disconnect();
-  }, [items, company, contactName, contactTel, issued]);
-
-  const supply = Math.round(totalPrice / 1.1); // 공급가액
-  const vat = totalPrice - supply; // 부가세 (10%)
-
-  const validUntil = issued
-    ? new Date(issued.date.getTime() + VALID_DAYS * 86400000)
-    : null;
+  const publish = () => {
+    if (!customer.company.trim()) {
+      setError("공급받는 자의 상호를 입력해주세요.");
+      return;
+    }
+    // 미리보기 시각이 아니라 '발행을 누른 지금'으로 번호와 날짜를 굳힌다
+    const now = new Date();
+    const number = makeQuoteNumber(now);
+    const { total, supply, vat } = quoteTotals(items);
+    saveQuote({
+      number,
+      issuedAt: now.toISOString(),
+      items,
+      customer,
+      total,
+      supply,
+      vat,
+    });
+    router.push(`/quotes/${number}`);
+  };
 
   if (items.length === 0) {
     return (
@@ -128,204 +89,41 @@ export default function QuotePage() {
         </button>
       </div>
 
-      {/* A4 종이 견적서 (화면 폭에 맞춰 통째로 축소) */}
-      <div ref={fitRef} className={styles.sheetFit} style={{ height: fitHeight }}>
-        <div
-          ref={sheetRef}
-          className={styles.sheet}
-          style={{ transform: `scale(${scale})` }}
-        >
-        <h1 className={styles.docTitle}>견 적 서</h1>
+      <QuoteSheet
+        number={preview?.number ?? null}
+        issuedAt={preview?.date ?? null}
+        items={items}
+        customer={customer}
+        editable
+        onCustomerChange={(c) => {
+          setCustomer(c);
+          if (error) setError("");
+        }}
+        onQuantityChange={updateQuantity}
+        onRemove={removeItem}
+      />
 
-        <div className={styles.metaRow}>
-          <dl className={styles.meta}>
-            <div>
-              <dt>견적번호</dt>
-              <dd>{issued?.number ?? "—"}</dd>
-            </div>
-            <div>
-              <dt>견적일자</dt>
-              <dd>{issued ? formatDate(issued.date) : "—"}</dd>
-            </div>
-            <div>
-              <dt>유효기간</dt>
-              <dd>{validUntil ? formatDate(validUntil) : "—"}</dd>
-            </div>
-          </dl>
-        </div>
-
-        {/* 공급받는 자 / 공급자 */}
-        <div className={styles.parties}>
-          <section className={styles.party}>
-            <h2 className={styles.partyTitle}>공급받는 자</h2>
-            <div className={styles.field}>
-              <label>상호</label>
-              <input
-                className={styles.input}
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                placeholder="회사명을 입력하세요"
-              />
-            </div>
-            <div className={styles.field}>
-              <label>담당자</label>
-              <input
-                className={styles.input}
-                value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
-                placeholder="담당자명"
-              />
-            </div>
-            <div className={styles.field}>
-              <label>연락처</label>
-              <input
-                className={styles.input}
-                value={contactTel}
-                onChange={(e) => setContactTel(e.target.value)}
-                placeholder="연락처"
-              />
-            </div>
-          </section>
-
-          <section className={styles.party}>
-            <h2 className={styles.partyTitle}>공급자</h2>
-            <div className={styles.field}>
-              <label>상호</label>
-              <span className={styles.value}>{SUPPLIER.name}</span>
-            </div>
-            <div className={styles.field}>
-              <label>대표자</label>
-              <span className={styles.value}>{SUPPLIER.owner}</span>
-            </div>
-            <div className={styles.field}>
-              <label>사업자번호</label>
-              <span className={styles.value}>{SUPPLIER.bizNo}</span>
-            </div>
-            <div className={styles.field}>
-              <label>주소</label>
-              <span className={styles.value}>{SUPPLIER.address}</span>
-            </div>
-            <div className={styles.field}>
-              <label>연락처</label>
-              <span className={styles.value}>{SUPPLIER.tel}</span>
-            </div>
-            <span className={styles.stamp} aria-hidden>
-              인
-            </span>
-          </section>
-        </div>
-
-        {/* 합계 금액 (한글 표기) */}
-        <p className={styles.amountLine}>
-          합계금액 (부가세 포함)
-          <strong>
-            일금 {numberToKorean(totalPrice)}원정 (₩
-            {totalPrice.toLocaleString("ko-KR")})
-          </strong>
-        </p>
-
-        {/* 품목 표 */}
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th className={styles.colNo}>No</th>
-              <th className={styles.colName}>품목</th>
-              <th className={styles.colSpec}>규격</th>
-              <th className={styles.colQty}>수량</th>
-              <th className={styles.colPrice}>단가</th>
-              <th className={styles.colAmount}>금액</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, i) => (
-              <tr key={`${item.productId}-${item.variantId}`}>
-                <td className={styles.colNo}>{i + 1}</td>
-                <td className={styles.colName}>
-                  {item.productName}
-                  {/* 화면 전용 삭제 버튼 (인쇄 시 숨김) */}
-                  <button
-                    type="button"
-                    className={styles.removeItem}
-                    onClick={() => removeItem(item.productId, item.variantId)}
-                    aria-label={`${item.productName} 삭제`}
-                  >
-                    <X size={14} strokeWidth={2} />
-                  </button>
-                </td>
-                <td className={styles.colSpec}>{item.variantName}</td>
-                <td className={styles.colQty}>
-                  {/* 화면: 수량 조절 / 인쇄: 숫자만 */}
-                  <span className={styles.qtyEdit}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        updateQuantity(
-                          item.productId,
-                          item.variantId,
-                          item.quantity - 1,
-                        )
-                      }
-                      aria-label="수량 줄이기"
-                    >
-                      −
-                    </button>
-                    <span className={styles.qtyValue}>{item.quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        updateQuantity(
-                          item.productId,
-                          item.variantId,
-                          item.quantity + 1,
-                        )
-                      }
-                      aria-label="수량 늘리기"
-                    >
-                      +
-                    </button>
-                  </span>
-                  <span className={styles.qtyPrint}>{item.quantity}</span>
-                </td>
-                <td className={styles.colPrice}>{formatPrice(item.price)}</td>
-                <td className={styles.colAmount}>
-                  {formatPrice(item.price * item.quantity)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={5}>공급가액</td>
-              <td className={styles.colAmount}>{formatPrice(supply)}</td>
-            </tr>
-            <tr>
-              <td colSpan={5}>부가세 (10%)</td>
-              <td className={styles.colAmount}>{formatPrice(vat)}</td>
-            </tr>
-            <tr className={styles.grandTotal}>
-              <td colSpan={5}>합계금액</td>
-              <td className={styles.colAmount}>{formatPrice(totalPrice)}</td>
-            </tr>
-          </tfoot>
-        </table>
-
-        <p className={styles.note}>
-          ※ 상기 단가 및 금액은 부가가치세가 포함된 금액입니다.
-          <br />※ 본 견적서의 유효기간은 발행일로부터 {VALID_DAYS}일입니다.
-        </p>
-        </div>
-      </div>
-
-      {/* 화면 전용 하단 주문 바 (인쇄 시 숨김) */}
+      {/* 화면 전용 하단 바 (인쇄 시 숨김) */}
       <div className={styles.footerBar}>
+        {error && <p className={styles.error}>{error}</p>}
         <div className={styles.footerTotal}>
           <span>결제 예정 금액</span>
           <strong>{formatPrice(totalPrice)}</strong>
         </div>
+        <button type="button" className={styles.publishButton} onClick={publish}>
+          <FileCheck size={16} strokeWidth={1.75} />
+          견적서 발행
+        </button>
         <Link href="/checkout" className={styles.orderButton}>
           주문 / 결제하기
         </Link>
       </div>
+
+      <p className={styles.publishNote}>
+        ※ &lsquo;견적서 발행&rsquo;을 누르면 지금 내용 그대로 견적번호가 확정되어
+        저장됩니다. 발행한 견적서는 마이페이지 &gt; 견적서 내역에서 다시 볼 수
+        있습니다.
+      </p>
     </div>
   );
 }

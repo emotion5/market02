@@ -1,6 +1,4 @@
-/* 화면: 회색 배경 위에 흰 A4 용지.
-   용지 자체(.sheet 등)의 스타일은 components/quote/QuoteSheet.module.css에 있다 —
-   작성 중(이 페이지)과 발행본(/quotes/[number])이 같은 용지를 공유하기 때문. */
+/* 발행본 열람. 용지 스타일은 components/quote/QuoteSheet.module.css가 담당한다. */
 .screen {
   background: var(--color-surface);
   min-height: calc(100vh - 64px);
@@ -15,12 +13,12 @@
   justify-content: space-between;
 }
 
-.editLink {
+.backLink {
   font-size: 14px;
   color: var(--color-text-muted);
 }
 
-.editLink:hover {
+.backLink:hover {
   color: var(--color-text);
 }
 
@@ -40,6 +38,36 @@
   opacity: 0.85;
 }
 
+/* 용지 위에 얹는 상태 줄 — 발행일과 유효 여부는 문서가 아니라 열람 화면의 정보다 */
+.statusBar {
+  max-width: 210mm;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.issued {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.badge {
+  padding: 3px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.expired {
+  border-color: #e3b3ae;
+  color: #c0392b;
+  background: #fdf3f2;
+}
+
 /* 하단 바 */
 .footerBar {
   max-width: 210mm;
@@ -47,7 +75,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 16px;
+  gap: 24px;
 }
 
 .footerTotal {
@@ -64,37 +92,13 @@
   color: var(--color-text);
 }
 
-/* 상호 미입력 등 발행을 막은 이유 */
-.error {
-  margin-right: auto;
-  font-size: 13px;
-  color: #c0392b;
-}
-
-/* 발행: 주문(검은 버튼)과 나란히 서므로 테두리형으로 낮춰 위계를 만든다 */
-.publishButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 52px;
-  padding: 0 24px;
-  border: 1px solid var(--color-text);
-  color: var(--color-text);
-  font-size: 15px;
-  font-weight: var(--fw-emphasis);
-}
-
-.publishButton:hover {
-  background: var(--color-text);
-  color: var(--color-bg);
-}
-
 .orderButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   height: 52px;
-  padding: 0 40px;
+  padding: 0 32px;
   background: var(--color-text);
   color: var(--color-bg);
   font-size: 16px;
@@ -105,7 +109,7 @@
   opacity: 0.85;
 }
 
-.publishNote {
+.note {
   max-width: 210mm;
   margin: 14px auto 0;
   font-size: 12px;
@@ -114,7 +118,14 @@
   text-align: right;
 }
 
-/* 빈 상태 */
+/* 상태 */
+.loading {
+  padding: 96px 24px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
 .empty {
   padding: 96px 24px;
   text-align: center;
@@ -135,7 +146,6 @@
   opacity: 0.85;
 }
 
-/* 모바일: 종이(용지)는 축소로 동일하게 보이고, 하단 바만 폭에 맞춤 */
 @media (max-width: 640px) {
   .footerBar {
     flex-wrap: wrap;
@@ -143,13 +153,12 @@
     gap: 12px;
   }
 
-  .publishButton,
   .orderButton {
     flex: 1;
     padding: 0 16px;
   }
 
-  .publishNote {
+  .note {
     text-align: left;
   }
 }
@@ -163,8 +172,9 @@
   }
 
   .toolbar,
+  .statusBar,
   .footerBar,
-  .publishNote {
+  .note {
     display: none;
   }
 }

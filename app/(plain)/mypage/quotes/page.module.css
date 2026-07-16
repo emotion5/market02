@@ -1,0 +1,163 @@
+/* 결제내역(../orders)과 같은 카드 틀 — 견적 → 주문이 한 흐름으로 읽히도록 톤을 맞춘다 */
+.head {
+  margin-bottom: 20px;
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: var(--fw-emphasis);
+}
+
+.subnote {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.loading {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.empty {
+  padding: 80px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.emptyLink {
+  margin-top: 8px;
+  padding: 12px 28px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-weight: var(--fw-emphasis);
+}
+
+.emptyLink:hover {
+  opacity: 0.85;
+}
+
+.quoteList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid var(--color-border);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.quoteNo {
+  font-size: 14px;
+  font-weight: var(--fw-emphasis);
+}
+
+.date {
+  margin-left: 12px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.badge {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: var(--fw-emphasis);
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: #0a7d33;
+}
+
+.expired {
+  color: var(--color-text-muted);
+}
+
+.body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+}
+
+.thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.summary {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itemNames {
+  font-size: 14px;
+  font-weight: var(--fw-body);
+}
+
+.customer {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.total {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.total strong {
+  margin-left: 8px;
+  font-size: 16px;
+  font-weight: var(--fw-display);
+  color: var(--color-text);
+}
+
+.viewButton {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid var(--color-border);
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.viewButton:hover {
+  border-color: var(--color-text);
+}
+
+.mockNote {
+  margin-top: 24px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}

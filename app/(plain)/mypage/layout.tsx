@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./layout.module.css";
 
+// 견적 → 주문 순서로 놓는다 (실제 흐름과 같은 순서)
 const MENU = [
+  { href: "/mypage/quotes", label: "견적서 내역" },
   { href: "/mypage/orders", label: "결제내역" },
   { href: "/mypage/tax-invoices", label: "세금계산서 내역" },
   { href: "/mypage/addresses", label: "배송지 관리" },
