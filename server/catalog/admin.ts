@@ -41,3 +41,54 @@ export async function listProductsForAdmin(
     image: p.repImage,
   }));
 }
+
+export interface AdminProductDetail {
+  id: string;
+  name: string;
+  categorySlug: string;
+  summary: string | null;
+  description: string;
+  price: number;
+  isActive: boolean;
+}
+
+export async function getProductForAdmin(
+  id: string,
+): Promise<AdminProductDetail | null> {
+  const p = await prisma.product.findUnique({ where: { id } });
+  if (!p) return null;
+  return {
+    id: p.id,
+    name: p.name,
+    categorySlug: p.categorySlug,
+    summary: p.summary,
+    description: p.description,
+    price: p.price,
+    isActive: p.isActive,
+  };
+}
+
+export async function updateProductFields(
+  id: string,
+  input: {
+    name: string;
+    categorySlug: string;
+    summary: string | null;
+    description: string;
+    price: number;
+    isActive: boolean;
+  },
+): Promise<boolean> {
+  try {
+    await prisma.product.update({ where: { id }, data: input });
+    return true;
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2025"
+    ) {
+      return false; // 없는 상품
+    }
+    throw e;
+  }
+}

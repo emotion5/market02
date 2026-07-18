@@ -70,6 +70,7 @@ export default async function AdminProductsPage({
                 <th>대표가</th>
                 <th>옵션</th>
                 <th>상태</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +93,14 @@ export default async function AdminProductsPage({
                     <span className={p.isActive ? styles.badgeOn : styles.badgeOff}>
                       {p.isActive ? "활성" : "비활성"}
                     </span>
+                  </td>
+                  <td>
+                    <Link
+                      href={`/admin/products/${p.id}/edit`}
+                      className={styles.button}
+                    >
+                      수정
+                    </Link>
                   </td>
                 </tr>
               ))}

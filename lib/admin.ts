@@ -8,5 +8,7 @@ export {
 
 export {
   listProductsForAdmin,
+  getProductForAdmin,
   type AdminProductRow,
+  type AdminProductDetail,
 } from "@/server/catalog/admin";

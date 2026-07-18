@@ -262,3 +262,57 @@
   background: #f3f4f6;
   color: #6b7280;
 }
+
+/* ── 폼 ── */
+.form {
+  max-width: 640px;
+}
+.field {
+  margin-bottom: 16px;
+}
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+.input,
+.select,
+.textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.suffix {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.formActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 24px;
+}
+.errorText {
+  color: #c0392b;
+  font-size: 13px;
+}
+.savedText {
+  color: #166534;
+  font-size: 13px;
+}

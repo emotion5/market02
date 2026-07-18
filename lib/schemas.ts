@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CATEGORIES } from "./constants";
 
 // 프론트·API 공용 입력 검증 스키마. (도메인이 늘면 phase 별로 여기에 추가)
 
@@ -40,5 +41,19 @@ export const profileUpdateSchema = z.object({
 
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+
+// 상품 수정 (어드민) — 상품 레벨 필드. 옵션(variant) 가격은 별도.
+const CATEGORY_SLUGS = CATEGORIES.map((c) => c.slug);
+export const productUpdateSchema = z.object({
+  name: z.string().min(1, "상품명을 입력하세요.").max(100),
+  categorySlug: z
+    .string()
+    .refine((s) => CATEGORY_SLUGS.includes(s), "카테고리를 선택하세요."),
+  summary: z.string().max(200).optional(),
+  description: z.string().min(1, "설명을 입력하세요.").max(5000),
+  price: z.number().int("금액은 정수여야 합니다.").min(0, "0 이상이어야 합니다."),
+  isActive: z.boolean(),
+});
+export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;
 export type BusinessSignupInput = z.infer<typeof businessSignupSchema>;
