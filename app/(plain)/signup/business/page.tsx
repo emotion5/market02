@@ -18,6 +18,8 @@ export default function BusinessSignupPage() {
   const [password, setPassword] = useState("");
   const [license, setLicense] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   // 이메일이 계정의 primary key(아이디·연락 수단)
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -26,11 +28,29 @@ export default function BusinessSignupPage() {
   const bizValid = bizDigits.length === 10;
   const canSubmit = emailValid && bizValid;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    // TODO: 백엔드 연동 (이메일을 아이디로 저장·비밀번호 해시·사업자등록번호/등록증으로 확인) — 현재는 UI만 구성
-    setSubmitted(true);
+    setError("");
+    setSubmitting(true);
+    try {
+      // 사업자등록증 파일 업로드는 오브젝트 스토리지 연동 후 추가 (현재 미전송)
+      const res = await fetch("/api/auth/signup/business", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password, bizNo }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "가입 신청에 실패했습니다.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("네트워크 오류가 발생했습니다.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -133,8 +153,20 @@ export default function BusinessSignupPage() {
             자료 입력 후 <strong>영업일 1일 이내</strong>에 승인됩니다.
           </p>
 
-          <button type="submit" className={styles.submit} disabled={!canSubmit}>
-            가입 신청
+          {error && (
+            <p
+              role="alert"
+              style={{ color: "#c0392b", fontSize: "0.85rem", margin: 0 }}
+            >
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            className={styles.submit}
+            disabled={!canSubmit || submitting}
+          >
+            {submitting ? "신청 중…" : "가입 신청"}
           </button>
         </form>
 

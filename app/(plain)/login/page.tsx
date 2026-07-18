@@ -27,13 +27,24 @@ export default function LoginPage() {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 백엔드가 없어 비밀번호는 아직 검증하지 않는다. 이메일로 로그인 상태만
-    // 표시하고 홈으로 보낸다 — 서버 연동 시 이 자리에서 실제 인증을 한다.
-    login(email);
-    router.push("/");
+    setError("");
+    setSubmitting(true);
+    const result = await login(email, password);
+    setSubmitting(false);
+    if (result.ok) {
+      // proxy 가 붙인 ?redirect= 로 복귀, 없으면 홈으로
+      const redirect = new URLSearchParams(window.location.search).get(
+        "redirect",
+      );
+      router.push(redirect && redirect.startsWith("/") ? redirect : "/");
+    } else {
+      setError(result.error ?? "로그인에 실패했습니다.");
+    }
   };
 
   return (
@@ -101,8 +112,20 @@ export default function LoginPage() {
             />
           </label>
 
-          <button type="submit" className={styles.submit}>
-            로그인
+          {error && (
+            <p
+              role="alert"
+              style={{ color: "#c0392b", fontSize: "0.85rem", margin: 0 }}
+            >
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            className={styles.submit}
+            disabled={submitting}
+          >
+            {submitting ? "로그인 중…" : "로그인"}
           </button>
         </form>
 

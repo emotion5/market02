@@ -9,17 +9,35 @@ export default function PersonalSignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const passwordValid = password.length >= 8;
   const canSubmit = emailValid && passwordValid;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    // TODO: 백엔드 연동 (이메일을 아이디로 저장·비밀번호 해시) — 현재는 UI만 구성
-    // 이름 등 배송 정보는 주문(체크아웃) 단계에서 수집
-    setSubmitted(true);
+    setError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/signup/personal", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "가입에 실패했습니다.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("네트워크 오류가 발생했습니다.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -87,8 +105,20 @@ export default function PersonalSignupPage() {
             </span>
           </label>
 
-          <button type="submit" className={styles.submit} disabled={!canSubmit}>
-            가입하기
+          {error && (
+            <p
+              role="alert"
+              style={{ color: "#c0392b", fontSize: "0.85rem", margin: 0 }}
+            >
+              {error}
+            </p>
+          )}
+          <button
+            type="submit"
+            className={styles.submit}
+            disabled={!canSubmit || submitting}
+          >
+            {submitting ? "가입 중…" : "가입하기"}
           </button>
         </form>
 

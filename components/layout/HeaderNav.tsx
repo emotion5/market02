@@ -105,8 +105,8 @@ export default function HeaderNav() {
       {isLoggedIn ? (
         <button
           type="button"
-          onClick={() => {
-            logout();
+          onClick={async () => {
+            await logout();
             router.push("/");
           }}
           className={`${styles.navLink} ${styles.navButton}`}

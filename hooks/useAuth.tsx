@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -9,55 +10,94 @@ import {
   type ReactNode,
 } from "react";
 
-const STORAGE_KEY = "market02-auth";
-
-// 이 프로젝트엔 실제 백엔드 세션이 없다. "로그인 상태"도 다른 목업 데이터처럼
-// localStorage에 두고, 헤더 등 UI는 이 값을 읽어 버튼을 토글할 뿐이다.
-// 진짜 인증(비밀번호 검증)은 서버가 붙는 단계에서 login()이 대체된다.
+// 로그인 상태의 원천은 서버가 굽는 httpOnly 세션 쿠키다.
+// 이 훅은 /api/me 로 그 상태를 읽어와 UI(헤더 등)에 반영할 뿐이다.
 export interface AuthUser {
+  id: string;
   email: string;
+  role: "CUSTOMER" | "ADMIN";
+  type: "PERSONAL" | "BUSINESS";
+  status: "ACTIVE" | "PENDING" | "REJECTED" | "WITHDRAWN";
+  name: string | null;
+}
+
+export interface LoginResult {
+  ok: boolean;
+  error?: string;
 }
 
 interface AuthContextValue {
   user: AuthUser | null;
   isLoggedIn: boolean;
-  login: (email: string) => void;
-  logout: () => void;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<LoginResult>;
+  logout: () => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // 서버 렌더(로그아웃 상태)와 첫 클라이언트 렌더를 맞추려고
-    // localStorage 복원은 mount 이후에 한다 (하이드레이션 불일치 방지).
+  const refresh = useCallback(async () => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (saved) setUser(JSON.parse(saved));
+      const res = await fetch("/api/me", { cache: "no-store" });
+      const data = await res.json();
+      setUser(data.user ?? null);
     } catch {
-      // 저장된 값이 깨져 있으면 로그아웃 상태로 시작
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
-    setLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (!loaded) return;
-    if (user) localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-    else localStorage.removeItem(STORAGE_KEY);
-  }, [user, loaded]);
+    // 마운트 시 서버 세션(/api/me)으로 로그인 상태 동기화. setState 는 fetch 이후라 비동기.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    refresh();
+  }, [refresh]);
+
+  const login = useCallback(
+    async (email: string, password: string): Promise<LoginResult> => {
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          return { ok: false, error: data.error ?? "로그인에 실패했습니다." };
+        }
+        setUser(data.user);
+        return { ok: true };
+      } catch {
+        return { ok: false, error: "네트워크 오류가 발생했습니다." };
+      }
+    },
+    [],
+  );
+
+  const logout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      setUser(null);
+    }
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       isLoggedIn: user !== null,
-      login: (email: string) => setUser({ email }),
-      logout: () => setUser(null),
+      loading,
+      login,
+      logout,
+      refresh,
     }),
-    [user],
+    [user, loading, login, logout, refresh],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
