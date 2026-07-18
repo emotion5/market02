@@ -15,18 +15,19 @@ export const loginSchema = z.object({
   password: z.string().min(1, "비밀번호를 입력하세요."),
 });
 
+// 개인가입: 이메일+비밀번호만 (이름 등은 체크아웃에서 수집)
 export const personalSignupSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  name: z.string().min(1, "이름을 입력하세요."),
-  tel: z.string().optional(),
 });
 
-export const businessSignupSchema = personalSignupSchema.extend({
+// 사업자가입: + 사업자등록번호. 상호·등록증파일은 가입 폼 미수집(추후 스토리지/프로필 연동).
+export const businessSignupSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
   bizNo: bizNoSchema,
-  company: z.string().min(1, "상호를 입력하세요."),
-  owner: z.string().optional(),
-  licenseFileUrl: z.url("사업자등록증 파일 URL이 필요합니다."), // 업로드 후 URL
+  company: z.string().min(1).optional(),
+  licenseFileUrl: z.url().optional(),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

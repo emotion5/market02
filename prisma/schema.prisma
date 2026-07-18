@@ -46,7 +46,7 @@ model User {
   id           String     @id @default(cuid())
   email        String     @unique // 로그인 아이디이자 계정 PK
   passwordHash String
-  name         String
+  name         String? // 가입 시 미수집 — 주문(체크아웃) 단계에서 수집
   tel          String?
   type         UserType   @default(PERSONAL)
   status       UserStatus @default(ACTIVE)
@@ -66,9 +66,9 @@ model BusinessProfile {
   userId         String    @unique
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   bizNo          String    @unique // 사업자등록번호 000-00-00000 (한 사업자번호=한 계정)
-  company        String
+  company        String? // 가입 폼 미수집 — 승인/프로필 단계에서 보완
   owner          String?
-  licenseFileUrl String // 사업자등록증 (오브젝트 스토리지 URL)
+  licenseFileUrl String? // 사업자등록증 (오브젝트 스토리지 URL). 업로드 연동 전까지 null
   approvedAt     DateTime?
   approvedById   String? // 승인 처리한 관리자 userId (감사용, FK는 걸지 않음)
   rejectReason   String?
