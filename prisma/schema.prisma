@@ -1,0 +1,329 @@
+// MMM MARKET — Prisma 스키마 (Phase 0)
+//
+// 필요한 env (.env):
+//   DATABASE_URL  = 앱 런타임 접속 URL. 서버리스(Vercel)면 반드시 "커넥션 풀러" URL (Neon pooler 등)
+//                   → server/db.ts 에서 드라이버 어댑터(@prisma/adapter-pg)로 PrismaClient에 주입
+//   DIRECT_URL    = 마이그레이션·introspection용 직결 URL (풀러 우회). prisma.config.ts 가 사용
+//                   풀러를 안 쓰면 DATABASE_URL과 같은 값을 넣어도 된다.
+// (Prisma 7: 접속 URL은 스키마가 아니라 prisma.config.ts / PrismaClient 어댑터에서 관리)
+//
+// 설계 원칙
+//   1) 가변 카탈로그(Category/Product/Variant/...)와 불변 문서(Quote/Order/...)를 분리.
+//   2) QuoteItem/OrderItem 은 발행·주문 시점 값을 "복제"해 저장하는 스냅샷 —
+//      Product/Variant 로의 FK를 걸지 않는다(상품이 바뀌거나 삭제돼도 과거 문서 불변).
+//   3) 금액은 원(KRW) 정수. 표시가는 부가세 포함, supply=round(total/1.1), vat=total-supply.
+//   4) 상품/옵션 id 는 기존 문자열 키("bathmatch-0001")를 그대로 유지(이미지·featured 호환).
+//   5) 장바구니(cart)는 현재 클라이언트(localStorage) 유지 — 의도적으로 스키마에서 제외.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ────────────────────────── 회원 / 인증 ──────────────────────────
+
+enum UserType {
+  PERSONAL // 개인 (즉시 가입)
+  BUSINESS // 사업자 (승인 후 회원도매가)
+}
+
+enum UserStatus {
+  ACTIVE // 개인=가입 즉시 / 사업자=승인 완료
+  PENDING // 사업자 승인 대기
+  REJECTED // 사업자 승인 반려
+  WITHDRAWN // 탈퇴 (법령상 보관자료는 별도)
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique // 로그인 아이디이자 계정 PK
+  passwordHash String
+  name         String
+  tel          String?
+  type         UserType   @default(PERSONAL)
+  status       UserStatus @default(ACTIVE)
+  role         UserRole   @default(CUSTOMER)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  withdrawnAt  DateTime?
+
+  business  BusinessProfile?
+  addresses Address[]
+  quotes    Quote[]
+  orders    Order[]
+}
+
+model BusinessProfile {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bizNo          String    @unique // 사업자등록번호 000-00-00000 (한 사업자번호=한 계정)
+  company        String
+  owner          String?
+  licenseFileUrl String // 사업자등록증 (오브젝트 스토리지 URL)
+  approvedAt     DateTime?
+  approvedById   String? // 승인 처리한 관리자 userId (감사용, FK는 걸지 않음)
+  rejectReason   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String // 예: "본사", "현장창고"
+  recipient String
+  tel       String
+  address   String
+  isDefault Boolean  @default(false) // 사용자당 1개만 true (서비스에서 보장)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ────────────────────────── 카탈로그 (가변) ──────────────────────────
+
+model Category {
+  slug      String @id // hardware / panel / pressbevel / antipress / bathmatch / stablecore
+  nameKo    String // 하드웨어 / 가구재 / ...
+  nameEn    String // Hardware / Panel / ...
+  sortOrder Int    @default(0) // 내비 칩·홈 섹션 순서
+
+  products Product[]
+  featured Featured[]
+}
+
+model Product {
+  id           String   @id // 예: "bathmatch-0001"
+  name         String
+  categorySlug String
+  category     Category @relation(fields: [categorySlug], references: [slug])
+  summary      String? // 목록 카드용 한 줄 요약
+  description  String
+  repImage     String // 대표 썸네일 경로/URL
+  price        Int // 대표가(목록 표시용, 보통 최저 옵션가)
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  variants Variant[]
+  colors   ProductColor[]
+  images   ProductImage[]
+  featured Featured[]
+
+  @@index([categorySlug])
+}
+
+model Variant {
+  id             String  @id // 예: "bathmatch-0001-default"
+  productId      String
+  product        Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name           String // 예: "기본", "폭 1.8m / 길이 1m"
+  price          Int // 소비자가
+  wholesalePrice Int? // 회원도매가(사업자 승인회원). null이면 소비자가 적용
+  sortOrder      Int     @default(0)
+
+  @@index([productId])
+}
+
+model ProductColor {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  hex       String // 색상 스와치 (#rrggbb)
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String // 상세 갤러리 이미지 (파일명 규칙 스캔을 대체)
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+}
+
+// 홈 큐레이션 (featured.json 대체): 카테고리별 노출 상품과 순서
+model Featured {
+  id           String   @id @default(cuid())
+  categorySlug String
+  category     Category @relation(fields: [categorySlug], references: [slug], onDelete: Cascade)
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sortOrder    Int      @default(0)
+
+  @@unique([categorySlug, productId])
+  @@index([categorySlug])
+}
+
+// ────────────────────────── 견적서 (불변 스냅샷) ──────────────────────────
+
+enum QuoteStatus {
+  ISSUED
+  EXPIRED
+}
+
+model Quote {
+  id                  String      @id @default(cuid())
+  number              String      @unique // Q-YYYYMMDD-HHMMSS (조회 키)
+  userId              String
+  user                User        @relation(fields: [userId], references: [id])
+  issuedAt            DateTime    @default(now())
+  validUntil          DateTime // 발행일 + 14일 (QUOTE_VALID_DAYS)
+  customerCompany     String // 공급받는 자(고객) 상호
+  customerContactName String
+  customerContactTel  String
+  supply              Int // 공급가액
+  vat                 Int // 부가세(10%)
+  total               Int // 합계(부가세 포함)
+  status              QuoteStatus @default(ISSUED)
+
+  items QuoteItem[]
+
+  @@index([userId])
+}
+
+model QuoteItem {
+  id      String @id @default(cuid())
+  quoteId String
+  quote   Quote  @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  // ↓ 발행 시점 스냅샷 (Product/Variant FK 아님 — 상품 변경·삭제돼도 문서 불변)
+  productId   String
+  productName String
+  variantId   String
+  variantName String
+  color       String? // 선택 색상(hex), 표시용
+  image       String
+  unitPrice   Int // 발행 시점 단가
+  quantity    Int
+
+  @@index([quoteId])
+}
+
+// ────────────────────────── 주문 / 결제 / 세금계산서 ──────────────────────────
+
+enum OrderStatus {
+  PENDING // 입금대기
+  PAID // 입금확인
+  PREPARING // 배송준비
+  SHIPPING // 배송중
+  DELIVERED // 배송완료
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER // 무통장입금(가상계좌)
+  PG // 카드 등 PG 결제
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  orderNo   String   @unique // YYYYMMDD-HHMMSS
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ordererName    String
+  ordererTel     String
+  ordererAddress String
+  ordererMemo    String?
+  depositorName  String // 입금자명
+
+  paymentMethod PaymentMethod @default(BANK_TRANSFER)
+  status        OrderStatus   @default(PENDING)
+
+  supply      Int // 공급가액
+  vat         Int // 부가세
+  shippingFee Int @default(0) // 배송비(별도)
+  total       Int // 합계
+
+  courier        String? // 택배사
+  trackingNumber String? // 운송장번호
+
+  items      OrderItem[]
+  payment    Payment?
+  taxInvoice TaxInvoice?
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // ↓ 주문 시점 스냅샷 (Product/Variant FK 아님)
+  productId   String
+  productName String
+  variantId   String
+  variantName String
+  color       String?
+  image       String
+  unitPrice   Int
+  quantity    Int
+
+  @@index([orderId])
+}
+
+enum PaymentProvider {
+  NONE // 무통장입금(PG 미사용)
+  PORTONE
+  TOSS
+}
+
+enum PaymentStatus {
+  READY // 결제 준비/대기
+  PAID // 결제 완료(웹훅 검증)
+  CANCELLED
+  FAILED
+}
+
+model Payment {
+  id         String          @id @default(cuid())
+  orderId    String          @unique
+  order      Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider   PaymentProvider @default(NONE)
+  method     String? // 카드 / 가상계좌 등
+  pgTid      String? // PG 거래 고유번호
+  status     PaymentStatus   @default(READY)
+  amount     Int
+  paidAt     DateTime?
+  receiptUrl String?
+  raw        Json? // 웹훅 원본(감사·재검증용)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+enum TaxInvoiceStatus {
+  NONE // 미신청
+  PENDING // 신청, 발행 대기(입금확인 전)
+  ISSUED // 발행완료
+}
+
+model TaxInvoice {
+  id        String           @id @default(cuid())
+  orderId   String           @unique
+  order     Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  requested Boolean          @default(false)
+  bizNo     String? // 사업자등록번호(10자리)
+  company   String?
+  status    TaxInvoiceStatus @default(NONE)
+  issuedAt  DateTime?
+  ntsRef    String? // 전자세금계산서 국세청 참조번호(연동 시)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
