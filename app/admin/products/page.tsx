@@ -40,19 +40,29 @@ export default async function AdminProductsPage({
             </Link>
           ))}
         </div>
-        <form className={styles.search} action="/admin/products" method="get">
-          {category && <input type="hidden" name="category" value={category} />}
-          <input
-            className={styles.searchInput}
-            type="search"
-            name="q"
-            defaultValue={q ?? ""}
-            placeholder="상품명 · ID 검색"
-          />
-          <button type="submit" className={styles.button}>
-            검색
-          </button>
-        </form>
+        <div className={styles.search}>
+          <form className={styles.search} action="/admin/products" method="get">
+            {category && (
+              <input type="hidden" name="category" value={category} />
+            )}
+            <input
+              className={styles.searchInput}
+              type="search"
+              name="q"
+              defaultValue={q ?? ""}
+              placeholder="상품명 · ID 검색"
+            />
+            <button type="submit" className={styles.button}>
+              검색
+            </button>
+          </form>
+          <Link
+            href="/admin/products/new"
+            className={`${styles.button} ${styles.buttonPrimary}`}
+          >
+            + 상품 등록
+          </Link>
+        </div>
       </div>
 
       <p className={styles.count}>{products.length}개 상품</p>

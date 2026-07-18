@@ -42,6 +42,80 @@ export async function listProductsForAdmin(
   }));
 }
 
+// 이미지 업로드 전 신규 상품 대표 이미지 placeholder
+export const PLACEHOLDER_IMAGE = "/images/placeholder.svg";
+
+// 카테고리별 다음 상품 ID(카테고리-순번) 와 정렬순서 계산
+async function nextIdAndSort(
+  categorySlug: string,
+): Promise<{ id: string; sortOrder: number }> {
+  const rows = await prisma.product.findMany({
+    where: { categorySlug },
+    select: { id: true, sortOrder: true },
+  });
+  let maxSeq = 0;
+  let maxSort = -1;
+  for (const r of rows) {
+    const m = r.id.match(/-(\d+)$/);
+    if (m) maxSeq = Math.max(maxSeq, parseInt(m[1], 10));
+    maxSort = Math.max(maxSort, r.sortOrder);
+  }
+  return {
+    id: `${categorySlug}-${String(maxSeq + 1).padStart(4, "0")}`,
+    sortOrder: maxSort + 1,
+  };
+}
+
+// 신규 상품 생성 — 기본 옵션 1개를 함께 만든다(상품은 옵션이 최소 1개 필요).
+// 이미지는 placeholder 로 두고 이후 편집/업로드에서 교체.
+export async function createProduct(input: {
+  name: string;
+  categorySlug: string;
+  summary: string | null;
+  description: string;
+  price: number;
+  isActive: boolean;
+}): Promise<string> {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { id, sortOrder } = await nextIdAndSort(input.categorySlug);
+    try {
+      await prisma.product.create({
+        data: {
+          id,
+          name: input.name,
+          categorySlug: input.categorySlug,
+          summary: input.summary,
+          description: input.description,
+          repImage: PLACEHOLDER_IMAGE,
+          price: input.price,
+          isActive: input.isActive,
+          sortOrder,
+          variants: {
+            create: {
+              id: `${id}-default`,
+              name: "기본",
+              price: input.price,
+              sortOrder: 0,
+            },
+          },
+        },
+      });
+      return id;
+    } catch (e) {
+      // 동시 생성으로 ID 충돌 시 다시 계산해 재시도
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === "P2002" &&
+        attempt < 2
+      ) {
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw new Error("상품 ID 생성에 실패했습니다.");
+}
+
 export interface AdminProductDetail {
   id: string;
   name: string;
