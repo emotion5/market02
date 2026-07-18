@@ -55,5 +55,25 @@ export const productUpdateSchema = z.object({
   isActive: z.boolean(),
 });
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
+
+// 상품 옵션(variant)·색상 편집 (어드민). 목록 전체를 보내 동기화.
+export const productOptionsSchema = z.object({
+  variants: z
+    .array(
+      z.object({
+        id: z.string().optional(), // 기존 옵션이면 id, 새 옵션이면 없음
+        name: z.string().min(1, "옵션명을 입력하세요.").max(60),
+        price: z.number().int().min(0),
+        wholesalePrice: z.number().int().min(0).nullable(),
+      }),
+    )
+    .min(1, "옵션이 최소 1개 필요합니다."),
+  colors: z
+    .array(
+      z.string().regex(/^#[0-9a-fA-F]{6}$/, "색상은 #RRGGBB 형식이어야 합니다."),
+    )
+    .max(20),
+});
+export type ProductOptionsInput = z.infer<typeof productOptionsSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;
 export type BusinessSignupInput = z.infer<typeof businessSignupSchema>;

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProductForAdmin } from "@/lib/admin";
+import { getProductForAdmin, getProductOptions } from "@/lib/admin";
 import ProductEditForm from "@/components/admin/ProductEditForm";
+import ProductOptionsForm from "@/components/admin/ProductOptionsForm";
 import styles from "../../../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -12,8 +13,11 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = await getProductForAdmin(id);
-  if (!product) notFound();
+  const [product, options] = await Promise.all([
+    getProductForAdmin(id),
+    getProductOptions(id),
+  ]);
+  if (!product || !options) notFound();
 
   return (
     <div className={styles.page}>
@@ -24,8 +28,17 @@ export default async function EditProductPage({
         </Link>{" "}
         · {product.id}
       </p>
-      <div className={styles.card} style={{ padding: 24 }}>
+
+      <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>
         <ProductEditForm product={product} />
+      </div>
+
+      <div className={styles.card} style={{ padding: 24 }}>
+        <ProductOptionsForm
+          productId={product.id}
+          variants={options.variants}
+          colors={options.colors}
+        />
       </div>
     </div>
   );

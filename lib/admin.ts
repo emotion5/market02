@@ -9,6 +9,9 @@ export {
 export {
   listProductsForAdmin,
   getProductForAdmin,
+  getProductOptions,
   type AdminProductRow,
   type AdminProductDetail,
+  type AdminProductOptions,
+  type AdminVariant,
 } from "@/server/catalog/admin";
