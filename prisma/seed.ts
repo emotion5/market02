@@ -124,6 +124,8 @@ async function main() {
         productId: p.id,
         name: v.name,
         price: v.price,
+        // 회원도매가 placeholder(소비자가 90%). 실제 값은 추후 어드민/사업자가 설정.
+        wholesalePrice: Math.round((v.price * 0.9) / 10) * 10,
         sortOrder: idx,
       })),
     });

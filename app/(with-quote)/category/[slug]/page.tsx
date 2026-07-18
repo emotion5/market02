@@ -1,12 +1,10 @@
 import { notFound } from "next/navigation";
-import { getCategory, CATEGORIES } from "@/lib/constants";
+import { getCategory } from "@/lib/constants";
 import { getProductsByCategory } from "@/lib/data";
 import ProductListing from "@/components/product/ProductListing";
 import styles from "../../listing.module.css";
 
-export function generateStaticParams() {
-  return CATEGORIES.map((c) => ({ slug: c.slug }));
-}
+// 회원도매가가 사용자별로 달라지므로 정적 생성(SSG)에서 동적 렌더로 전환.
 
 export default async function CategoryPage({
   params,
