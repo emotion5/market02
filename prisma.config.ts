@@ -17,4 +17,8 @@ export default defineConfig({
   datasource: {
     url: env("DIRECT_URL"),
   },
+  migrations: {
+    // `prisma migrate dev` / `prisma db seed` 이후 실행되는 시드 명령
+    seed: "node prisma/seed.ts",
+  },
 });
