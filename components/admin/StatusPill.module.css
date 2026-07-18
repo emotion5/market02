@@ -1,0 +1,25 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.7;
+}
+.active {
+  background: #dcfce7;
+  color: #166534;
+}
+.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.withdrawn {
+  background: #f3f4f6;
+  color: #6b7280;
+}

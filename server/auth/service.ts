@@ -159,3 +159,59 @@ export async function getMe(userId: string): Promise<AuthUser | null> {
   if (!user || user.status === "WITHDRAWN") return null;
   return toAuthUser(user);
 }
+
+// ── 사업자 승인 (관리자) ──────────────────────────────
+
+export interface PendingBusiness {
+  id: string; // user id
+  email: string;
+  bizNo: string;
+  company: string | null;
+  createdAt: string; // ISO
+}
+
+export async function listPendingBusinesses(): Promise<PendingBusiness[]> {
+  const users = await prisma.user.findMany({
+    where: { type: "BUSINESS", status: "PENDING" },
+    include: { business: true },
+    orderBy: { createdAt: "asc" },
+  });
+  return users.map((u) => ({
+    id: u.id,
+    email: u.email,
+    bizNo: u.business?.bizNo ?? "",
+    company: u.business?.company ?? null,
+    createdAt: u.createdAt.toISOString(),
+  }));
+}
+
+export async function approveBusiness(
+  userId: string,
+  adminId: string,
+): Promise<void> {
+  await prisma.$transaction([
+    prisma.user.update({ where: { id: userId }, data: { status: "ACTIVE" } }),
+    prisma.businessProfile.update({
+      where: { userId },
+      data: { approvedAt: new Date(), approvedById: adminId, rejectReason: null },
+    }),
+  ]);
+}
+
+export async function rejectBusiness(
+  userId: string,
+  adminId: string,
+  reason: string,
+): Promise<void> {
+  await prisma.$transaction([
+    prisma.user.update({ where: { id: userId }, data: { status: "REJECTED" } }),
+    prisma.businessProfile.update({
+      where: { userId },
+      data: {
+        approvedById: adminId,
+        approvedAt: null,
+        rejectReason: reason || null,
+      },
+    }),
+  ]);
+}
