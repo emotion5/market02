@@ -92,8 +92,9 @@
 }
 
 /* 돋보기 토글: 항상 노출. 단, 검색창이 펼쳐지면 숨겨 아이콘 중복을 피함 */
+/* 일단 검색 기능 숨김 — 복구하려면 아래 display:none 한 줄만 제거 */
 .searchToggle {
-  display: inline-flex;
+  display: none; /* inline-flex; */
   align-items: center;
   color: var(--color-text);
 }

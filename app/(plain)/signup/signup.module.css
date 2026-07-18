@@ -31,21 +31,19 @@
   gap: 12px;
 }
 
+/* 선 대신 면으로 구분 — 견적 패널처럼 왼쪽 흰색 → 오른쪽 흐린 회색 그라데이션 */
 .choice {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
   padding: 20px;
-  border: 1px solid var(--color-border);
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
+  background: linear-gradient(90deg, #ffffff, #f7f7f7);
+  transition: background 0.15s ease;
 }
 
 .choice:hover {
-  border-color: var(--color-text);
-  background: var(--color-surface);
+  background: linear-gradient(90deg, #f8f8f8, #f0f0f0);
 }
 
 .choiceIcon {
@@ -82,7 +80,6 @@
   gap: 4px;
   margin-top: 6px;
   padding: 14px 16px;
-  border: 1px solid var(--color-text);
   background: var(--color-surface);
   text-align: center;
   font-size: 14px;

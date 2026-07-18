@@ -9,11 +9,95 @@
   max-width: 380px;
 }
 
+.header {
+  margin-bottom: 32px;
+}
+
 .title {
   font-size: 24px;
   font-weight: var(--fw-emphasis);
+}
+
+.subtitle {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.signupCta {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: var(--fw-emphasis);
+  color: var(--color-text);
+}
+
+.signupCta:hover {
+  opacity: 0.7;
+}
+
+.benefits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 32px;
+  border: 1px solid var(--color-border);
+  list-style: none;
+}
+
+.benefit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 12px;
   text-align: center;
-  margin-bottom: 36px;
+}
+
+/* 2x2 사이 얇은 구분선 — 오른쪽 열 왼쪽, 아래 행 위쪽 */
+.benefit:nth-child(even) {
+  border-left: 1px solid var(--color-border);
+}
+
+.benefit:nth-child(n + 3) {
+  border-top: 1px solid var(--color-border);
+}
+
+.benefitIcon {
+  color: var(--color-text-muted);
+}
+
+.benefitLabel {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.benefitValue {
+  font-size: 13px;
+  font-weight: var(--fw-emphasis);
+  color: var(--color-text);
+}
+
+.kakaoBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 40px;
+  background: #fee500;
+  color: #3c1e1e;
+  font-size: 13px;
+  font-weight: var(--fw-emphasis);
+}
+
+.kakaoNote {
+  margin-top: 10px;
+  margin-bottom: 32px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 .form {
