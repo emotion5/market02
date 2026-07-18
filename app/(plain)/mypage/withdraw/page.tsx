@@ -14,12 +14,28 @@ const CLEAR_KEYS = [
 export default function WithdrawPage() {
   const [agreed, setAgreed] = useState(false);
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleWithdraw = () => {
-    if (!agreed) return;
-    // TODO: 백엔드 연동 (회원 탈퇴 처리) — 현재는 로컬 데이터만 정리
-    CLEAR_KEYS.forEach((k) => localStorage.removeItem(k));
-    setDone(true);
+  const handleWithdraw = async () => {
+    if (!agreed || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch("/api/me/withdraw", { method: "POST" });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        setError(d.error ?? "탈퇴 처리에 실패했습니다.");
+        return;
+      }
+      // 아직 localStorage에 있는 목업 데이터(장바구니·주문 등)도 함께 정리
+      CLEAR_KEYS.forEach((k) => localStorage.removeItem(k));
+      setDone(true);
+    } catch {
+      setError("네트워크 오류가 발생했습니다.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (done) {
@@ -66,13 +82,18 @@ export default function WithdrawPage() {
         위 유의사항을 확인하였으며, 회원 탈퇴에 동의합니다.
       </label>
 
+      {error && (
+        <p role="alert" style={{ color: "#c0392b", fontSize: "0.85rem" }}>
+          {error}
+        </p>
+      )}
       <button
         type="button"
         className={styles.withdrawButton}
-        disabled={!agreed}
+        disabled={!agreed || busy}
         onClick={handleWithdraw}
       >
-        회원 탈퇴
+        {busy ? "처리 중…" : "회원 탈퇴"}
       </button>
     </div>
   );

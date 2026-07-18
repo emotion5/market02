@@ -46,8 +46,8 @@ export default function FindAccountPage() {
         </ul>
 
         <p className={styles.guide}>
-          로그인 아이디는 <strong>가입하신 사업자등록번호</strong>입니다. 문의 시{" "}
-          <strong>상호(회사명)</strong>와 <strong>사업자등록번호</strong>를 함께
+          로그인 아이디는 <strong>가입하신 이메일</strong>입니다. 문의 시{" "}
+          <strong>가입 이메일</strong>(사업자회원은 <strong>상호</strong>도 함께)을
           알려주시면 본인 확인이 빠릅니다.
         </p>
 

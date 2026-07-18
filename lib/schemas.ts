@@ -30,6 +30,15 @@ export const businessSignupSchema = z.object({
   licenseFileUrl: z.url().optional(),
 });
 
+// 회원정보 수정 (변경할 필드만 전송)
+export const profileUpdateSchema = z.object({
+  name: z.string().max(50).optional(),
+  tel: z.string().max(30).optional(),
+  company: z.string().max(100).optional(),
+  newPassword: z.string().min(8, "비밀번호는 8자 이상이어야 합니다.").optional(),
+});
+
+export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;
 export type BusinessSignupInput = z.infer<typeof businessSignupSchema>;

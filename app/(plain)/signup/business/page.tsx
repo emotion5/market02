@@ -11,7 +11,7 @@ function formatBizNo(value: string) {
   return parts.filter(Boolean).join("-");
 }
 
-// 사업자회원: 사업자등록번호를 아이디로, 등록증 업로드 후 승인
+// 사업자회원: 이메일을 아이디로, 사업자등록번호·등록증으로 확인 후 승인
 export default function BusinessSignupPage() {
   const [email, setEmail] = useState("");
   const [bizNo, setBizNo] = useState("");

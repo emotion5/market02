@@ -215,3 +215,56 @@ export async function rejectBusiness(
     }),
   ]);
 }
+
+// ── 프로필 / 탈퇴 ──────────────────────────────────────
+
+export interface Profile {
+  email: string;
+  name: string | null;
+  tel: string | null;
+  type: "PERSONAL" | "BUSINESS";
+  bizNo: string | null; // 사업자회원만
+  company: string | null; // 사업자회원만
+}
+
+export async function getProfile(userId: string): Promise<Profile | null> {
+  const u = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { business: true },
+  });
+  if (!u || u.status === "WITHDRAWN") return null;
+  return {
+    email: u.email,
+    name: u.name,
+    tel: u.tel,
+    type: u.type,
+    bizNo: u.business?.bizNo ?? null,
+    company: u.business?.company ?? null,
+  };
+}
+
+export async function updateProfile(
+  userId: string,
+  input: { name?: string; tel?: string; company?: string; newPassword?: string },
+): Promise<void> {
+  const data: Prisma.UserUpdateInput = {};
+  if (input.name !== undefined) data.name = input.name || null;
+  if (input.tel !== undefined) data.tel = input.tel || null;
+  if (input.newPassword) data.passwordHash = await hashPassword(input.newPassword);
+  await prisma.user.update({ where: { id: userId }, data });
+
+  // 상호는 사업자회원만 — updateMany 라 프로필 없으면 조용히 no-op
+  if (input.company !== undefined) {
+    await prisma.businessProfile.updateMany({
+      where: { userId },
+      data: { company: input.company || null },
+    });
+  }
+}
+
+export async function withdraw(userId: string): Promise<void> {
+  await prisma.user.update({
+    where: { id: userId },
+    data: { status: "WITHDRAWN", withdrawnAt: new Date() },
+  });
+}
