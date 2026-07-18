@@ -5,3 +5,8 @@ export {
   listPendingBusinesses,
   type PendingBusiness,
 } from "@/server/auth/service";
+
+export {
+  listProductsForAdmin,
+  type AdminProductRow,
+} from "@/server/catalog/admin";
