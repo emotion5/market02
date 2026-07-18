@@ -1,8 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProductForAdmin, getProductOptions } from "@/lib/admin";
+import {
+  getProductForAdmin,
+  getProductOptions,
+  getProductImages,
+} from "@/lib/admin";
 import ProductEditForm from "@/components/admin/ProductEditForm";
 import ProductOptionsForm from "@/components/admin/ProductOptionsForm";
+import ProductImagesForm from "@/components/admin/ProductImagesForm";
 import styles from "../../../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -13,11 +18,12 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [product, options] = await Promise.all([
+  const [product, options, images] = await Promise.all([
     getProductForAdmin(id),
     getProductOptions(id),
+    getProductImages(id),
   ]);
-  if (!product || !options) notFound();
+  if (!product || !options || !images) notFound();
 
   return (
     <div className={styles.page}>
@@ -33,11 +39,19 @@ export default async function EditProductPage({
         <ProductEditForm product={product} />
       </div>
 
-      <div className={styles.card} style={{ padding: 24 }}>
+      <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>
         <ProductOptionsForm
           productId={product.id}
           variants={options.variants}
           colors={options.colors}
+        />
+      </div>
+
+      <div className={styles.card} style={{ padding: 24 }}>
+        <ProductImagesForm
+          productId={product.id}
+          repImage={images.repImage}
+          gallery={images.gallery}
         />
       </div>
     </div>

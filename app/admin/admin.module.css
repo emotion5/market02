@@ -405,3 +405,65 @@
   color: #6b7280;
   font-variant-numeric: tabular-nums;
 }
+
+/* ── 이미지 업로드 ── */
+.imgPreview {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  display: block;
+  margin-bottom: 10px;
+}
+.galleryGrid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.galleryItem {
+  position: relative;
+}
+.galleryImg {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  display: block;
+}
+.galleryDel {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: #111827;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.galleryDel:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.fileBtn {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #475569;
+}
+.fileBtn:hover {
+  background: #f8fafc;
+}
+.hiddenFile {
+  display: none;
+}

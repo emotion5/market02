@@ -10,8 +10,10 @@ export {
   listProductsForAdmin,
   getProductForAdmin,
   getProductOptions,
+  getProductImages,
   type AdminProductRow,
   type AdminProductDetail,
   type AdminProductOptions,
   type AdminVariant,
+  type AdminProductImages,
 } from "@/server/catalog/admin";

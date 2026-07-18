@@ -266,3 +266,61 @@ export async function updateProductOptions(
   });
   return true;
 }
+
+// ── 이미지 ──────────────────────────────────────────
+
+export interface AdminProductImages {
+  repImage: string;
+  gallery: { id: string; url: string }[];
+}
+
+export async function getProductImages(
+  id: string,
+): Promise<AdminProductImages | null> {
+  const p = await prisma.product.findUnique({
+    where: { id },
+    include: { images: { orderBy: { sortOrder: "asc" } } },
+  });
+  if (!p) return null;
+  return {
+    repImage: p.repImage,
+    gallery: p.images.map((i) => ({ id: i.id, url: i.url })),
+  };
+}
+
+export async function setRepImage(
+  productId: string,
+  url: string,
+): Promise<void> {
+  await prisma.product.update({
+    where: { id: productId },
+    data: { repImage: url },
+  });
+}
+
+export async function addGalleryImage(
+  productId: string,
+  url: string,
+): Promise<{ id: string; url: string }> {
+  const agg = await prisma.productImage.aggregate({
+    where: { productId },
+    _max: { sortOrder: true },
+  });
+  const img = await prisma.productImage.create({
+    data: { productId, url, sortOrder: (agg._max.sortOrder ?? -1) + 1 },
+  });
+  return { id: img.id, url: img.url };
+}
+
+// 삭제된 이미지의 url 반환(스토리지 파일 정리를 위해). 없으면 null.
+export async function removeGalleryImage(
+  productId: string,
+  imageId: string,
+): Promise<string | null> {
+  const img = await prisma.productImage.findFirst({
+    where: { id: imageId, productId },
+  });
+  if (!img) return null;
+  await prisma.productImage.delete({ where: { id: imageId } });
+  return img.url;
+}
