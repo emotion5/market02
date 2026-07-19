@@ -135,6 +135,7 @@
 /* ── 버튼 ── */
 .button {
   appearance: none;
+  display: inline-block;
   border: 1px solid #d1d5db;
   background: #fff;
   color: #374151;
@@ -142,6 +143,7 @@
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap; /* 좁은 셀에서도 '상세' 등 라벨이 줄바꿈되지 않도록 */
   cursor: pointer;
 }
 .button:hover {
