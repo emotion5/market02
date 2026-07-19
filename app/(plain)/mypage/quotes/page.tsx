@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import {
   getQuotes,
   isQuoteExpired,
@@ -28,6 +29,7 @@ function formatDate(iso: string): string {
 
 export default function QuotesPage() {
   const [quotes, setQuotes] = useState<SavedQuote[] | null>(null);
+  const settings = useSiteSettings();
 
   // localStorage는 클라이언트에서만 접근 → mount 이후 로드
   useEffect(() => {
@@ -62,7 +64,7 @@ export default function QuotesPage() {
 
       <ul className={styles.quoteList}>
         {quotes.map((quote) => {
-          const expired = isQuoteExpired(quote.issuedAt);
+          const expired = isQuoteExpired(quote.issuedAt, settings.quoteValidDays);
           const [first, ...rest] = quote.items;
 
           return (
@@ -98,7 +100,13 @@ export default function QuotesPage() {
                   <p className={styles.customer}>
                     {quote.customer.company || "상호 미입력"}
                     {" · "}
-                    유효기간 {formatDate(quoteValidUntil(quote.issuedAt).toISOString())}
+                    유효기간{" "}
+                    {formatDate(
+                      quoteValidUntil(
+                        quote.issuedAt,
+                        settings.quoteValidDays,
+                      ).toISOString(),
+                    )}
                   </p>
                 </div>
               </div>

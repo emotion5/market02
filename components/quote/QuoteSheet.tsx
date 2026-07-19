@@ -6,7 +6,7 @@ import type { CartItem } from "@/lib/types";
 import type { QuoteCustomer } from "@/lib/quotes";
 import { quoteTotals } from "@/lib/quotes";
 import { formatPrice } from "@/lib/utils";
-import { SUPPLIER, QUOTE_VALID_DAYS as VALID_DAYS } from "@/lib/constants";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import styles from "./QuoteSheet.module.css";
 
 // 숫자를 한글 금액 표기로 변환 (예: 128000 → "일십이만팔천")
@@ -74,10 +74,11 @@ export default function QuoteSheet({
   onQuantityChange,
   onRemove,
 }: QuoteSheetProps) {
+  const settings = useSiteSettings();
   const { total, supply, vat } = quoteTotals(items);
 
   const validUntil = issuedAt
-    ? new Date(issuedAt.getTime() + VALID_DAYS * 86400000)
+    ? new Date(issuedAt.getTime() + settings.quoteValidDays * 86400000)
     : null;
 
   // A4 용지를 재배치(reflow)하지 않고 화면 폭에 맞게 통째로 축소한다.
@@ -186,23 +187,23 @@ export default function QuoteSheet({
             <h2 className={styles.partyTitle}>공급자</h2>
             <div className={styles.field}>
               <label>상호</label>
-              <span className={styles.value}>{SUPPLIER.name}</span>
+              <span className={styles.value}>{settings.supplierName}</span>
             </div>
             <div className={styles.field}>
               <label>대표자</label>
-              <span className={styles.value}>{SUPPLIER.owner}</span>
+              <span className={styles.value}>{settings.supplierOwner}</span>
             </div>
             <div className={styles.field}>
               <label>사업자번호</label>
-              <span className={styles.value}>{SUPPLIER.bizNo}</span>
+              <span className={styles.value}>{settings.supplierBizNo}</span>
             </div>
             <div className={styles.field}>
               <label>주소</label>
-              <span className={styles.value}>{SUPPLIER.address}</span>
+              <span className={styles.value}>{settings.supplierAddress}</span>
             </div>
             <div className={styles.field}>
               <label>연락처</label>
-              <span className={styles.value}>{SUPPLIER.tel}</span>
+              <span className={styles.value}>{settings.supplierTel}</span>
             </div>
             <span className={styles.stamp} aria-hidden>
               인
@@ -313,7 +314,8 @@ export default function QuoteSheet({
 
         <p className={styles.note}>
           ※ 상기 단가 및 금액은 부가가치세가 포함된 금액입니다.
-          <br />※ 본 견적서의 유효기간은 발행일로부터 {VALID_DAYS}일입니다.
+          <br />※ 본 견적서의 유효기간은 발행일로부터 {settings.quoteValidDays}
+          일입니다.
         </p>
       </div>
     </div>

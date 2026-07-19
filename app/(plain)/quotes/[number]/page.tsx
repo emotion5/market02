@@ -7,6 +7,7 @@ import { Printer, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import QuoteSheet from "@/components/quote/QuoteSheet";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import {
   getQuote,
   isQuoteExpired,
@@ -28,6 +29,7 @@ export default function SavedQuotePage() {
   const number = decodeURIComponent(params.number);
   const router = useRouter();
   const { items: cartItems, addItem, clearCart } = useCart();
+  const settings = useSiteSettings();
 
   // localStorage는 클라이언트에서만 접근 → mount 이후 로드
   // (undefined = 로딩 중, null = 없는 견적번호)
@@ -53,7 +55,7 @@ export default function SavedQuotePage() {
     );
   }
 
-  const expired = isQuoteExpired(quote.issuedAt);
+  const expired = isQuoteExpired(quote.issuedAt, settings.quoteValidDays);
 
   // 발행본의 품목으로 견적서(장바구니)를 채운 뒤 결제로 보낸다.
   // 담아둔 게 있으면 덮어쓰게 되므로 먼저 확인을 받는다.
@@ -91,7 +93,9 @@ export default function SavedQuotePage() {
       <div className={styles.statusBar}>
         <span className={styles.issued}>
           {formatDate(quote.issuedAt)} 발행 · 유효기간{" "}
-          {formatDate(quoteValidUntil(quote.issuedAt).toISOString())}
+          {formatDate(
+            quoteValidUntil(quote.issuedAt, settings.quoteValidDays).toISOString(),
+          )}
         </span>
         <span className={`${styles.badge} ${expired ? styles.expired : ""}`}>
           {expired ? "유효기간 만료" : "유효"}

@@ -32,13 +32,19 @@ export function makeQuoteNumber(d: Date): string {
   )}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }
 
-// 유효기간: 발행일로부터 QUOTE_VALID_DAYS일
-export function quoteValidUntil(issuedAt: string): Date {
-  return new Date(new Date(issuedAt).getTime() + QUOTE_VALID_DAYS * 86400000);
+// 유효기간: 발행일로부터 validDays일 (기본값은 상수 폴백 — 설정 미주입 컨텍스트 대비)
+export function quoteValidUntil(
+  issuedAt: string,
+  validDays: number = QUOTE_VALID_DAYS,
+): Date {
+  return new Date(new Date(issuedAt).getTime() + validDays * 86400000);
 }
 
-export function isQuoteExpired(issuedAt: string): boolean {
-  return quoteValidUntil(issuedAt).getTime() < Date.now();
+export function isQuoteExpired(
+  issuedAt: string,
+  validDays: number = QUOTE_VALID_DAYS,
+): boolean {
+  return quoteValidUntil(issuedAt, validDays).getTime() < Date.now();
 }
 
 // 품목에서 공급가액·부가세를 계산 (표시가는 부가세 포함가)

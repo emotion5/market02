@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Mail, Phone } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "아이디 · 비밀번호 찾기 | MMM MARKET",
 };
 
-// TODO: 실제 고객센터 이메일 · 전화번호로 교체
-const CONTACT_EMAIL = "help@mmm-market.com";
-const CONTACT_PHONE = "02-000-0000";
+export default async function FindAccountPage() {
+  const { csEmail: CONTACT_EMAIL, csTel: CONTACT_PHONE } =
+    await getSiteSettings();
 
-export default function FindAccountPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>

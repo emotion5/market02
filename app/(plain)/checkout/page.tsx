@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
-import { SUPPLIER, BANK_ACCOUNT } from "@/lib/constants";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import { saveOrder, type Order } from "@/lib/orders";
 import styles from "./page.module.css";
 
@@ -17,6 +17,7 @@ function formatBizNo(value: string) {
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
+  const settings = useSiteSettings();
 
   // 주문자 / 배송 정보
   const [ordererName, setOrdererName] = useState("");
@@ -114,15 +115,15 @@ export default function CheckoutPage() {
           <dl className={styles.depositBox}>
             <div>
               <dt>입금 은행</dt>
-              <dd>{BANK_ACCOUNT.bank}</dd>
+              <dd>{settings.bankName}</dd>
             </div>
             <div>
               <dt>계좌번호</dt>
-              <dd>{BANK_ACCOUNT.number}</dd>
+              <dd>{settings.bankAccountNumber}</dd>
             </div>
             <div>
               <dt>예금주</dt>
-              <dd>{BANK_ACCOUNT.holder}</dd>
+              <dd>{settings.bankAccountHolder}</dd>
             </div>
             <div className={styles.depositAmount}>
               <dt>입금 금액</dt>
@@ -266,19 +267,19 @@ export default function CheckoutPage() {
             <dl className={styles.accountBox}>
               <div>
                 <dt>입금 은행</dt>
-                <dd>{BANK_ACCOUNT.bank}</dd>
+                <dd>{settings.bankName}</dd>
               </div>
               <div>
                 <dt>계좌번호</dt>
-                <dd>{BANK_ACCOUNT.number}</dd>
+                <dd>{settings.bankAccountNumber}</dd>
               </div>
               <div>
                 <dt>예금주</dt>
-                <dd>{BANK_ACCOUNT.holder}</dd>
+                <dd>{settings.bankAccountHolder}</dd>
               </div>
               <div>
                 <dt>공급자 사업자등록번호</dt>
-                <dd>{SUPPLIER.bizNo}</dd>
+                <dd>{settings.supplierBizNo}</dd>
               </div>
             </dl>
 
