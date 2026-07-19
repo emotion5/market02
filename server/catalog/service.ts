@@ -34,7 +34,13 @@ function variantPrice(
 }
 
 function toVariant(v: ListRow["variants"][number], wholesale: boolean): Variant {
-  return { id: v.id, name: v.name, price: variantPrice(v, wholesale) };
+  // price = 뷰어 실지불가(자격 있으면 회원도매가), consumerPrice = 항상 소비자가(표시용)
+  return {
+    id: v.id,
+    name: v.name,
+    price: variantPrice(v, wholesale),
+    consumerPrice: v.price,
+  };
 }
 
 function toListProduct(p: ListRow, wholesale: boolean): Product {

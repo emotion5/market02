@@ -10,9 +10,11 @@ import styles from "./ProductDetail.module.css";
 export default function ProductDetail({
   product,
   variant = "page",
+  wholesale = false,
 }: {
   product: Product;
   variant?: "page" | "modal";
+  wholesale?: boolean; // 회원도매가 노출 자격(승인 사업자). 기본 비노출
 }) {
   const category = getCategory(product.category);
   const images = product.images ?? [product.image];
@@ -51,7 +53,7 @@ export default function ProductDetail({
       <div className={styles.info}>
         {category && <p className={styles.category}>{category.name}</p>}
         <h1 className={styles.name}>{product.name}</h1>
-        <VariantSelector product={product} />
+        <VariantSelector product={product} wholesale={wholesale} />
         <ProductAccordion items={accordionItems} />
       </div>
     </div>

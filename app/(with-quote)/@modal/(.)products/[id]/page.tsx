@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProduct } from "@/lib/data";
+import { getProduct, isWholesaleViewer } from "@/lib/data";
 import ProductModal from "@/components/product/ProductModal";
 import ProductDetail from "@/components/product/ProductDetail";
 
@@ -11,12 +11,15 @@ export default async function ProductModalPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = await getProduct(id);
+  const [product, wholesale] = await Promise.all([
+    getProduct(id),
+    isWholesaleViewer(),
+  ]);
   if (!product) notFound();
 
   return (
     <ProductModal>
-      <ProductDetail product={product} variant="modal" />
+      <ProductDetail product={product} variant="modal" wholesale={wholesale} />
     </ProductModal>
   );
 }

@@ -17,7 +17,8 @@ export type { FeaturedSection };
 
 // 로그인한 승인 사업자회원(BUSINESS + ACTIVE)이면 회원도매가 적용.
 // (type/status 는 세션 토큰이 아니라 DB에서 확인 — 승인 직후에도 즉시 반영)
-async function isWholesaleViewer(): Promise<boolean> {
+// 상세페이지가 회원도매가 줄을 노출할지 판단할 때도 이 값을 그대로 쓴다.
+export async function isWholesaleViewer(): Promise<boolean> {
   const session = await getSessionUser();
   if (!session) return false;
   const user = await prisma.user.findUnique({

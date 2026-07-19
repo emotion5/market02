@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "@/lib/types";
-import { formatPrice, getConsumerPrice } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/hooks/useCart";
 import styles from "./VariantSelector.module.css";
 
@@ -14,8 +14,14 @@ interface Selection {
   quantity: number;
 }
 
-// 옵션이 하나뿐인 단독 상품: 옵션 선택 없이 소비자가·회원도매가와 수량만 노출
-function SingleVariantSelector({ product }: { product: Product }) {
+// 옵션이 하나뿐인 단독 상품: 소비자가는 항상, 회원도매가는 자격자(승인 사업자)만 노출
+function SingleVariantSelector({
+  product,
+  wholesale,
+}: {
+  product: Product;
+  wholesale: boolean;
+}) {
   const { addItem } = useCart();
   const hasColors = !!(product.colors && product.colors.length > 0);
   const [color, setColor] = useState(product.colors?.[0] ?? "");
@@ -27,7 +33,7 @@ function SingleVariantSelector({ product }: { product: Product }) {
   const setQuantity = (q: number) => setQtyInput(String(Math.max(1, q)));
 
   const variant = product.variants[0];
-  const consumerTotal = getConsumerPrice(variant.price) * quantity;
+  const consumerTotal = variant.consumerPrice * quantity;
   const memberTotal = variant.price * quantity;
 
   const handleAdd = () => {
@@ -107,16 +113,18 @@ function SingleVariantSelector({ product }: { product: Product }) {
       <div className={styles.total}>
         <div className={styles.priceRow}>
           <span className={styles.priceLabel}>소비자가</span>
-          <span className={styles.consumerPrice}>
+          <span className={wholesale ? styles.consumerPrice : styles.memberPrice}>
             {formatPrice(consumerTotal)}
           </span>
         </div>
-        <div className={styles.priceRow}>
-          <span className={styles.priceLabel}>회원도매가</span>
-          <strong className={styles.memberPrice}>
-            {formatPrice(memberTotal)}
-          </strong>
-        </div>
+        {wholesale && (
+          <div className={styles.priceRow}>
+            <span className={styles.priceLabel}>회원도매가</span>
+            <strong className={styles.memberPrice}>
+              {formatPrice(memberTotal)}
+            </strong>
+          </div>
+        )}
       </div>
 
       <button type="button" className={styles.addButton} onClick={handleAdd}>
@@ -127,14 +135,26 @@ function SingleVariantSelector({ product }: { product: Product }) {
 }
 
 // 옵션 개수에 따라 단독/다중 선택 UI로 분기
-export default function VariantSelector({ product }: { product: Product }) {
+export default function VariantSelector({
+  product,
+  wholesale = false,
+}: {
+  product: Product;
+  wholesale?: boolean;
+}) {
   if (product.variants.length === 1) {
-    return <SingleVariantSelector product={product} />;
+    return <SingleVariantSelector product={product} wholesale={wholesale} />;
   }
-  return <MultiVariantSelector product={product} />;
+  return <MultiVariantSelector product={product} wholesale={wholesale} />;
 }
 
-function MultiVariantSelector({ product }: { product: Product }) {
+function MultiVariantSelector({
+  product,
+  wholesale,
+}: {
+  product: Product;
+  wholesale: boolean;
+}) {
   const { addItem } = useCart();
   const hasColors = !!(product.colors && product.colors.length > 0);
   const [color, setColor] = useState(product.colors?.[0] ?? "");
@@ -177,8 +197,7 @@ function MultiVariantSelector({ product }: { product: Product }) {
     0,
   );
   const consumerTotal = selections.reduce(
-    (sum, s) =>
-      sum + getConsumerPrice(variantOf(s.variantId).price) * s.quantity,
+    (sum, s) => sum + variantOf(s.variantId).consumerPrice * s.quantity,
     0,
   );
 
@@ -308,16 +327,18 @@ function MultiVariantSelector({ product }: { product: Product }) {
       <div className={styles.total}>
         <div className={styles.priceRow}>
           <span className={styles.priceLabel}>소비자가</span>
-          <span className={styles.consumerPrice}>
+          <span className={wholesale ? styles.consumerPrice : styles.memberPrice}>
             {formatPrice(consumerTotal)}
           </span>
         </div>
-        <div className={styles.priceRow}>
-          <span className={styles.priceLabel}>회원도매가</span>
-          <strong className={styles.memberPrice}>
-            {formatPrice(memberTotal)}
-          </strong>
-        </div>
+        {wholesale && (
+          <div className={styles.priceRow}>
+            <span className={styles.priceLabel}>회원도매가</span>
+            <strong className={styles.memberPrice}>
+              {formatPrice(memberTotal)}
+            </strong>
+          </div>
+        )}
       </div>
 
       <button

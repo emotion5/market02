@@ -1,7 +1,8 @@
 export interface Variant {
   id: string;
   name: string; // 예: "크롬", "무광 블랙"
-  price: number; // 옵션별 판매가 (원)
+  price: number; // 뷰어가 실제 지불하는 가격(견적·장바구니 기준). 비회원=소비자가, 승인 사업자=회원도매가
+  consumerPrice: number; // 표시용 소비자가(항상 실제 소비자가). 회원도매가 노출은 자격 있는 뷰어에게만
 }
 
 export interface Product {

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProduct } from "@/lib/data";
+import { getProduct, isWholesaleViewer } from "@/lib/data";
 import { getCategory } from "@/lib/constants";
 import ProductDetail from "@/components/product/ProductDetail";
 import styles from "./page.module.css";
@@ -11,7 +11,10 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = await getProduct(id);
+  const [product, wholesale] = await Promise.all([
+    getProduct(id),
+    isWholesaleViewer(),
+  ]);
   if (!product) notFound();
 
   const category = getCategory(product.category);
@@ -34,7 +37,7 @@ export default async function ProductDetailPage({
         <span className={styles.current}>{product.name}</span>
       </nav>
 
-      <ProductDetail product={product} />
+      <ProductDetail product={product} wholesale={wholesale} />
     </div>
   );
 }
