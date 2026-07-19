@@ -8,9 +8,10 @@ import styles from "@/app/admin/admin.module.css";
 const ITEMS = [
   { href: "/admin/members", label: "회원 관리" },
   { href: "/admin/products", label: "상품 관리" },
+  { href: "/admin/orders", label: "주문 관리" },
   { href: "/admin/settings", label: "사이트 설정" },
 ];
-const SOON = ["주문 관리", "세금계산서"];
+const SOON = ["견적서 관리", "세금계산서"];
 
 export default function AdminNav() {
   const pathname = usePathname();

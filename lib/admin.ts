@@ -21,6 +21,17 @@ export {
 export { getSiteSettings } from "@/server/settings/service";
 
 export {
+  listOrdersForAdmin,
+  getOrderForAdmin,
+  ORDER_PAGE_SIZE,
+  type AdminOrderRow,
+  type AdminOrderListResult,
+  type AdminOrderDetail,
+  type AdminOrderItem,
+  type TaxInvoiceState,
+} from "@/server/orders/admin";
+
+export {
   listProductsForAdmin,
   getProductForAdmin,
   getProductOptions,

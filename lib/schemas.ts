@@ -155,5 +155,19 @@ export const orderDraftSchema = z.object({
     .min(1, "주문할 상품이 없습니다."),
 });
 export type OrderDraftSchemaInput = z.infer<typeof orderDraftSchema>;
+
+// 주문 상태 전이(어드민)
+export const orderActionSchema = z.object({
+  action: z.enum([
+    "confirm_deposit",
+    "start_preparing",
+    "start_shipping",
+    "complete_delivery",
+    "issue_tax_invoice",
+  ]),
+  courier: z.string().trim().max(50).optional(),
+  trackingNumber: z.string().trim().max(50).optional(),
+});
+export type OrderActionInput = z.infer<typeof orderActionSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;
 export type BusinessSignupInput = z.infer<typeof businessSignupSchema>;
