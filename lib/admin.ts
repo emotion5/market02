@@ -32,6 +32,16 @@ export {
 } from "@/server/orders/admin";
 
 export {
+  listQuotesForAdmin,
+  getQuoteForAdmin,
+  QUOTE_PAGE_SIZE,
+  type AdminQuoteRow,
+  type AdminQuoteListResult,
+  type AdminQuoteDetail,
+  type AdminQuoteItem,
+} from "@/server/quotes/admin";
+
+export {
   listProductsForAdmin,
   getProductForAdmin,
   getProductOptions,
