@@ -467,3 +467,50 @@
 .hiddenFile {
   display: none;
 }
+
+/* ── 홈 노출 편성 (featured) ── */
+.featEmpty {
+  padding: 20px 12px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+  border: 1px dashed #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.featList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.featRow {
+  display: grid;
+  grid-template-columns: 24px 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #eef0f2;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+.featOrder {
+  font-size: 13px;
+  font-weight: 700;
+  color: #9ca3af;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.featName {
+  min-width: 0;
+}
+.featControls {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.featAdd {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}

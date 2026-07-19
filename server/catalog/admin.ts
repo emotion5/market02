@@ -1,5 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/db";
+import { FEATURED_MAX } from "@/lib/constants";
+
+export { FEATURED_MAX };
 
 // 어드민 상품 관리용 조회/쓰기 (공개 카탈로그의 repo/service 와 분리).
 // 공개 쪽은 isActive=true 만 보지만, 어드민은 비활성 포함 전체를 본다.
@@ -323,4 +326,98 @@ export async function removeGalleryImage(
   if (!img) return null;
   await prisma.productImage.delete({ where: { id: imageId } });
   return img.url;
+}
+
+// ── 홈 큐레이션 (featured) ──────────────────────────
+// 카테고리별로 홈에 노출할 상품과 순서를 편성한다(featured.json 대체).
+
+export interface AdminFeaturedItem {
+  id: string;
+  name: string;
+  image: string;
+  isActive: boolean;
+}
+export interface AdminFeaturedCategory {
+  slug: string;
+  name: string;
+  products: AdminFeaturedItem[]; // 카테고리의 모든 상품(비활성 포함), sortOrder 순 — 편성 후보
+  featuredIds: string[]; // 현재 편성된 상품 id, 노출 순서대로
+}
+
+// FEATURED_MAX(카테고리당 최대 노출 수)는 lib/constants 에서 공용 정의(위에서 re-export).
+export async function getFeaturedForAdmin(): Promise<AdminFeaturedCategory[]> {
+  const [cats, products, featured] = await Promise.all([
+    prisma.category.findMany({ orderBy: { sortOrder: "asc" } }),
+    prisma.product.findMany({
+      orderBy: [{ categorySlug: "asc" }, { sortOrder: "asc" }],
+      select: {
+        id: true,
+        name: true,
+        repImage: true,
+        isActive: true,
+        categorySlug: true,
+      },
+    }),
+    prisma.featured.findMany({
+      orderBy: [{ categorySlug: "asc" }, { sortOrder: "asc" }],
+      select: { categorySlug: true, productId: true },
+    }),
+  ]);
+
+  const prodByCat = new Map<string, AdminFeaturedItem[]>();
+  for (const p of products) {
+    const list = prodByCat.get(p.categorySlug) ?? [];
+    list.push({ id: p.id, name: p.name, image: p.repImage, isActive: p.isActive });
+    prodByCat.set(p.categorySlug, list);
+  }
+  const featByCat = new Map<string, string[]>();
+  for (const f of featured) {
+    const list = featByCat.get(f.categorySlug) ?? [];
+    list.push(f.productId);
+    featByCat.set(f.categorySlug, list);
+  }
+
+  return cats.map((c) => ({
+    slug: c.slug,
+    name: c.nameKo,
+    products: prodByCat.get(c.slug) ?? [],
+    featuredIds: featByCat.get(c.slug) ?? [],
+  }));
+}
+
+// 한 카테고리의 편성 목록을 통째로 교체. 요청 순서를 sortOrder 로 반영.
+// 존재하지 않거나 다른 카테고리 상품 id 는 조용히 걸러내고, 중복도 제거한다.
+export async function setFeatured(
+  categorySlug: string,
+  productIds: string[],
+): Promise<boolean> {
+  const cat = await prisma.category.findUnique({
+    where: { slug: categorySlug },
+    select: { slug: true },
+  });
+  if (!cat) return false;
+
+  const valid = await prisma.product.findMany({
+    where: { id: { in: productIds }, categorySlug },
+    select: { id: true },
+  });
+  const validSet = new Set(valid.map((p) => p.id));
+  const seen = new Set<string>();
+  const ordered = productIds.filter(
+    (id) => validSet.has(id) && !seen.has(id) && (seen.add(id), true),
+  );
+
+  await prisma.$transaction(async (tx) => {
+    await tx.featured.deleteMany({ where: { categorySlug } });
+    if (ordered.length) {
+      await tx.featured.createMany({
+        data: ordered.map((productId, i) => ({
+          categorySlug,
+          productId,
+          sortOrder: i,
+        })),
+      });
+    }
+  });
+  return true;
 }

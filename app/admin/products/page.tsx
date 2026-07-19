@@ -17,7 +17,7 @@ export default async function AdminProductsPage({
     <div className={styles.page}>
       <h1 className={styles.pageTitle}>상품 관리</h1>
       <p className={styles.pageDesc}>
-        등록된 상품을 조회합니다. (등록·수정은 다음 단계)
+        상품을 등록·수정하고 옵션·가격·이미지를 관리합니다.
       </p>
 
       <div className={styles.toolbar}>
@@ -56,6 +56,9 @@ export default async function AdminProductsPage({
               검색
             </button>
           </form>
+          <Link href="/admin/products/featured" className={styles.button}>
+            홈 노출 편성
+          </Link>
           <Link
             href="/admin/products/new"
             className={`${styles.button} ${styles.buttonPrimary}`}

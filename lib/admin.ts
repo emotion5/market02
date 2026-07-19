@@ -11,9 +11,13 @@ export {
   getProductForAdmin,
   getProductOptions,
   getProductImages,
+  getFeaturedForAdmin,
+  FEATURED_MAX,
   type AdminProductRow,
   type AdminProductDetail,
   type AdminProductOptions,
   type AdminVariant,
   type AdminProductImages,
+  type AdminFeaturedCategory,
+  type AdminFeaturedItem,
 } from "@/server/catalog/admin";

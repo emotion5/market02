@@ -34,3 +34,6 @@ export const BANK_ACCOUNT = {
 
 // 견적서 유효기간 (발행일로부터 일수)
 export const QUOTE_VALID_DAYS = 14;
+
+// 홈 큐레이션(featured) 카테고리당 최대 노출 수 (4열 × 2행). 클라이언트·서버 공용 상수.
+export const FEATURED_MAX = 8;

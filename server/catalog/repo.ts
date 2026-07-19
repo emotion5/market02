@@ -58,6 +58,7 @@ export function findCategories() {
 
 export function findFeatured() {
   return prisma.featured.findMany({
+    where: { product: { isActive: true } }, // 편성돼 있어도 비활성 상품은 홈에서 제외
     orderBy: [{ categorySlug: "asc" }, { sortOrder: "asc" }],
     include: { product: { include: listInclude } },
   });
