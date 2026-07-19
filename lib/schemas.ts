@@ -128,5 +128,32 @@ export const quoteDraftSchema = z.object({
     .min(1, "견적서에 담긴 상품이 없습니다."),
 });
 export type QuoteDraftSchemaInput = z.infer<typeof quoteDraftSchema>;
+
+// 주문 생성(소비자) — 가격·주문번호는 서버가 산정.
+export const orderDraftSchema = z.object({
+  orderer: z.object({
+    name: z.string().trim().min(1, "받는 분을 입력하세요.").max(50),
+    tel: z.string().trim().min(1, "연락처를 입력하세요.").max(30),
+    address: z.string().trim().min(1, "배송지를 입력하세요.").max(200),
+    memo: z.string().trim().max(200).optional(),
+  }),
+  depositor: z.string().trim().min(1, "입금자명을 입력하세요.").max(50),
+  taxInvoice: z.object({
+    requested: z.boolean(),
+    bizNo: z.string().trim().max(20).optional(),
+    company: z.string().trim().max(100).optional(),
+  }),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1),
+        variantId: z.string().min(1),
+        quantity: z.number().int().min(1).max(9999),
+        color: z.string().max(20).optional(),
+      }),
+    )
+    .min(1, "주문할 상품이 없습니다."),
+});
+export type OrderDraftSchemaInput = z.infer<typeof orderDraftSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;
 export type BusinessSignupInput = z.infer<typeof businessSignupSchema>;

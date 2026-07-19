@@ -7,9 +7,11 @@ export type OrderStatus =
   | "shipping" // 배송중
   | "delivered"; // 배송완료
 
+// 서버(DB)에서 내려오는 주문 한 건. 주문 시점 값을 그대로 굳힌 스냅샷.
 export interface Order {
   orderNo: string;
-  createdAt: string; // ISO 문자열
+  createdAt: string; // ISO
+  status: OrderStatus; // 저장된 실제 상태(관리자가 진행) — 더 이상 시간 기반 목이 아님
   items: CartItem[];
   total: number;
   supply: number;
@@ -25,10 +27,24 @@ export interface Order {
     requested: boolean;
     bizNo?: string;
     company?: string;
+    issued: boolean; // 발행완료 여부(관리자 처리)
   };
+  courier?: string;
+  trackingNumber?: string;
 }
 
-const STORAGE_KEY = "market02-orders";
+// 주문 생성 요청(클라이언트 → 서버). 가격·주문번호는 서버가 산정한다.
+export interface OrderDraftInput {
+  orderer: { name: string; tel: string; address: string; memo?: string };
+  depositor: string;
+  taxInvoice: { requested: boolean; bizNo?: string; company?: string };
+  items: {
+    productId: string;
+    variantId: string;
+    quantity: number;
+    color?: string;
+  }[];
+}
 
 // 상태 진행 순서와 라벨
 export const STATUS_FLOW: OrderStatus[] = [
@@ -47,44 +63,13 @@ export const STATUS_LABEL: Record<OrderStatus, string> = {
   delivered: "배송완료",
 };
 
-// ── 목(mock) 배송 시뮬레이션 ────────────────────────────
-// 백엔드가 없으므로 주문 후 경과 시간에 따라 상태를 자동 진행시킨다.
-// (실 서비스에서는 서버가 관리하는 실제 상태로 대체)
-export function deriveStatus(createdAt: string): OrderStatus {
-  const mins = (Date.now() - new Date(createdAt).getTime()) / 60000;
-  if (mins < 1) return "pending";
-  if (mins < 2) return "paid";
-  if (mins < 4) return "preparing";
-  if (mins < 7) return "shipping";
-  return "delivered";
-}
+// 운송장이 아직 없을 때 표시할 기본 택배사명
+export const DEFAULT_COURIER = "MMM 물류 (택배)";
 
-// 주문번호에서 안정적인 목 운송장 번호 생성
-export function trackingNumber(orderNo: string): string {
-  const digits = orderNo.replace(/\D/g, "");
-  return `6${digits.slice(-11).padStart(11, "0")}`;
-}
-
-export const COURIER = "MMM 물류 (택배)";
-
-// ── 저장/조회 ──────────────────────────────────────────
-export function getOrders(): Order[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Order[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function saveOrder(order: Order): void {
-  if (typeof window === "undefined") return;
-  const orders = getOrders();
-  // 최신 주문이 앞에 오도록
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([order, ...orders]));
-}
-
-export function getOrder(orderNo: string): Order | undefined {
-  return getOrders().find((o) => o.orderNo === orderNo);
+// 주문번호: YYYYMMDD-HHMMSS (초까지 → 같은 분 다건도 구분). 서버 채번에 사용.
+export function makeOrderNo(d: Date): string {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(
+    d.getHours(),
+  )}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }

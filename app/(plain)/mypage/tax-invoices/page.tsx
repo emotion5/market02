@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Receipt } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
-import { getOrders, deriveStatus, type Order } from "@/lib/orders";
+import { type Order } from "@/lib/orders";
 import styles from "./page.module.css";
 
 function formatDate(iso: string): string {
@@ -16,8 +16,18 @@ export default function TaxInvoicesPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOrders(getOrders());
+    let alive = true;
+    fetch("/api/orders")
+      .then((res) => (res.ok ? res.json() : { orders: [] }))
+      .then((data) => {
+        if (alive) setOrders(data.orders ?? []);
+      })
+      .catch(() => {
+        if (alive) setOrders([]);
+      });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   if (orders === null) {
@@ -63,7 +73,7 @@ export default function TaxInvoicesPage() {
           </thead>
           <tbody>
             {invoices.map((o) => {
-              const issued = deriveStatus(o.createdAt) !== "pending";
+              const issued = o.taxInvoice.issued;
               return (
                 <tr key={o.orderNo}>
                   <td>{formatDate(o.createdAt)}</td>

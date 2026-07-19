@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
-import { saveOrder, type Order } from "@/lib/orders";
+import { type Order } from "@/lib/orders";
 import styles from "./page.module.css";
 
 // 사업자등록번호 10자리를 000-00-00000 형태로 표시
@@ -16,6 +17,7 @@ function formatBizNo(value: string) {
 }
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { items, totalPrice, clearCart } = useCart();
   const settings = useSiteSettings();
 
@@ -33,50 +35,61 @@ export default function CheckoutPage() {
   const [bizNo, setBizNo] = useState("");
   const [company, setCompany] = useState("");
 
-  // 주문 완료 시점의 스냅샷 (라이브 장바구니와 분리)
+  // 주문 완료 시점의 스냅샷 (서버가 확정해 내려준 주문)
   const [completed, setCompleted] = useState<Order | null>(null);
+  const [error, setError] = useState("");
+  const [placing, setPlacing] = useState(false);
 
   const supply = Math.round(totalPrice / 1.1);
   const vat = totalPrice - supply;
 
-  // 주문번호는 하이드레이션 불일치를 피하려 완료 시점(클라이언트)에서 생성
-  const placeOrder = () => {
-    const now = new Date();
-    const no = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(
-      2,
-      "0",
-    )}${String(now.getDate()).padStart(2, "0")}-${String(
-      now.getHours(),
-    ).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(
-      now.getSeconds(),
-    ).padStart(2, "0")}`;
-
-    // 주문 시점 값을 그대로 복사한 스냅샷 (이후 상품 가격이 바뀌어도 불변)
-    const order: Order = {
-      orderNo: no,
-      createdAt: now.toISOString(),
-      items,
-      total: totalPrice,
-      supply,
-      vat,
-      orderer: {
-        name: ordererName,
-        tel: ordererTel,
-        address,
-        memo: memo || undefined,
-      },
-      depositor,
-      taxInvoice: {
-        requested: taxInvoice,
-        bizNo: taxInvoice ? bizNo : undefined,
-        company: taxInvoice ? company || undefined : undefined,
-      },
-    };
-
-    // 히스토리에 저장하고, 주문된 상품은 견적(장바구니)에서 비운다
-    saveOrder(order);
-    clearCart();
-    setCompleted(order);
+  // 주문은 로그인 사용자에 귀속되며, 가격·주문번호는 서버가 확정한다.
+  const placeOrder = async () => {
+    setError("");
+    setPlacing(true);
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          orderer: {
+            name: ordererName,
+            tel: ordererTel,
+            address,
+            memo: memo || undefined,
+          },
+          depositor,
+          taxInvoice: {
+            requested: taxInvoice,
+            bizNo: taxInvoice ? bizNo : undefined,
+            company: taxInvoice ? company || undefined : undefined,
+          },
+          items: items.map((i) => ({
+            productId: i.productId,
+            variantId: i.variantId,
+            quantity: i.quantity,
+            color: i.color,
+          })),
+        }),
+      });
+      if (res.status === 401) {
+        setError("주문은 로그인이 필요합니다.");
+        router.push("/login");
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "주문에 실패했습니다.");
+        return;
+      }
+      // 주문된 상품은 견적(장바구니)에서 비운다
+      clearCart();
+      setCompleted(data.order as Order);
+    } catch {
+      setError("네트워크 오류가 발생했습니다.");
+    } finally {
+      setPlacing(false);
+    }
   };
 
   const canOrder =
@@ -89,8 +102,7 @@ export default function CheckoutPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canOrder) return;
-    // TODO: 백엔드 연동 (주문 저장·입금 대기 처리·세금계산서 발행) — 현재는 UI만 구성
+    if (!canOrder || placing) return;
     placeOrder();
   };
 
@@ -364,10 +376,11 @@ export default function CheckoutPage() {
           <button
             type="submit"
             className={styles.orderButton}
-            disabled={!canOrder}
+            disabled={!canOrder || placing}
           >
-            {formatPrice(totalPrice)} 주문하기
+            {placing ? "주문 처리 중…" : `${formatPrice(totalPrice)} 주문하기`}
           </button>
+          {error && <p className={styles.error}>{error}</p>}
           <p className={styles.agree}>
             주문 내용을 확인하였으며 무통장입금 결제에 동의합니다.
           </p>

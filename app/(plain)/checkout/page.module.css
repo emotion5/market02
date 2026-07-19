@@ -414,3 +414,11 @@
 .emptyLink:hover {
   opacity: 0.85;
 }
+
+/* 주문 실패·로그인 필요 등 안내 */
+.error {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #c0392b;
+  text-align: center;
+}
