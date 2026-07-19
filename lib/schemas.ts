@@ -108,5 +108,25 @@ export const siteSettingsSchema = z.object({
   csTel: req(30, "고객센터 전화번호를 입력하세요."),
 });
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+
+// 견적 발행(소비자) — 가격·번호·유효기한은 서버가 산정하므로 여기선 담지 않는다.
+export const quoteDraftSchema = z.object({
+  customer: z.object({
+    company: z.string().trim().min(1, "상호를 입력하세요.").max(100),
+    contactName: z.string().trim().max(50),
+    contactTel: z.string().trim().max(30),
+  }),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1),
+        variantId: z.string().min(1),
+        quantity: z.number().int().min(1).max(9999),
+        color: z.string().max(20).optional(),
+      }),
+    )
+    .min(1, "견적서에 담긴 상품이 없습니다."),
+});
+export type QuoteDraftSchemaInput = z.infer<typeof quoteDraftSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;
 export type BusinessSignupInput = z.infer<typeof businessSignupSchema>;

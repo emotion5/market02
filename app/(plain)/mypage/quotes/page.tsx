@@ -4,13 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
-import { useSiteSettings } from "@/components/SiteSettingsProvider";
-import {
-  getQuotes,
-  isQuoteExpired,
-  quoteValidUntil,
-  type SavedQuote,
-} from "@/lib/quotes";
+import { type SavedQuote } from "@/lib/quotes";
 import styles from "./page.module.css";
 
 function formatDateTime(iso: string): string {
@@ -29,12 +23,20 @@ function formatDate(iso: string): string {
 
 export default function QuotesPage() {
   const [quotes, setQuotes] = useState<SavedQuote[] | null>(null);
-  const settings = useSiteSettings();
 
-  // localStorage는 클라이언트에서만 접근 → mount 이후 로드
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setQuotes(getQuotes());
+    let alive = true;
+    fetch("/api/quotes")
+      .then((res) => (res.ok ? res.json() : { quotes: [] }))
+      .then((data) => {
+        if (alive) setQuotes(data.quotes ?? []);
+      })
+      .catch(() => {
+        if (alive) setQuotes([]);
+      });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   if (quotes === null) {
@@ -64,7 +66,7 @@ export default function QuotesPage() {
 
       <ul className={styles.quoteList}>
         {quotes.map((quote) => {
-          const expired = isQuoteExpired(quote.issuedAt, settings.quoteValidDays);
+          const expired = quote.expired;
           const [first, ...rest] = quote.items;
 
           return (
@@ -100,13 +102,7 @@ export default function QuotesPage() {
                   <p className={styles.customer}>
                     {quote.customer.company || "상호 미입력"}
                     {" · "}
-                    유효기간{" "}
-                    {formatDate(
-                      quoteValidUntil(
-                        quote.issuedAt,
-                        settings.quoteValidDays,
-                      ).toISOString(),
-                    )}
+                    유효기간 {formatDate(quote.validUntil)}
                   </p>
                 </div>
               </div>

@@ -7,12 +7,7 @@ import { Printer, FileCheck } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import QuoteSheet from "@/components/quote/QuoteSheet";
-import {
-  makeQuoteNumber,
-  quoteTotals,
-  saveQuote,
-  type QuoteCustomer,
-} from "@/lib/quotes";
+import { makeQuoteNumber, type QuoteCustomer } from "@/lib/quotes";
 import styles from "./page.module.css";
 
 // 작성 중인 견적서 = 담아둔 상품(장바구니). 화면에 보이는 견적번호·발행일은
@@ -28,6 +23,7 @@ export default function QuotePage() {
     contactTel: "",
   });
   const [error, setError] = useState("");
+  const [publishing, setPublishing] = useState(false);
 
   // 발행일·견적번호 미리보기는 하이드레이션 불일치를 피하려 mount 이후 생성
   const [preview, setPreview] = useState<{ date: Date; number: string } | null>(
@@ -40,25 +36,44 @@ export default function QuotePage() {
     setPreview({ date: now, number: makeQuoteNumber(now) });
   }, []);
 
-  const publish = () => {
+  const publish = async () => {
     if (!customer.company.trim()) {
       setError("공급받는 자의 상호를 입력해주세요.");
       return;
     }
-    // 미리보기 시각이 아니라 '발행을 누른 지금'으로 번호와 날짜를 굳힌다
-    const now = new Date();
-    const number = makeQuoteNumber(now);
-    const { total, supply, vat } = quoteTotals(items);
-    saveQuote({
-      number,
-      issuedAt: now.toISOString(),
-      items,
-      customer,
-      total,
-      supply,
-      vat,
-    });
-    router.push(`/quotes/${number}`);
+    setError("");
+    setPublishing(true);
+    try {
+      const res = await fetch("/api/quotes", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          customer,
+          items: items.map((i) => ({
+            productId: i.productId,
+            variantId: i.variantId,
+            quantity: i.quantity,
+            color: i.color,
+          })),
+        }),
+      });
+      if (res.status === 401) {
+        // 발행은 로그인 사용자에 귀속된다 → 로그인 후 다시 시도(장바구니는 유지됨)
+        setError("견적서 발행은 로그인이 필요합니다.");
+        router.push("/login");
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "견적서 발행에 실패했습니다.");
+        return;
+      }
+      router.push(`/quotes/${data.number}`);
+    } catch {
+      setError("네트워크 오류가 발생했습니다.");
+    } finally {
+      setPublishing(false);
+    }
   };
 
   if (items.length === 0) {
@@ -110,9 +125,14 @@ export default function QuotePage() {
           <span>결제 예정 금액</span>
           <strong>{formatPrice(totalPrice)}</strong>
         </div>
-        <button type="button" className={styles.publishButton} onClick={publish}>
+        <button
+          type="button"
+          className={styles.publishButton}
+          onClick={publish}
+          disabled={publishing}
+        >
           <FileCheck size={16} strokeWidth={1.75} />
-          견적서 발행
+          {publishing ? "발행 중…" : "견적서 발행"}
         </button>
         <Link href="/checkout" className={styles.orderButton}>
           주문 / 결제하기

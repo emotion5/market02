@@ -48,6 +48,9 @@ function formatDate(d: Date): string {
 interface QuoteSheetProps {
   number: string | null; // 아직 정해지지 않았으면 null → "—"
   issuedAt: Date | null;
+  // 발행본은 발행 당시 유효기한을 그대로 넘긴다(스냅샷). 작성 중 미리보기는
+  // 생략하면 현재 설정(유효기간 일수)으로 계산한다.
+  validUntil?: Date | null;
   items: CartItem[];
   customer: QuoteCustomer;
   /* 작성 중일 때만 true — 공급받는 자 입력, 수량 조절, 품목 삭제가 열린다.
@@ -67,6 +70,7 @@ interface QuoteSheetProps {
 export default function QuoteSheet({
   number,
   issuedAt,
+  validUntil: validUntilProp,
   items,
   customer,
   editable = false,
@@ -77,9 +81,12 @@ export default function QuoteSheet({
   const settings = useSiteSettings();
   const { total, supply, vat } = quoteTotals(items);
 
-  const validUntil = issuedAt
-    ? new Date(issuedAt.getTime() + settings.quoteValidDays * 86400000)
-    : null;
+  // 발행본은 넘어온 유효기한을 그대로, 미리보기는 현재 설정으로 계산
+  const validUntil =
+    validUntilProp ??
+    (issuedAt
+      ? new Date(issuedAt.getTime() + settings.quoteValidDays * 86400000)
+      : null);
 
   // A4 용지를 재배치(reflow)하지 않고 화면 폭에 맞게 통째로 축소한다.
   // (PDF 뷰어의 "페이지 폭 맞춤"과 동일 — 데스크톱/모바일이 같은 모양)

@@ -1,5 +1,4 @@
 import type { CartItem } from "./types";
-import { QUOTE_VALID_DAYS } from "./constants";
 
 // 공급받는 자 (견적서를 받는 쪽) 정보
 export interface QuoteCustomer {
@@ -8,12 +7,13 @@ export interface QuoteCustomer {
   contactTel: string;
 }
 
-// 발행된 견적서. 발행 시점의 번호·날짜·품목·가격을 그대로 굳혀 보관한다 —
-// 고객에게 보낸 문서와 나중에 다시 열어본 문서가 같아야 하므로,
-// 이후 장바구니를 바꾸거나 상품 가격이 변해도 여기엔 영향이 없다.
+// 발행된 견적서(서버/DB에서 내려오는 표현). 발행 시점의 번호·날짜·유효기한·품목·가격을
+// 그대로 굳혀 보관한다 — 이후 장바구니나 상품 가격이 변해도 여기엔 영향이 없다.
 export interface SavedQuote {
   number: string; // 예: Q-20260716-142530
   issuedAt: string; // ISO 문자열
+  validUntil: string; // ISO — 발행 시점 유효기한(스냅샷)
+  expired: boolean; // 서버 계산(validUntil < now)
   items: CartItem[];
   customer: QuoteCustomer;
   total: number;
@@ -21,7 +21,16 @@ export interface SavedQuote {
   vat: number;
 }
 
-const STORAGE_KEY = "market02-quotes";
+// 견적 발행 요청(클라이언트 → 서버). 가격·번호·유효기한은 서버가 산정한다.
+export interface QuoteDraftInput {
+  customer: QuoteCustomer;
+  items: {
+    productId: string;
+    variantId: string; // 색상 포함 합성 id 가능("<vid>::<color>")
+    quantity: number;
+    color?: string;
+  }[];
+}
 
 // 견적번호는 발행 시각으로 만든다. 초까지 넣어야 같은 분에 두 건을 발행해도
 // 번호가 겹치지 않는다 (번호가 곧 조회 키다).
@@ -32,23 +41,8 @@ export function makeQuoteNumber(d: Date): string {
   )}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }
 
-// 유효기간: 발행일로부터 validDays일 (기본값은 상수 폴백 — 설정 미주입 컨텍스트 대비)
-export function quoteValidUntil(
-  issuedAt: string,
-  validDays: number = QUOTE_VALID_DAYS,
-): Date {
-  return new Date(new Date(issuedAt).getTime() + validDays * 86400000);
-}
-
-export function isQuoteExpired(
-  issuedAt: string,
-  validDays: number = QUOTE_VALID_DAYS,
-): boolean {
-  return quoteValidUntil(issuedAt, validDays).getTime() < Date.now();
-}
-
 // 품목에서 공급가액·부가세를 계산 (표시가는 부가세 포함가)
-export function quoteTotals(items: CartItem[]): {
+export function quoteTotals(items: { price: number; quantity: number }[]): {
   total: number;
   supply: number;
   vat: number;
@@ -56,26 +50,4 @@ export function quoteTotals(items: CartItem[]): {
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const supply = Math.round(total / 1.1);
   return { total, supply, vat: total - supply };
-}
-
-// ── 저장/조회 ──────────────────────────────────────────
-export function getQuotes(): SavedQuote[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as SavedQuote[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function saveQuote(quote: SavedQuote): void {
-  if (typeof window === "undefined") return;
-  const quotes = getQuotes();
-  // 최신 견적서가 앞에 오도록
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([quote, ...quotes]));
-}
-
-export function getQuote(number: string): SavedQuote | undefined {
-  return getQuotes().find((q) => q.number === number);
 }

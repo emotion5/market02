@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { CartItem } from "@/lib/types";
-import { makeQuoteNumber, quoteTotals, type SavedQuote } from "@/lib/quotes";
+import { quoteTotals } from "@/lib/quotes";
 import ordersSeed from "@/data/seed/orders.json";
 import addressesSeed from "@/data/seed/addresses.json";
 import profileSeed from "@/data/seed/profile.json";
-import quotesSeed from "@/data/seed/quotes.json";
 import products from "@/data/mock-products.json";
 import styles from "./page.module.css";
+
+// 견적서는 DB로 이관되어(로그인 사용자 귀속), 여기서는 시드하지 않는다.
+// 실제 발행은 로그인 후 /quote 에서 진행한다.
 
 // 시드 품목은 productId만 신뢰하고 상품명·이미지는 상품 데이터에서 끌어온다 —
 // 시드에 이름/경로를 복제해두면 상품이 바뀔 때 시드만 옛 값으로 남아 깨진다
@@ -23,13 +25,6 @@ interface SeedOrder {
   orderer: { name: string; tel: string; address: string; memo?: string };
   depositor: string;
   taxInvoice: { requested: boolean; bizNo?: string; company?: string };
-  items: SeedItem[];
-}
-
-// 시드 JSON의 견적서 한 건 형태 (번호·발행시각은 ageMinutes에서 파생)
-interface SeedQuote {
-  ageMinutes: number;
-  customer: SavedQuote["customer"];
   items: SeedItem[];
 }
 
@@ -57,7 +52,7 @@ const KEYS = {
   orders: "market02-orders",
   addresses: "market02-addresses",
   profile: "market02-profile",
-  quotes: "market02-quotes",
+  quotes: "market02-quotes", // 레거시 정리용(초기화 시 제거). 견적은 이제 DB.
   auth: "market02-auth",
 };
 
@@ -80,23 +75,6 @@ function buildOrders() {
   });
 }
 
-// ageMinutes → 발행 시각, 그 시각으로 견적번호까지 파생. 최신순으로 보관.
-function buildQuotes(): SavedQuote[] {
-  return (quotesSeed as SeedQuote[])
-    .map((q) => {
-      const issuedAt = new Date(Date.now() - q.ageMinutes * 60000);
-      const items = hydrateItems(q.items);
-      return {
-        number: makeQuoteNumber(issuedAt),
-        issuedAt: issuedAt.toISOString(),
-        items,
-        customer: q.customer,
-        ...quoteTotals(items),
-      };
-    })
-    .sort((a, b) => b.issuedAt.localeCompare(a.issuedAt));
-}
-
 export default function DevSeedPage() {
   const [message, setMessage] = useState("");
   const [counts, setCounts] = useState<Record<string, number>>({});
@@ -116,7 +94,6 @@ export default function DevSeedPage() {
       orders: read(KEYS.orders),
       addresses: read(KEYS.addresses),
       profile: read(KEYS.profile),
-      quotes: read(KEYS.quotes),
       cart: read(KEYS.cart),
     });
   };
@@ -128,7 +105,6 @@ export default function DevSeedPage() {
 
   const seed = () => {
     localStorage.setItem(KEYS.orders, JSON.stringify(buildOrders()));
-    localStorage.setItem(KEYS.quotes, JSON.stringify(buildQuotes()));
     localStorage.setItem(KEYS.addresses, JSON.stringify(addressesSeed));
     localStorage.setItem(KEYS.profile, JSON.stringify(profileSeed));
     refresh();
@@ -162,10 +138,6 @@ export default function DevSeedPage() {
         <div>
           <dt>회원정보</dt>
           <dd>{counts.profile ? "있음" : "없음"}</dd>
-        </div>
-        <div>
-          <dt>견적서</dt>
-          <dd>{counts.quotes ?? 0}건</dd>
         </div>
         <div>
           <dt>견적 스택</dt>

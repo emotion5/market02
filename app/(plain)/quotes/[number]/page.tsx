@@ -7,13 +7,7 @@ import { Printer, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import QuoteSheet from "@/components/quote/QuoteSheet";
-import { useSiteSettings } from "@/components/SiteSettingsProvider";
-import {
-  getQuote,
-  isQuoteExpired,
-  quoteValidUntil,
-  type SavedQuote,
-} from "@/lib/quotes";
+import { type SavedQuote } from "@/lib/quotes";
 import styles from "./page.module.css";
 
 function formatDate(iso: string): string {
@@ -29,15 +23,23 @@ export default function SavedQuotePage() {
   const number = decodeURIComponent(params.number);
   const router = useRouter();
   const { items: cartItems, addItem, clearCart } = useCart();
-  const settings = useSiteSettings();
 
-  // localStorage는 클라이언트에서만 접근 → mount 이후 로드
-  // (undefined = 로딩 중, null = 없는 견적번호)
+  // (undefined = 로딩 중, null = 없는/권한 없는 견적번호)
   const [quote, setQuote] = useState<SavedQuote | null | undefined>(undefined);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setQuote(getQuote(number) ?? null);
+    let alive = true;
+    fetch(`/api/quotes/${encodeURIComponent(number)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (alive) setQuote(data?.quote ?? null);
+      })
+      .catch(() => {
+        if (alive) setQuote(null);
+      });
+    return () => {
+      alive = false;
+    };
   }, [number]);
 
   if (quote === undefined) {
@@ -55,7 +57,7 @@ export default function SavedQuotePage() {
     );
   }
 
-  const expired = isQuoteExpired(quote.issuedAt, settings.quoteValidDays);
+  const expired = quote.expired;
 
   // 발행본의 품목으로 견적서(장바구니)를 채운 뒤 결제로 보낸다.
   // 담아둔 게 있으면 덮어쓰게 되므로 먼저 확인을 받는다.
@@ -93,9 +95,7 @@ export default function SavedQuotePage() {
       <div className={styles.statusBar}>
         <span className={styles.issued}>
           {formatDate(quote.issuedAt)} 발행 · 유효기간{" "}
-          {formatDate(
-            quoteValidUntil(quote.issuedAt, settings.quoteValidDays).toISOString(),
-          )}
+          {formatDate(quote.validUntil)}
         </span>
         <span className={`${styles.badge} ${expired ? styles.expired : ""}`}>
           {expired ? "유효기간 만료" : "유효"}
@@ -105,6 +105,7 @@ export default function SavedQuotePage() {
       <QuoteSheet
         number={quote.number}
         issuedAt={new Date(quote.issuedAt)}
+        validUntil={new Date(quote.validUntil)}
         items={quote.items}
         customer={quote.customer}
       />
