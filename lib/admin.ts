@@ -21,6 +21,11 @@ export {
 export { getSiteSettings } from "@/server/settings/service";
 
 export {
+  getDashboardStats,
+  type DashboardStats,
+} from "@/server/dashboard/service";
+
+export {
   listOrdersForAdmin,
   getOrderForAdmin,
   ORDER_PAGE_SIZE,
