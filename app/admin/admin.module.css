@@ -468,6 +468,49 @@
   display: none;
 }
 
+/* ── 회원 관리: 필터·페이지네이션·상세 ── */
+.filterRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.filterLine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.filterLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  width: 32px;
+  flex-shrink: 0;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.pagination .count {
+  margin: 0;
+}
+.detailHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.detailEmail {
+  font-size: 16px;
+  font-weight: 700;
+}
+.detailActions {
+  margin-top: 16px;
+}
+
 /* ── 홈 노출 편성 (featured) ── */
 .featEmpty {
   padding: 20px 12px;

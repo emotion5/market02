@@ -7,6 +7,17 @@ export {
 } from "@/server/auth/service";
 
 export {
+  listMembersForAdmin,
+  getMemberForAdmin,
+  MEMBER_PAGE_SIZE,
+  type AdminMemberRow,
+  type AdminMemberListResult,
+  type AdminMemberDetail,
+  type MemberType,
+  type MemberStatus,
+} from "@/server/auth/admin";
+
+export {
   listProductsForAdmin,
   getProductForAdmin,
   getProductOptions,
