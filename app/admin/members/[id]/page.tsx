@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getMemberForAdmin } from "@/lib/admin";
 import StatusPill from "@/components/admin/StatusPill";
 import MemberActions from "@/components/admin/MemberActions";
+import MemberControls from "@/components/admin/MemberControls";
 import styles from "../../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,7 @@ export default async function MemberDetailPage({
   if (!m) notFound();
 
   const isPendingBusiness = m.type === "BUSINESS" && m.status === "PENDING";
+  const canManage = m.status === "ACTIVE" || m.status === "SUSPENDED";
 
   return (
     <div className={styles.page}>
@@ -62,9 +64,29 @@ export default async function MemberDetailPage({
               <td>{m.type === "BUSINESS" ? "사업자" : "개인"}</td>
             </tr>
             <tr>
+              <th>등급</th>
+              <td>
+                <span className={styles.gradeBadge}>
+                  {m.grade === "WHOLESALE" ? "회원도매가" : "일반(소비자가)"}
+                </span>
+              </td>
+            </tr>
+            <tr>
               <th>가입일</th>
               <td className={styles.mono}>{fmt(m.createdAt)}</td>
             </tr>
+            {m.status === "SUSPENDED" && m.suspendedAt && (
+              <tr>
+                <th>정지일</th>
+                <td className={styles.mono}>{fmt(m.suspendedAt)}</td>
+              </tr>
+            )}
+            {m.status === "SUSPENDED" && m.suspendReason && (
+              <tr>
+                <th>정지 사유</th>
+                <td>{m.suspendReason}</td>
+              </tr>
+            )}
             {m.withdrawnAt && (
               <tr>
                 <th>탈퇴일</th>
@@ -74,6 +96,16 @@ export default async function MemberDetailPage({
           </tbody>
         </table>
       </div>
+
+      {canManage && (
+        <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>
+          <h2 className={styles.sectionTitle}>회원 관리</h2>
+          <p className={styles.sectionDesc}>
+            회원도매가 자격을 부여/회수하거나 계정을 정지·해제합니다.
+          </p>
+          <MemberControls id={m.id} status={m.status} grade={m.grade} />
+        </div>
+      )}
 
       {m.business && (
         <div className={styles.card} style={{ padding: 24 }}>

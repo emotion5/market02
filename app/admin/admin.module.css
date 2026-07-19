@@ -510,6 +510,39 @@
 .detailActions {
   margin-top: 16px;
 }
+.controlRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.controlRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid #eef0f2;
+  border-radius: 10px;
+}
+.controlLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+.controlLabel span {
+  color: #6b7280;
+  font-size: 12px;
+}
+.gradeBadge {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e0e7ff;
+  color: #3730a3;
+}
 
 /* ── 홈 노출 편성 (featured) ── */
 .featEmpty {

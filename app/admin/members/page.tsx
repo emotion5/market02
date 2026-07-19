@@ -16,6 +16,7 @@ const STATUS_FILTERS = [
   { value: "ACTIVE", label: "활성" },
   { value: "PENDING", label: "승인대기" },
   { value: "REJECTED", label: "반려" },
+  { value: "SUSPENDED", label: "정지" },
   { value: "WITHDRAWN", label: "탈퇴" },
 ];
 
@@ -143,7 +144,14 @@ export default async function AdminMembersPage({
                       {m.email}
                     </Link>
                   </td>
-                  <td>{m.type === "BUSINESS" ? "사업자" : "개인"}</td>
+                  <td>
+                    {m.type === "BUSINESS" ? "사업자" : "개인"}
+                    {m.grade === "WHOLESALE" && (
+                      <span className={styles.gradeBadge} style={{ marginLeft: 6 }}>
+                        도매
+                      </span>
+                    )}
+                  </td>
                   <td>
                     {m.type === "BUSINESS" ? (
                       <>

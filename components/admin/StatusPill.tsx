@@ -5,6 +5,7 @@ const MAP: Record<string, { label: string; cls: string }> = {
   ACTIVE: { label: "활성", cls: styles.active },
   PENDING: { label: "승인대기", cls: styles.pending },
   REJECTED: { label: "반려", cls: styles.rejected },
+  SUSPENDED: { label: "정지", cls: styles.suspended },
   WITHDRAWN: { label: "탈퇴", cls: styles.withdrawn },
 };
 

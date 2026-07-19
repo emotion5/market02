@@ -6,7 +6,13 @@ import { prisma } from "@/server/db";
 // 관리자 계정(role=ADMIN)은 회원 목록에서 제외한다.
 
 export type MemberType = "PERSONAL" | "BUSINESS";
-export type MemberStatus = "ACTIVE" | "PENDING" | "REJECTED" | "WITHDRAWN";
+export type MemberStatus =
+  | "ACTIVE"
+  | "PENDING"
+  | "REJECTED"
+  | "SUSPENDED"
+  | "WITHDRAWN";
+export type MemberGrade = "GENERAL" | "WHOLESALE";
 
 export interface AdminMemberRow {
   id: string;
@@ -14,6 +20,7 @@ export interface AdminMemberRow {
   name: string | null;
   type: MemberType;
   status: MemberStatus;
+  grade: MemberGrade;
   company: string | null; // 사업자
   bizNo: string | null; // 사업자
   createdAt: string; // ISO
@@ -72,6 +79,7 @@ export async function listMembersForAdmin(
       name: u.name,
       type: u.type,
       status: u.status,
+      grade: u.grade,
       company: u.business?.company ?? null,
       bizNo: u.business?.bizNo ?? null,
       createdAt: u.createdAt.toISOString(),
@@ -89,8 +97,11 @@ export interface AdminMemberDetail {
   tel: string | null;
   type: MemberType;
   status: MemberStatus;
+  grade: MemberGrade;
   createdAt: string;
   withdrawnAt: string | null;
+  suspendedAt: string | null;
+  suspendReason: string | null;
   business: null | {
     bizNo: string;
     company: string | null;
@@ -117,8 +128,11 @@ export async function getMemberForAdmin(
     tel: u.tel,
     type: u.type,
     status: u.status,
+    grade: u.grade,
     createdAt: u.createdAt.toISOString(),
     withdrawnAt: u.withdrawnAt ? u.withdrawnAt.toISOString() : null,
+    suspendedAt: u.suspendedAt ? u.suspendedAt.toISOString() : null,
+    suspendReason: u.suspendReason,
     business: u.business
       ? {
           bizNo: u.business.bizNo,

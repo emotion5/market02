@@ -26,7 +26,7 @@ export interface AuthUser {
   email: string;
   role: "CUSTOMER" | "ADMIN";
   type: "PERSONAL" | "BUSINESS";
-  status: "ACTIVE" | "PENDING" | "REJECTED" | "WITHDRAWN";
+  status: "ACTIVE" | "PENDING" | "REJECTED" | "SUSPENDED" | "WITHDRAWN";
   name: string | null;
 }
 
@@ -151,6 +151,12 @@ export async function login(input: {
       "가입이 반려된 계정입니다. 고객센터로 문의해주세요.",
     );
   }
+  if (user.status === "SUSPENDED") {
+    throw new AuthError(
+      "NOT_ALLOWED",
+      "정지된 계정입니다. 고객센터로 문의해주세요.",
+    );
+  }
   return toAuthUser(user);
 }
 
@@ -190,7 +196,11 @@ export async function approveBusiness(
   adminId: string,
 ): Promise<void> {
   await prisma.$transaction([
-    prisma.user.update({ where: { id: userId }, data: { status: "ACTIVE" } }),
+    // 승인 = 활성화 + 회원도매가 등급 부여
+    prisma.user.update({
+      where: { id: userId },
+      data: { status: "ACTIVE", grade: "WHOLESALE" },
+    }),
     prisma.businessProfile.update({
       where: { userId },
       data: { approvedAt: new Date(), approvedById: adminId, rejectReason: null },
@@ -214,6 +224,72 @@ export async function rejectBusiness(
       },
     }),
   ]);
+}
+
+// ── 회원 정지 / 등급 (관리자) ──────────────────────────
+// 반환값: 처리 성공 여부(대상이 없거나 전이 불가한 상태면 false).
+
+export type MemberOpResult = "ok" | "not_found" | "invalid_state";
+
+// 정지 = 활성 회원의 로그인/이용 차단. ACTIVE 상태에서만 가능.
+export async function suspendMember(
+  userId: string,
+  adminId: string,
+  reason: string,
+): Promise<MemberOpResult> {
+  const u = await prisma.user.findFirst({
+    where: { id: userId, role: "CUSTOMER" },
+    select: { status: true },
+  });
+  if (!u) return "not_found";
+  if (u.status !== "ACTIVE") return "invalid_state";
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      status: "SUSPENDED",
+      suspendedAt: new Date(),
+      suspendReason: reason || null,
+      suspendedById: adminId,
+    },
+  });
+  return "ok";
+}
+
+// 정지 해제 = 다시 활성. SUSPENDED 상태에서만 가능. 등급(grade)은 그대로 두어 도매가 자격이 복원된다.
+export async function reactivateMember(
+  userId: string,
+): Promise<MemberOpResult> {
+  const u = await prisma.user.findFirst({
+    where: { id: userId, role: "CUSTOMER" },
+    select: { status: true },
+  });
+  if (!u) return "not_found";
+  if (u.status !== "SUSPENDED") return "invalid_state";
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      status: "ACTIVE",
+      suspendedAt: null,
+      suspendReason: null,
+      suspendedById: null,
+    },
+  });
+  return "ok";
+}
+
+// 등급 변경 = 회원도매가 자격 부여/회수. 활성/정지 회원 대상(탈퇴·반려·대기는 불가).
+export async function setMemberGrade(
+  userId: string,
+  grade: "GENERAL" | "WHOLESALE",
+): Promise<MemberOpResult> {
+  const u = await prisma.user.findFirst({
+    where: { id: userId, role: "CUSTOMER" },
+    select: { status: true },
+  });
+  if (!u) return "not_found";
+  if (u.status !== "ACTIVE" && u.status !== "SUSPENDED") return "invalid_state";
+  await prisma.user.update({ where: { id: userId }, data: { grade } });
+  return "ok";
 }
 
 // ── 프로필 / 탈퇴 ──────────────────────────────────────

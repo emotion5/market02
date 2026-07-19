@@ -15,6 +15,7 @@ export {
   type AdminMemberDetail,
   type MemberType,
   type MemberStatus,
+  type MemberGrade,
 } from "@/server/auth/admin";
 
 export {

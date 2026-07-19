@@ -19,6 +19,10 @@
   background: #fee2e2;
   color: #991b1b;
 }
+.suspended {
+  background: #ffedd5;
+  color: #9a3412;
+}
 .withdrawn {
   background: #f3f4f6;
   color: #6b7280;

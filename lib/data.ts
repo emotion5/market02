@@ -15,17 +15,18 @@ import type { Product } from "./types";
 
 export type { FeaturedSection };
 
-// 로그인한 승인 사업자회원(BUSINESS + ACTIVE)이면 회원도매가 적용.
-// (type/status 는 세션 토큰이 아니라 DB에서 확인 — 승인 직후에도 즉시 반영)
+// 회원도매가 자격 = 등급 WHOLESALE + 활성(ACTIVE). 승인 사업자는 승인 시 WHOLESALE 부여되고,
+// 관리자가 개인회원에게도 부여할 수 있다. 정지/탈퇴(ACTIVE 아님)면 등급과 무관하게 소비자가.
+// (grade/status 는 세션 토큰이 아니라 DB에서 확인 — 승인·등급변경 직후에도 즉시 반영)
 // 상세페이지가 회원도매가 줄을 노출할지 판단할 때도 이 값을 그대로 쓴다.
 export async function isWholesaleViewer(): Promise<boolean> {
   const session = await getSessionUser();
   if (!session) return false;
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
-    select: { type: true, status: true },
+    select: { grade: true, status: true },
   });
-  return user?.type === "BUSINESS" && user?.status === "ACTIVE";
+  return user?.grade === "WHOLESALE" && user?.status === "ACTIVE";
 }
 
 export async function getProducts(): Promise<Product[]> {
