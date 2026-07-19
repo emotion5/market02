@@ -1,4 +1,4 @@
-import type { Category } from "./types";
+import type { Category, SiteSettings } from "./types";
 
 // 배열 순서 = 상단 내비 칩 순서 = 홈 카테고리 섹션 순서.
 // slug는 URL·상품 데이터·이미지 폴더를 잇는 내부 키라 표시 이름과 별개로 유지한다.
@@ -37,3 +37,20 @@ export const QUOTE_VALID_DAYS = 14;
 
 // 홈 큐레이션(featured) 카테고리당 최대 노출 수 (4열 × 2행). 클라이언트·서버 공용 상수.
 export const FEATURED_MAX = 8;
+
+// 사이트 설정 기본값 — DB SiteSetting 의 시드값이자, 행이 없을 때의 읽기 폴백.
+// (기존 하드코딩 상수를 그대로 이어받아 초기 동작을 보존한다)
+export const DEFAULT_SITE_SETTINGS: SiteSettings = {
+  supplierName: SUPPLIER.name,
+  supplierOwner: SUPPLIER.owner,
+  supplierBizNo: SUPPLIER.bizNo,
+  supplierAddress: SUPPLIER.address,
+  supplierCategory: SUPPLIER.category,
+  supplierTel: SUPPLIER.tel,
+  bankName: BANK_ACCOUNT.bank,
+  bankAccountNumber: BANK_ACCOUNT.number,
+  bankAccountHolder: BANK_ACCOUNT.holder,
+  quoteValidDays: QUOTE_VALID_DAYS,
+  csEmail: "help@mmm-market.com",
+  csTel: "02-000-0000",
+};

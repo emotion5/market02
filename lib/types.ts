@@ -24,6 +24,22 @@ export interface Category {
   en: string; // 영문 표시명 (칩 기본 노출)
 }
 
+// 사이트 설정(공급자·입금계좌·견적 유효기간·고객센터). DB SiteSetting 의 편집 가능한 필드.
+export interface SiteSettings {
+  supplierName: string;
+  supplierOwner: string;
+  supplierBizNo: string;
+  supplierAddress: string;
+  supplierCategory: string;
+  supplierTel: string;
+  bankName: string;
+  bankAccountNumber: string;
+  bankAccountHolder: string;
+  quoteValidDays: number;
+  csEmail: string;
+  csTel: string;
+}
+
 export interface CartItem {
   productId: string;
   variantId: string; // 색상 옵션이 있으면 "<variantId>::<color>"로 합성되어 색상별 구분

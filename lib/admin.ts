@@ -18,6 +18,8 @@ export {
   type MemberGrade,
 } from "@/server/auth/admin";
 
+export { getSiteSettings } from "@/server/settings/service";
+
 export {
   listProductsForAdmin,
   getProductForAdmin,

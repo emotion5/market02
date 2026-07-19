@@ -86,5 +86,27 @@ export const featuredUpdateSchema = z.object({
     .max(FEATURED_MAX, `홈에는 카테고리당 최대 ${FEATURED_MAX}개까지 편성할 수 있습니다.`),
 });
 export type FeaturedUpdateInput = z.infer<typeof featuredUpdateSchema>;
+
+// 사이트 설정(어드민) — 공급자·입금계좌·견적 유효기간·고객센터
+const req = (max: number, msg: string) => z.string().trim().min(1, msg).max(max);
+export const siteSettingsSchema = z.object({
+  supplierName: req(100, "상호를 입력하세요."),
+  supplierOwner: req(50, "대표자를 입력하세요."),
+  supplierBizNo: req(20, "사업자등록번호를 입력하세요."),
+  supplierAddress: req(200, "주소를 입력하세요."),
+  supplierCategory: req(100, "업태/종목을 입력하세요."),
+  supplierTel: req(30, "전화번호를 입력하세요."),
+  bankName: req(30, "은행명을 입력하세요."),
+  bankAccountNumber: req(50, "계좌번호를 입력하세요."),
+  bankAccountHolder: req(50, "예금주를 입력하세요."),
+  quoteValidDays: z
+    .number()
+    .int("정수여야 합니다.")
+    .min(1, "1일 이상이어야 합니다.")
+    .max(365, "365일 이하여야 합니다."),
+  csEmail: z.email("올바른 이메일 형식이 아닙니다."),
+  csTel: req(30, "고객센터 전화번호를 입력하세요."),
+});
+export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;
 export type BusinessSignupInput = z.infer<typeof businessSignupSchema>;

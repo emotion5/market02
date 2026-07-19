@@ -182,6 +182,35 @@ model Featured {
   @@index([categorySlug])
 }
 
+// ────────────────────────── 사이트 설정 ──────────────────────────
+// 하드코딩(lib/constants) 대체: 공급자·입금계좌·견적 유효기간·고객센터.
+// 단일 행(싱글턴, id="default")만 사용한다.
+model SiteSetting {
+  id String @id @default("default")
+
+  // 공급자 정보 (견적서·체크아웃 노출)
+  supplierName     String
+  supplierOwner    String
+  supplierBizNo    String
+  supplierAddress  String
+  supplierCategory String
+  supplierTel      String
+
+  // 무통장입금 계좌
+  bankName          String
+  bankAccountNumber String
+  bankAccountHolder String
+
+  // 견적서 유효기간(발행일로부터 일수)
+  quoteValidDays Int @default(14)
+
+  // 고객센터 연락처
+  csEmail String
+  csTel   String
+
+  updatedAt DateTime @updatedAt
+}
+
 // ────────────────────────── 견적서 (불변 스냅샷) ──────────────────────────
 
 enum QuoteStatus {
