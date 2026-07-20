@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getMemberForAdmin } from "@/lib/admin";
+import { signedPrivateUrl } from "@/server/storage";
 import StatusPill from "@/components/admin/StatusPill";
 import MemberActions from "@/components/admin/MemberActions";
 import MemberControls from "@/components/admin/MemberControls";
@@ -23,6 +24,14 @@ export default async function MemberDetailPage({
 
   const isPendingBusiness = m.type === "BUSINESS" && m.status === "PENDING";
   const canManage = m.status === "ACTIVE" || m.status === "SUSPENDED";
+
+  // 사업자등록증은 비공개 버킷에 저장된 "키"다. 열람은 만료되는 서명 URL 로만(공개 URL 아님).
+  // 이 페이지는 관리자 가드 뒤에서만 렌더되므로, 서명 URL 도 관리자 요청에서만 발급된다.
+  const licenseHref = m.business?.licenseFileUrl
+    ? m.business.licenseFileUrl.startsWith("http")
+      ? m.business.licenseFileUrl // 레거시: 값이 이미 전체 URL 인 경우 그대로 사용
+      : await signedPrivateUrl(m.business.licenseFileUrl)
+    : null;
 
   return (
     <div className={styles.page}>
@@ -130,9 +139,9 @@ export default async function MemberDetailPage({
               <tr>
                 <th>사업자등록증</th>
                 <td>
-                  {m.business.licenseFileUrl ? (
+                  {licenseHref ? (
                     <a
-                      href={m.business.licenseFileUrl}
+                      href={licenseHref}
                       target="_blank"
                       rel="noreferrer"
                       className={styles.backToShop}

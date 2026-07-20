@@ -26,19 +26,24 @@ export default function BusinessSignupPage() {
   // 사업자등록번호는 사업자 확인용 (숫자 10자리)
   const bizDigits = bizNo.replace(/\D/g, "");
   const bizValid = bizDigits.length === 10;
-  const canSubmit = emailValid && bizValid;
+  const canSubmit = emailValid && bizValid && password.length > 0 && !!license;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || !license) return;
     setError("");
     setSubmitting(true);
     try {
-      // 사업자등록증 파일 업로드는 오브젝트 스토리지 연동 후 추가 (현재 미전송)
+      // 사업자등록증 파일을 가입 필드와 함께 multipart 로 전송.
+      // FormData 사용 시 content-type 헤더는 브라우저가 boundary 와 함께 자동 설정하므로 지정하지 않는다.
+      const form = new FormData();
+      form.set("email", email);
+      form.set("password", password);
+      form.set("bizNo", bizNo);
+      form.set("license", license);
       const res = await fetch("/api/auth/signup/business", {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, password, bizNo }),
+        body: form,
       });
       const data = await res.json();
       if (!res.ok) {
