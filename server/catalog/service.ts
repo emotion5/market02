@@ -1,4 +1,4 @@
-import type { Product, Variant, Category } from "@/lib/types";
+import type { Product, Variant, Category, NavCategory } from "@/lib/types";
 import {
   findAllProducts,
   findProductById,
@@ -101,6 +101,19 @@ export async function getCategories(): Promise<Category[]> {
   return rows.map((c) => ({ slug: c.slug, name: c.nameKo, en: c.nameEn }));
 }
 
+// 상단 내비에 노출할 카테고리(showInNav=true)만. onHome 으로 링크 방식을 구분한다.
+export async function getNavCategories(): Promise<NavCategory[]> {
+  const rows = await findCategories();
+  return rows
+    .filter((c) => c.showInNav)
+    .map((c) => ({
+      slug: c.slug,
+      name: c.nameKo,
+      en: c.nameEn,
+      onHome: c.showOnHome,
+    }));
+}
+
 export async function getFeaturedSections(
   opts: PriceOpts = {},
 ): Promise<FeaturedSection[]> {
@@ -115,6 +128,7 @@ export async function getFeaturedSections(
 
   const sections: FeaturedSection[] = [];
   for (const c of cats) {
+    if (!c.showOnHome) continue; // 홈 노출 off 카테고리는 진열대 자체를 만들지 않음
     // 한 세트 최대 8개(4열 × 2행)
     const products = (byCat.get(c.slug) ?? []).slice(0, 8);
     if (products.length > 0) {

@@ -52,6 +52,7 @@ export {
   getProductOptions,
   getProductImages,
   getFeaturedForAdmin,
+  getCategoriesForAdmin,
   FEATURED_MAX,
   type AdminProductRow,
   type AdminProductDetail,
@@ -60,4 +61,5 @@ export {
   type AdminProductImages,
   type AdminFeaturedCategory,
   type AdminFeaturedItem,
+  type AdminCategoryRow,
 } from "@/server/catalog/admin";

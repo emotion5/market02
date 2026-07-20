@@ -4,12 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { CATEGORIES } from "@/lib/constants";
+import type { NavCategory } from "@/lib/types";
 import styles from "./CategoryNav.module.css";
 
 // 가로 스크롤 칩 바. 카테고리가 수십 개로 늘어도 한 줄을 유지하며,
 // 모바일은 스와이프, 데스크톱은 좌우 화살표로 탐색한다.
-export default function CategoryNav() {
+// 노출 목록(showInNav=true)은 서버(레이아웃)에서 받아온다.
+export default function CategoryNav({
+  categories,
+}: {
+  categories: NavCategory[];
+}) {
   const pathname = usePathname();
   const scrollerRef = useRef<HTMLDivElement>(null);
   // 홈에서 스크롤 위치로 정해지는 활성 섹션(스크롤 스파이 결과)
@@ -17,15 +22,21 @@ export default function CategoryNav() {
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
-  // 표시할 활성 칩: 홈 → 스크롤 스파이, 그 외 → 없음
-  const active = pathname === "/" ? spyActive : null;
+  // 표시할 활성 칩: 홈 → 스크롤 스파이, 카테고리 페이지 → 해당 slug, 그 외 → 없음
+  const active =
+    pathname === "/"
+      ? spyActive
+      : pathname.startsWith("/category/")
+        ? pathname.split("/")[2] ?? null
+        : null;
 
   // 홈에서는 스크롤 위치에 따라 화면 상단의 카테고리 섹션을 활성화(스크롤 스파이)
   useEffect(() => {
     if (pathname !== "/") return;
-    const sections = CATEGORIES.map((c) =>
-      document.getElementById(`category-${c.slug}`),
-    ).filter((el): el is HTMLElement => !!el);
+    const sections = categories
+      .filter((c) => c.onHome)
+      .map((c) => document.getElementById(`category-${c.slug}`))
+      .filter((el): el is HTMLElement => !!el);
     if (sections.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -40,7 +51,7 @@ export default function CategoryNav() {
     );
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
-  }, [pathname]);
+  }, [pathname, categories]);
 
   // 활성 칩을 스크롤 바 안에서 가운데로 자동 이동
   useEffect(() => {
@@ -111,10 +122,14 @@ export default function CategoryNav() {
 
         <div className={styles.scroller} ref={scrollerRef}>
           <ul className={styles.list}>
-            {CATEGORIES.map((category) => (
+            {categories.map((category) => (
               <li key={category.slug} data-key={category.slug}>
                 <Link
-                  href={`/#category-${category.slug}`}
+                  href={
+                    category.onHome
+                      ? `/#category-${category.slug}`
+                      : `/category/${category.slug}`
+                  }
                   className={`${styles.chip} ${
                     active === category.slug ? styles.active : ""
                   }`}

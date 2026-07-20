@@ -344,6 +344,45 @@ export interface AdminFeaturedCategory {
   featuredIds: string[]; // 현재 편성된 상품 id, 노출 순서대로
 }
 
+// ── 카테고리 노출 설정 (내비/홈 표시 토글) ─────────────────────────────
+export interface AdminCategoryRow {
+  slug: string;
+  name: string; // 한글 표시명
+  showInNav: boolean;
+  showOnHome: boolean;
+}
+
+export async function getCategoriesForAdmin(): Promise<AdminCategoryRow[]> {
+  const cats = await prisma.category.findMany({
+    orderBy: { sortOrder: "asc" },
+    select: { slug: true, nameKo: true, showInNav: true, showOnHome: true },
+  });
+  return cats.map((c) => ({
+    slug: c.slug,
+    name: c.nameKo,
+    showInNav: c.showInNav,
+    showOnHome: c.showOnHome,
+  }));
+}
+
+// 카테고리별 노출 플래그를 일괄 저장. 존재하지 않는 slug 는 조용히 무시한다.
+export async function setCategoryVisibility(
+  updates: { slug: string; showInNav: boolean; showOnHome: boolean }[],
+): Promise<void> {
+  const existing = await prisma.category.findMany({ select: { slug: true } });
+  const valid = new Set(existing.map((c) => c.slug));
+  await prisma.$transaction(
+    updates
+      .filter((u) => valid.has(u.slug))
+      .map((u) =>
+        prisma.category.update({
+          where: { slug: u.slug },
+          data: { showInNav: u.showInNav, showOnHome: u.showOnHome },
+        }),
+      ),
+  );
+}
+
 // FEATURED_MAX(카테고리당 최대 노출 수)는 lib/constants 에서 공용 정의(위에서 re-export).
 export async function getFeaturedForAdmin(): Promise<AdminFeaturedCategory[]> {
   const [cats, products, featured] = await Promise.all([

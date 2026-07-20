@@ -87,6 +87,20 @@ export const featuredUpdateSchema = z.object({
 });
 export type FeaturedUpdateInput = z.infer<typeof featuredUpdateSchema>;
 
+// 카테고리 노출 설정(어드민) — 내비/홈 표시 토글 일괄 저장
+export const categoryVisibilitySchema = z.object({
+  categories: z
+    .array(
+      z.object({
+        slug: z.string().refine((s) => CATEGORY_SLUGS.includes(s), "알 수 없는 카테고리입니다."),
+        showInNav: z.boolean(),
+        showOnHome: z.boolean(),
+      }),
+    )
+    .min(1),
+});
+export type CategoryVisibilityInput = z.infer<typeof categoryVisibilitySchema>;
+
 // 사이트 설정(어드민) — 공급자·입금계좌·견적 유효기간·고객센터
 const req = (max: number, msg: string) => z.string().trim().min(1, msg).max(max);
 export const siteSettingsSchema = z.object({

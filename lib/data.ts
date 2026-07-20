@@ -7,11 +7,12 @@ import {
   getProductsByCategory as svcGetProductsByCategory,
   searchProducts as svcSearchProducts,
   getFeaturedSections as svcGetFeaturedSections,
+  getNavCategories as svcGetNavCategories,
   type FeaturedSection,
 } from "@/server/catalog/service";
 import { getSessionUser } from "./session";
 import { prisma } from "@/server/db";
-import type { Product } from "./types";
+import type { Product, NavCategory } from "./types";
 
 export type { FeaturedSection };
 
@@ -49,4 +50,8 @@ export async function getFeaturedSections(): Promise<FeaturedSection[]> {
 
 export async function searchProducts(query: string): Promise<Product[]> {
   return svcSearchProducts(query, { wholesale: await isWholesaleViewer() });
+}
+
+export async function getNavCategories(): Promise<NavCategory[]> {
+  return svcGetNavCategories();
 }

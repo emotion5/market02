@@ -24,6 +24,12 @@ export interface Category {
   en: string; // 영문 표시명 (칩 기본 노출)
 }
 
+// 상단 내비 칩용 카테고리. showInNav 로 걸러진 것만 담기며,
+// onHome=true 면 홈 섹션 앵커로 스크롤, false 면 카테고리 전용 페이지로 이동한다.
+export interface NavCategory extends Category {
+  onHome: boolean;
+}
+
 // 사이트 설정(공급자·입금계좌·견적 유효기간·고객센터). DB SiteSetting 의 편집 가능한 필드.
 export interface SiteSettings {
   supplierName: string;

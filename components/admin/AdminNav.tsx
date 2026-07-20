@@ -9,6 +9,7 @@ const ITEMS = [
   { href: "/admin", label: "대시보드", exact: true },
   { href: "/admin/members", label: "회원 관리" },
   { href: "/admin/products", label: "상품 관리" },
+  { href: "/admin/categories", label: "카테고리 노출" },
   { href: "/admin/orders", label: "주문 관리" },
   { href: "/admin/quotes", label: "견적서 관리" },
   { href: "/admin/settings", label: "사이트 설정" },

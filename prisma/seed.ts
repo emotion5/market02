@@ -2,19 +2,11 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+// 카테고리 원본은 lib/constants.ts 한 곳(단일 출처). node 로 직접 실행되므로
+// @/ 별칭 대신 상대경로 + .ts 확장자로 가져온다(allowImportingTsExtensions).
+import { CATEGORIES } from "../lib/constants.ts";
 
 // mock-products.json · featured.json · 카테고리를 DB로 주입한다(멱등).
-// self-contained: 앱 모듈(@/ alias)에 의존하지 않아 `node prisma/seed.ts` 로 바로 실행.
-
-// lib/constants.ts 의 CATEGORIES 와 반드시 일치시킨다(배열 순서 = sortOrder).
-const CATEGORIES = [
-  { slug: "hardware", nameKo: "하드웨어", nameEn: "Hardware" },
-  { slug: "panel", nameKo: "가구재", nameEn: "Panel" },
-  { slug: "pressbevel", nameKo: "바닥재", nameEn: "PressBevel" },
-  { slug: "antipress", nameKo: "장판", nameEn: "AntiPress" },
-  { slug: "bathmatch", nameKo: "위생", nameEn: "BathMatch" },
-  { slug: "stablecore", nameKo: "건자재", nameEn: "StableCore" },
-];
 
 interface SeedVariant {
   id: string;
@@ -77,13 +69,14 @@ async function main() {
   const featured = readJson<Record<string, string[]>>("data/featured.json");
   const productIds = new Set(products.map((p) => p.id));
 
-  // 1) 카테고리
+  // 1) 카테고리 (배열 순서 = sortOrder). name/en → nameKo/nameEn 로 매핑.
+  //    showInNav/showOnHome 은 관리자 편집값이라 update 에서 건드리지 않는다(재시드해도 보존).
   for (let i = 0; i < CATEGORIES.length; i++) {
     const c = CATEGORIES[i];
     await prisma.category.upsert({
       where: { slug: c.slug },
-      update: { nameKo: c.nameKo, nameEn: c.nameEn, sortOrder: i },
-      create: { slug: c.slug, nameKo: c.nameKo, nameEn: c.nameEn, sortOrder: i },
+      update: { nameKo: c.name, nameEn: c.en, sortOrder: i },
+      create: { slug: c.slug, nameKo: c.name, nameEn: c.en, sortOrder: i },
     });
   }
 

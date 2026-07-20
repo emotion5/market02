@@ -106,10 +106,12 @@ model Address {
 // ────────────────────────── 카탈로그 (가변) ──────────────────────────
 
 model Category {
-  slug      String @id // hardware / panel / pressbevel / antipress / bathmatch / stablecore
-  nameKo    String // 하드웨어 / 가구재 / ...
-  nameEn    String // Hardware / Panel / ...
-  sortOrder Int    @default(0) // 내비 칩·홈 섹션 순서
+  slug       String  @id // hardware / panel / pressbevel / antipress / bathmatch / stablecore
+  nameKo     String // 하드웨어 / 가구재 / ...
+  nameEn     String // Hardware / Panel / ...
+  sortOrder  Int     @default(0) // 내비 칩·홈 섹션 순서
+  showInNav  Boolean @default(true) // 상단 카테고리 내비에 노출
+  showOnHome Boolean @default(true) // 메인(홈) 진열대에 노출
 
   products Product[]
   featured Featured[]
