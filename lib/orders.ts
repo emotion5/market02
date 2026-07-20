@@ -5,7 +5,8 @@ export type OrderStatus =
   | "paid" // 입금확인
   | "preparing" // 배송준비
   | "shipping" // 배송중
-  | "delivered"; // 배송완료
+  | "delivered" // 배송완료
+  | "cancelled"; // 주문취소(가상계좌 만료·결제실패)
 
 // 서버(DB)에서 내려오는 주문 한 건. 주문 시점 값을 그대로 굳힌 스냅샷.
 export interface Order {
@@ -31,6 +32,13 @@ export interface Order {
   };
   courier?: string;
   trackingNumber?: string;
+  // 가상계좌(포트원) 발급 정보 — 입금대기 안내용. 발급 전이면 없음.
+  virtualAccount?: {
+    bank: string; // 은행 코드(예: KOOKMIN)
+    bankLabel: string; // 표시용 은행명(한글)
+    accountNumber: string;
+    dueDate?: string; // ISO
+  };
 }
 
 // 주문 생성 요청(클라이언트 → 서버). 가격·주문번호는 서버가 산정한다.
@@ -61,6 +69,7 @@ export const STATUS_LABEL: Record<OrderStatus, string> = {
   preparing: "배송준비",
   shipping: "배송중",
   delivered: "배송완료",
+  cancelled: "주문취소",
 };
 
 // 운송장이 아직 없을 때 표시할 기본 택배사명

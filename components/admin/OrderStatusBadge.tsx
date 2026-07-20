@@ -7,6 +7,7 @@ const CLS: Record<OrderStatus, string> = {
   preparing: styles.oPreparing,
   shipping: styles.oShipping,
   delivered: styles.oDelivered,
+  cancelled: styles.oCancelled,
 };
 
 // 주문 상태 배지 (어드민 공유). 소비자 상태 라벨(STATUS_LABEL)과 동일 표기.

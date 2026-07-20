@@ -10,6 +10,7 @@ const TO_CLIENT: Record<string, OrderStatus> = {
   PREPARING: "preparing",
   SHIPPING: "shipping",
   DELIVERED: "delivered",
+  CANCELLED: "cancelled",
 };
 const TO_DB: Record<string, Prisma.EnumOrderStatusFilter["equals"]> = {
   pending: "PENDING",
@@ -17,6 +18,7 @@ const TO_DB: Record<string, Prisma.EnumOrderStatusFilter["equals"]> = {
   preparing: "PREPARING",
   shipping: "SHIPPING",
   delivered: "DELIVERED",
+  cancelled: "CANCELLED",
 };
 
 export type TaxInvoiceState = "none" | "pending" | "issued";

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import * as PortOne from "@portone/browser-sdk/v2";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
@@ -44,10 +45,12 @@ export default function CheckoutPage() {
   const vat = totalPrice - supply;
 
   // 주문은 로그인 사용자에 귀속되며, 가격·주문번호는 서버가 확정한다.
+  // 흐름: ① 주문 생성 → ② 포트원 가상계좌 발급 → ③ 발급 계좌 동기화 → 완료 화면.
   const placeOrder = async () => {
     setError("");
     setPlacing(true);
     try {
+      // ① 주문 생성 (가격·주문번호는 서버가 확정)
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -82,9 +85,48 @@ export default function CheckoutPage() {
         setError(data.error ?? "주문에 실패했습니다.");
         return;
       }
+      const order = data.order as Order;
+
+      // ② 포트원 가상계좌 발급 (paymentId = 주문번호). 입금 확인은 웹훅으로 자동 처리.
+      const orderName =
+        items.length === 1
+          ? items[0].productName
+          : `${items[0].productName} 외 ${items.length - 1}건`;
+      const payRes = await PortOne.requestPayment({
+        storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
+        channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY!,
+        paymentId: order.orderNo,
+        orderName,
+        totalAmount: order.total,
+        currency: "KRW",
+        payMethod: "VIRTUAL_ACCOUNT",
+        customer: { fullName: ordererName, phoneNumber: ordererTel },
+        virtualAccount: { accountExpiry: { validHours: 24 } }, // 입금기한 24시간
+      });
+      if (payRes?.code !== undefined) {
+        setError(
+          payRes.message ??
+            "가상계좌 발급에 실패했습니다. 주문내역에서 다시 시도해주세요.",
+        );
+        return;
+      }
+
+      // ③ 발급된 계좌를 즉시 조회(웹훅 대기 없이 화면에 표시)
+      let finalOrder = order;
+      try {
+        const sync = await fetch(
+          `/api/orders/${order.orderNo}/sync-payment`,
+          { method: "POST" },
+        );
+        const syncData = await sync.json();
+        if (sync.ok && syncData.order) finalOrder = syncData.order as Order;
+      } catch {
+        // 동기화 실패해도 계좌는 웹훅으로 곧 채워진다(주문내역에서 확인 가능).
+      }
+
       // 주문된 상품은 견적(장바구니)에서 비운다
       clearCart();
-      setCompleted(data.order as Order);
+      setCompleted(finalOrder);
     } catch {
       setError("네트워크 오류가 발생했습니다.");
     } finally {
@@ -121,31 +163,45 @@ export default function CheckoutPage() {
           <p className={styles.doneText}>
             주문번호 <strong>{completed.orderNo}</strong>
             <br />
-            아래 계좌로 입금해주시면 확인 후 처리해드립니다.
+            아래 <strong>전용 가상계좌</strong>로 입금해주시면 자동으로 확인됩니다.
           </p>
 
-          <dl className={styles.depositBox}>
-            <div>
-              <dt>입금 은행</dt>
-              <dd>{settings.bankName}</dd>
-            </div>
-            <div>
-              <dt>계좌번호</dt>
-              <dd>{settings.bankAccountNumber}</dd>
-            </div>
-            <div>
-              <dt>예금주</dt>
-              <dd>{settings.bankAccountHolder}</dd>
-            </div>
-            <div className={styles.depositAmount}>
-              <dt>입금 금액</dt>
-              <dd>{formatPrice(completed.total)}</dd>
-            </div>
-          </dl>
+          {completed.virtualAccount ? (
+            <dl className={styles.depositBox}>
+              <div>
+                <dt>입금 은행</dt>
+                <dd>{completed.virtualAccount.bankLabel}</dd>
+              </div>
+              <div>
+                <dt>가상계좌번호</dt>
+                <dd>{completed.virtualAccount.accountNumber}</dd>
+              </div>
+              <div className={styles.depositAmount}>
+                <dt>입금 금액</dt>
+                <dd>{formatPrice(completed.total)}</dd>
+              </div>
+              {completed.virtualAccount.dueDate && (
+                <div>
+                  <dt>입금 기한</dt>
+                  <dd>
+                    {new Date(completed.virtualAccount.dueDate).toLocaleString(
+                      "ko-KR",
+                    )}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          ) : (
+            <p className={styles.doneText}>
+              전용 가상계좌를 발급 중입니다. 잠시 후{" "}
+              <Link href="/mypage/orders">주문내역</Link>에서 계좌번호를
+              확인해주세요.
+            </p>
+          )}
 
           <p className={styles.doneNotice}>
-            입금자명이 <strong>{completed.depositor}</strong> 와(과) 다를 경우
-            확인이 지연될 수 있습니다.
+            입금이 확인되면 <strong>자동으로</strong> 주문이 처리됩니다.
+            입금기한이 지나면 주문은 자동 취소됩니다.
             {completed.taxInvoice.requested && (
               <>
                 <br />
@@ -273,21 +329,17 @@ export default function CheckoutPage() {
             <h2 className={styles.sectionTitle}>결제수단</h2>
             <div className={styles.payMethod}>
               <span className={styles.radioOn} aria-hidden />
-              무통장입금 (사업자 거래)
+              무통장입금 (가상계좌)
             </div>
 
             <dl className={styles.accountBox}>
               <div>
-                <dt>입금 은행</dt>
-                <dd>{settings.bankName}</dd>
+                <dt>입금 방법</dt>
+                <dd>주문 시 전용 가상계좌가 발급됩니다</dd>
               </div>
               <div>
-                <dt>계좌번호</dt>
-                <dd>{settings.bankAccountNumber}</dd>
-              </div>
-              <div>
-                <dt>예금주</dt>
-                <dd>{settings.bankAccountHolder}</dd>
+                <dt>입금 확인</dt>
+                <dd>입금하시면 자동으로 확인됩니다</dd>
               </div>
               <div>
                 <dt>공급자 사업자등록번호</dt>

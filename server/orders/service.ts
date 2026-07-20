@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/db";
 import { makeOrderNo } from "@/lib/orders";
+import { bankLabel } from "@/server/payments/portone";
 import type { Order, OrderStatus, OrderDraftInput } from "@/lib/orders";
 import type { CartItem } from "@/lib/types";
 
@@ -32,10 +33,11 @@ const STATUS_MAP: Record<string, OrderStatus> = {
   PREPARING: "preparing",
   SHIPPING: "shipping",
   DELIVERED: "delivered",
+  CANCELLED: "cancelled",
 };
 
 type OrderRow = Prisma.OrderGetPayload<{
-  include: { items: true; taxInvoice: true };
+  include: { items: true; taxInvoice: true; payment: true };
 }>;
 
 function toOrder(o: OrderRow): Order {
@@ -72,6 +74,15 @@ function toOrder(o: OrderRow): Order {
     },
     courier: o.courier ?? undefined,
     trackingNumber: o.trackingNumber ?? undefined,
+    virtualAccount:
+      o.payment?.vaAccountNumber && o.payment.vaBank
+        ? {
+            bank: o.payment.vaBank,
+            bankLabel: bankLabel(o.payment.vaBank),
+            accountNumber: o.payment.vaAccountNumber,
+            dueDate: o.payment.vaDueDate?.toISOString(),
+          }
+        : undefined,
   };
 }
 
@@ -161,8 +172,17 @@ export async function placeOrder(
           total,
           items: { create: lineItems },
           taxInvoice: taxData,
+          // 가상계좌(포트원) 결제 건. 발급 전에는 READY 이며, 발급/입금 시 웹훅·동기화로 갱신.
+          payment: {
+            create: {
+              provider: "PORTONE",
+              method: "가상계좌",
+              status: "READY",
+              amount: total,
+            },
+          },
         },
-        include: { items: true, taxInvoice: true },
+        include: { items: true, taxInvoice: true, payment: true },
       });
       return toOrder(created);
     } catch (e) {
@@ -185,7 +205,7 @@ export async function getUserOrder(
 ): Promise<Order | null> {
   const o = await prisma.order.findUnique({
     where: { orderNo },
-    include: { items: true, taxInvoice: true },
+    include: { items: true, taxInvoice: true, payment: true },
   });
   if (!o || o.userId !== userId) return null;
   return toOrder(o);
@@ -195,7 +215,7 @@ export async function listUserOrders(userId: string): Promise<Order[]> {
   const rows = await prisma.order.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    include: { items: true, taxInvoice: true },
+    include: { items: true, taxInvoice: true, payment: true },
   });
   return rows.map(toOrder);
 }

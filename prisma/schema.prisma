@@ -264,6 +264,7 @@ enum OrderStatus {
   PREPARING // 배송준비
   SHIPPING // 배송중
   DELIVERED // 배송완료
+  CANCELLED // 주문취소(가상계좌 입금기한 만료·결제실패 등)
 }
 
 enum PaymentMethod {
@@ -340,12 +341,16 @@ model Payment {
   order      Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   provider   PaymentProvider @default(NONE)
   method     String? // 카드 / 가상계좌 등
-  pgTid      String? // PG 거래 고유번호
+  pgTid      String? // PG 거래 고유번호(포트원 transactionId)
   status     PaymentStatus   @default(READY)
   amount     Int
   paidAt     DateTime?
   receiptUrl String?
-  raw        Json? // 웹훅 원본(감사·재검증용)
+  // 가상계좌 발급 정보 (고객 입금 안내용). 포트원 발급 후 웹훅/동기화로 채운다.
+  vaBank          String? // 표준 은행 코드(예: KOOKMIN)
+  vaAccountNumber String? // 발급 계좌번호
+  vaDueDate       DateTime? // 입금 만료 시점
+  raw        Json? // 웹훅/조회 원본(감사·재검증용)
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @updatedAt
 }
