@@ -6,7 +6,7 @@
 .inner {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 32px 24px 48px;
 }
 
 .brand {
@@ -15,8 +15,72 @@
   letter-spacing: 0.08em;
 }
 
-.text {
-  margin-top: 8px;
+/* 정책 문서 링크 */
+.links {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
   font-size: 13px;
+}
+
+.links a {
+  color: var(--color-text);
+}
+
+.links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.links .emphasis {
+  font-weight: var(--fw-emphasis);
+}
+
+/* 사업자 신원정보 (전자상거래법 제10조) — 라벨/값 쌍을 가로로 흘려 배치 */
+.info {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.info div {
+  display: flex;
+  gap: 6px;
+}
+
+.info dt {
   color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.info dd {
+  color: var(--color-text);
+}
+
+.bizCheck {
+  margin-left: 8px;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bizCheck:hover {
+  color: var(--color-text);
+}
+
+.copyright {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 인쇄 시 푸터 숨김 — 견적서 등 문서만 출력한다 */
+@media print {
+  .footer {
+    display: none;
+  }
 }

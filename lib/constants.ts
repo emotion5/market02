@@ -15,13 +15,14 @@ export function getCategory(slug: string): Category | undefined {
   return CATEGORIES.find((c) => c.slug === slug);
 }
 
-// TODO: 실제 사업자 정보로 교체
+// 사업자등록증 기준 공급자(법인) 정보. (상호=법인명, 브랜드명 "MMM MARKET"과 별개)
+// TODO: 전화번호(tel)는 아직 placeholder — 실제 대표 전화로 교체 필요
 export const SUPPLIER = {
-  name: "MMM MARKET",
-  owner: "홍길동",
-  bizNo: "000-00-00000",
-  address: "서울특별시 ○○구 ○○로 00, 0층",
-  category: "도소매 / 인테리어 자재",
+  name: "메이드메이크메테리얼 주식회사",
+  owner: "김영빈",
+  bizNo: "216-88-03916",
+  address: "서울특별시 송파구 송파대로 222, 1층 (가락동)",
+  category: "제조업, 도매 및 소매업",
   tel: "02-000-0000",
 };
 
