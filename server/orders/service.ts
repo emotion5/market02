@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/db";
 import { makeOrderNo } from "@/lib/orders";
-import { bankLabel } from "@/server/payments/portone";
+import { bankLabel } from "@/server/payments/toss";
 import type { Order, OrderStatus, OrderDraftInput } from "@/lib/orders";
 import type { CartItem } from "@/lib/types";
 
@@ -172,10 +172,10 @@ export async function placeOrder(
           total,
           items: { create: lineItems },
           taxInvoice: taxData,
-          // 가상계좌(포트원) 결제 건. 발급 전에는 READY 이며, 발급/입금 시 웹훅·동기화로 갱신.
+          // 가상계좌(토스페이먼츠) 결제 건. 발급 전에는 READY 이며, 발급/입금 시 승인·웹훅으로 갱신.
           payment: {
             create: {
-              provider: "PORTONE",
+              provider: "TOSS",
               method: "가상계좌",
               status: "READY",
               amount: total,

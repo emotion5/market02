@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import * as PortOne from "@portone/browser-sdk/v2";
+import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
@@ -19,7 +19,7 @@ function formatBizNo(value: string) {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice } = useCart();
   const settings = useSiteSettings();
 
   // 주문자 / 배송 정보
@@ -36,8 +36,6 @@ export default function CheckoutPage() {
   const [bizNo, setBizNo] = useState("");
   const [company, setCompany] = useState("");
 
-  // 주문 완료 시점의 스냅샷 (서버가 확정해 내려준 주문)
-  const [completed, setCompleted] = useState<Order | null>(null);
   const [error, setError] = useState("");
   const [placing, setPlacing] = useState(false);
 
@@ -45,7 +43,8 @@ export default function CheckoutPage() {
   const vat = totalPrice - supply;
 
   // 주문은 로그인 사용자에 귀속되며, 가격·주문번호는 서버가 확정한다.
-  // 흐름: ① 주문 생성 → ② 포트원 가상계좌 발급 → ③ 발급 계좌 동기화 → 완료 화면.
+  // 흐름: ① 주문 생성 → ② 토스 가상계좌 결제창(리다이렉트) → successUrl(/checkout/complete)
+  //       에서 서버 승인·계좌 표시. 입금 확인은 웹훅으로 자동 처리된다.
   const placeOrder = async () => {
     setError("");
     setPlacing(true);
@@ -87,48 +86,33 @@ export default function CheckoutPage() {
       }
       const order = data.order as Order;
 
-      // ② 포트원 가상계좌 발급 (paymentId = 주문번호). 입금 확인은 웹훅으로 자동 처리.
+      // ② 토스 가상계좌 결제창 (orderId = 주문번호). 성공 시 successUrl 로 리다이렉트된다.
       const orderName =
         items.length === 1
           ? items[0].productName
           : `${items[0].productName} 외 ${items.length - 1}건`;
-      const payRes = await PortOne.requestPayment({
-        storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
-        channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY!,
-        paymentId: order.orderNo,
+      const tossPayments = await loadTossPayments(
+        process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY!,
+      );
+      const payment = tossPayments.payment({ customerKey: ANONYMOUS });
+      await payment.requestPayment({
+        method: "VIRTUAL_ACCOUNT",
+        amount: { currency: "KRW", value: order.total },
+        orderId: order.orderNo,
         orderName,
-        totalAmount: order.total,
-        currency: "KRW",
-        payMethod: "VIRTUAL_ACCOUNT",
-        customer: { fullName: ordererName, phoneNumber: ordererTel },
-        virtualAccount: { accountExpiry: { validHours: 24 } }, // 입금기한 24시간
+        successUrl: `${window.location.origin}/checkout/complete`,
+        failUrl: `${window.location.origin}/checkout?failed=1`,
+        customerName: ordererName,
+        virtualAccount: { validHours: 24 }, // 입금기한 24시간
       });
-      if (payRes?.code !== undefined) {
-        setError(
-          payRes.message ??
-            "가상계좌 발급에 실패했습니다. 주문내역에서 다시 시도해주세요.",
-        );
-        return;
-      }
-
-      // ③ 발급된 계좌를 즉시 조회(웹훅 대기 없이 화면에 표시)
-      let finalOrder = order;
-      try {
-        const sync = await fetch(
-          `/api/orders/${order.orderNo}/sync-payment`,
-          { method: "POST" },
-        );
-        const syncData = await sync.json();
-        if (sync.ok && syncData.order) finalOrder = syncData.order as Order;
-      } catch {
-        // 동기화 실패해도 계좌는 웹훅으로 곧 채워진다(주문내역에서 확인 가능).
-      }
-
-      // 주문된 상품은 견적(장바구니)에서 비운다
-      clearCart();
-      setCompleted(finalOrder);
-    } catch {
-      setError("네트워크 오류가 발생했습니다.");
+      // 성공 시 위에서 successUrl 로 이동하므로 이 아래는 실행되지 않는다.
+    } catch (e) {
+      // 사용자가 결제창을 닫는 등 → 주문은 입금대기로 남고, 주문내역에서 재시도 가능.
+      const message =
+        e instanceof Error && e.message
+          ? e.message
+          : "결제가 중단되었습니다. 주문내역에서 다시 시도할 수 있습니다.";
+      setError(message);
     } finally {
       setPlacing(false);
     }
@@ -147,86 +131,6 @@ export default function CheckoutPage() {
     if (!canOrder || placing) return;
     placeOrder();
   };
-
-  // 완료 후 스크롤 상단으로
-  useEffect(() => {
-    if (completed) window.scrollTo(0, 0);
-  }, [completed]);
-
-  // ── 주문 완료 화면 (스냅샷 기준) ─────────────────
-  if (completed) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.doneCard}>
-          <p className={styles.doneBadge}>주문 접수 완료</p>
-          <h1 className={styles.doneTitle}>입금을 기다리고 있습니다</h1>
-          <p className={styles.doneText}>
-            주문번호 <strong>{completed.orderNo}</strong>
-            <br />
-            아래 <strong>전용 가상계좌</strong>로 입금해주시면 자동으로 확인됩니다.
-          </p>
-
-          {completed.virtualAccount ? (
-            <dl className={styles.depositBox}>
-              <div>
-                <dt>입금 은행</dt>
-                <dd>{completed.virtualAccount.bankLabel}</dd>
-              </div>
-              <div>
-                <dt>가상계좌번호</dt>
-                <dd>{completed.virtualAccount.accountNumber}</dd>
-              </div>
-              <div className={styles.depositAmount}>
-                <dt>입금 금액</dt>
-                <dd>{formatPrice(completed.total)}</dd>
-              </div>
-              {completed.virtualAccount.dueDate && (
-                <div>
-                  <dt>입금 기한</dt>
-                  <dd>
-                    {new Date(completed.virtualAccount.dueDate).toLocaleString(
-                      "ko-KR",
-                    )}
-                  </dd>
-                </div>
-              )}
-            </dl>
-          ) : (
-            <p className={styles.doneText}>
-              전용 가상계좌를 발급 중입니다. 잠시 후{" "}
-              <Link href="/mypage/orders">주문내역</Link>에서 계좌번호를
-              확인해주세요.
-            </p>
-          )}
-
-          <p className={styles.doneNotice}>
-            입금이 확인되면 <strong>자동으로</strong> 주문이 처리됩니다.
-            입금기한이 지나면 주문은 자동 취소됩니다.
-            {completed.taxInvoice.requested && (
-              <>
-                <br />
-                세금계산서는 입금 확인 후 사업자등록번호{" "}
-                <strong>{completed.taxInvoice.bizNo}</strong> 로 발행됩니다.
-              </>
-            )}
-          </p>
-
-          <div className={styles.doneActions}>
-            <button
-              type="button"
-              className={styles.primaryAction}
-              onClick={() => (window.location.href = "/")}
-            >
-              확인
-            </button>
-            <Link href="/mypage/orders" className={styles.secondaryAction}>
-              주문내역 보기
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // ── 빈 견적서 ────────────────────────────────────
   if (items.length === 0) {
