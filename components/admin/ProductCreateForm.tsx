@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CATEGORIES } from "@/lib/constants";
 import styles from "@/app/admin/admin.module.css";
 
-export default function ProductCreateForm() {
+export default function ProductCreateForm({
+  categories,
+}: {
+  categories: { slug: string; name: string }[];
+}) {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [categorySlug, setCategorySlug] = useState(CATEGORIES[0].slug);
+  const [categorySlug, setCategorySlug] = useState(categories[0]?.slug ?? "");
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("0");
@@ -70,7 +73,7 @@ export default function ProductCreateForm() {
           value={categorySlug}
           onChange={(e) => setCategorySlug(e.target.value)}
         >
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <option key={c.slug} value={c.slug}>
               {c.name}
             </option>

@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { getCategoriesForAdmin } from "@/lib/admin";
 import ProductCreateForm from "@/components/admin/ProductCreateForm";
 import styles from "../../admin.module.css";
 
-export default function NewProductPage() {
+export const dynamic = "force-dynamic";
+
+export default async function NewProductPage() {
+  const categories = await getCategoriesForAdmin();
   return (
     <div className={styles.page}>
       <h1 className={styles.pageTitle}>상품 등록</h1>
@@ -12,7 +16,7 @@ export default function NewProductPage() {
         </Link>
       </p>
       <div className={styles.card} style={{ padding: 24 }}>
-        <ProductCreateForm />
+        <ProductCreateForm categories={categories} />
       </div>
     </div>
   );

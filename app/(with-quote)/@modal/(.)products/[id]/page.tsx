@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProduct, isWholesaleViewer } from "@/lib/data";
+import { getProduct, isWholesaleViewer, getCategory } from "@/lib/data";
 import ProductModal from "@/components/product/ProductModal";
 import ProductDetail from "@/components/product/ProductDetail";
 
@@ -17,9 +17,16 @@ export default async function ProductModalPage({
   ]);
   if (!product) notFound();
 
+  const category = await getCategory(product.category);
+
   return (
     <ProductModal>
-      <ProductDetail product={product} variant="modal" wholesale={wholesale} />
+      <ProductDetail
+        product={product}
+        categoryName={category?.name}
+        variant="modal"
+        wholesale={wholesale}
+      />
     </ProductModal>
   );
 }

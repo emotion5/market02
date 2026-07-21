@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CATEGORIES, FEATURED_MAX } from "./constants";
+import { FEATURED_MAX } from "./constants";
 
 // 프론트·API 공용 입력 검증 스키마. (도메인이 늘면 phase 별로 여기에 추가)
 
@@ -43,12 +43,10 @@ export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 
 // 상품 수정 (어드민) — 상품 레벨 필드. 옵션(variant) 가격은 별도.
-const CATEGORY_SLUGS = CATEGORIES.map((c) => c.slug);
+// categorySlug 유효성은 카테고리가 DB 기반이므로 정적 목록 대신 DB FK 로 보장한다.
 export const productUpdateSchema = z.object({
   name: z.string().min(1, "상품명을 입력하세요.").max(100),
-  categorySlug: z
-    .string()
-    .refine((s) => CATEGORY_SLUGS.includes(s), "카테고리를 선택하세요."),
+  categorySlug: z.string().min(1, "카테고리를 선택하세요.").max(50),
   summary: z.string().max(200).optional(),
   description: z.string().min(1, "설명을 입력하세요.").max(5000),
   price: z.number().int("금액은 정수여야 합니다.").min(0, "0 이상이어야 합니다."),
@@ -78,21 +76,20 @@ export type ProductOptionsInput = z.infer<typeof productOptionsSchema>;
 
 // 홈 큐레이션(featured) 편성 (어드민) — 카테고리별 노출 상품 목록 전체를 순서대로 전송.
 export const featuredUpdateSchema = z.object({
-  categorySlug: z
-    .string()
-    .refine((s) => CATEGORY_SLUGS.includes(s), "카테고리를 선택하세요."),
+  categorySlug: z.string().min(1, "카테고리를 선택하세요.").max(50),
   productIds: z
     .array(z.string())
     .max(FEATURED_MAX, `홈에는 카테고리당 최대 ${FEATURED_MAX}개까지 편성할 수 있습니다.`),
 });
 export type FeaturedUpdateInput = z.infer<typeof featuredUpdateSchema>;
 
-// 카테고리 노출 설정(어드민) — 내비/홈 표시 토글 일괄 저장
+// 카테고리 노출 설정(어드민) — 내비/홈 표시 토글 일괄 저장.
+// 존재하지 않는 slug 는 서버(setCategoryVisibility)에서 조용히 무시한다.
 export const categoryVisibilitySchema = z.object({
   categories: z
     .array(
       z.object({
-        slug: z.string().refine((s) => CATEGORY_SLUGS.includes(s), "알 수 없는 카테고리입니다."),
+        slug: z.string().min(1).max(50),
         showInNav: z.boolean(),
         showOnHome: z.boolean(),
       }),
@@ -100,6 +97,34 @@ export const categoryVisibilitySchema = z.object({
     .min(1),
 });
 export type CategoryVisibilityInput = z.infer<typeof categoryVisibilitySchema>;
+
+// 카테고리 생성(어드민) — slug 는 생성 후 불변(상품ID·URL·이미지 폴더 키).
+export const categoryCreateSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z][a-z0-9]*$/, "slug은 영문 소문자로 시작하고 영소문자·숫자만 쓸 수 있습니다.")
+    .max(50),
+  nameKo: z.string().trim().min(1, "한글 이름을 입력하세요.").max(30),
+  nameEn: z.string().trim().min(1, "영문 이름을 입력하세요.").max(30),
+});
+export type CategoryCreateInput = z.infer<typeof categoryCreateSchema>;
+
+// 카테고리 순서 저장(어드민) — 표시 순서대로 slug 목록 전체를 전송.
+export const categoryReorderSchema = z.object({
+  slugs: z.array(z.string().min(1).max(50)).min(1),
+});
+export type CategoryReorderInput = z.infer<typeof categoryReorderSchema>;
+
+// 카테고리 수정(어드민) — 표시명·순서만(slug 변경 불가). 보낼 필드만 전송.
+export const categoryUpdateSchema = z
+  .object({
+    nameKo: z.string().trim().min(1).max(30).optional(),
+    nameEn: z.string().trim().min(1).max(30).optional(),
+    sortOrder: z.number().int().min(0).max(9999).optional(),
+  })
+  .refine((v) => Object.keys(v).length > 0, "변경할 내용이 없습니다.");
+export type CategoryUpdateInput = z.infer<typeof categoryUpdateSchema>;
 
 // 사이트 설정(어드민) — 공급자·입금계좌·견적 유효기간·고객센터
 const req = (max: number, msg: string) => z.string().trim().min(1, msg).max(max);

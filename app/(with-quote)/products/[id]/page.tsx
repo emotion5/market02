@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProduct, isWholesaleViewer } from "@/lib/data";
-import { getCategory } from "@/lib/constants";
+import { getProduct, isWholesaleViewer, getCategory } from "@/lib/data";
 import ProductDetail from "@/components/product/ProductDetail";
 import styles from "./page.module.css";
 
@@ -17,7 +16,7 @@ export default async function ProductDetailPage({
   ]);
   if (!product) notFound();
 
-  const category = getCategory(product.category);
+  const category = await getCategory(product.category);
 
   return (
     <div className={styles.page}>
@@ -37,7 +36,11 @@ export default async function ProductDetailPage({
         <span className={styles.current}>{product.name}</span>
       </nav>
 
-      <ProductDetail product={product} wholesale={wholesale} />
+      <ProductDetail
+        product={product}
+        categoryName={category?.name}
+        wholesale={wholesale}
+      />
     </div>
   );
 }

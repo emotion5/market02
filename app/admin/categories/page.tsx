@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCategoriesForAdmin } from "@/lib/admin";
+import CategoryManager from "@/components/admin/CategoryManager";
 import CategoryVisibilityForm from "@/components/admin/CategoryVisibilityForm";
 import styles from "../admin.module.css";
 
@@ -10,14 +11,18 @@ export default async function CategoriesPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.pageTitle}>카테고리 노출</h1>
+      <h1 className={styles.pageTitle}>카테고리 관리</h1>
       <p className={styles.pageDesc}>
         <Link href="/admin/products" className={styles.backToShop}>
           ← 상품 관리
         </Link>{" "}
-        · 각 카테고리를 상단 내비게이션과 메인(홈) 진열대에 노출할지 선택합니다. 예: 내비는 끄고 홈에만 노출.
+        · 카테고리를 추가·편집하고, 상단 내비게이션과 메인(홈) 진열대에 노출할지 선택합니다.
       </p>
 
+      <CategoryManager
+        key={categories.map((c) => c.slug).sort().join("|")}
+        categories={categories}
+      />
       <CategoryVisibilityForm categories={categories} />
     </div>
   );

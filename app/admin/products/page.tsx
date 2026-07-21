@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { CATEGORIES, getCategory } from "@/lib/constants";
-import { listProductsForAdmin } from "@/lib/admin";
+import { listProductsForAdmin, getCategoriesForAdmin } from "@/lib/admin";
 import styles from "../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +10,12 @@ export default async function AdminProductsPage({
   searchParams: Promise<{ category?: string; q?: string }>;
 }) {
   const { category, q } = await searchParams;
-  const products = await listProductsForAdmin({ category, q });
+  const [products, categories] = await Promise.all([
+    listProductsForAdmin({ category, q }),
+    getCategoriesForAdmin(),
+  ]);
+  const categoryName = (slug: string) =>
+    categories.find((c) => c.slug === slug)?.name ?? slug;
 
   return (
     <div className={styles.page}>
@@ -28,7 +32,7 @@ export default async function AdminProductsPage({
           >
             전체
           </Link>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <Link
               key={c.slug}
               href={`/admin/products?category=${c.slug}`}
@@ -97,7 +101,7 @@ export default async function AdminProductsPage({
                     <div className={styles.pName}>{p.name}</div>
                     <div className={styles.pId}>{p.id}</div>
                   </td>
-                  <td>{getCategory(p.categorySlug)?.name ?? p.categorySlug}</td>
+                  <td>{categoryName(p.categorySlug)}</td>
                   <td className={styles.mono}>
                     {p.price.toLocaleString("ko-KR")}원
                   </td>

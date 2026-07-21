@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCategory } from "@/lib/constants";
-import { getProductsByCategory } from "@/lib/data";
+import { getCategory, getProductsByCategory } from "@/lib/data";
 import ProductListing from "@/components/product/ProductListing";
 import styles from "../../listing.module.css";
 
@@ -12,7 +11,7 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const category = getCategory(slug);
+  const category = await getCategory(slug);
   if (!category) notFound();
 
   const products = await getProductsByCategory(slug);

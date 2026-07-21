@@ -8,11 +8,12 @@ import {
   searchProducts as svcSearchProducts,
   getFeaturedSections as svcGetFeaturedSections,
   getNavCategories as svcGetNavCategories,
+  getCategories as svcGetCategories,
   type FeaturedSection,
 } from "@/server/catalog/service";
 import { getSessionUser } from "./session";
 import { prisma } from "@/server/db";
-import type { Product, NavCategory } from "./types";
+import type { Product, NavCategory, Category } from "./types";
 
 export type { FeaturedSection };
 
@@ -54,4 +55,10 @@ export async function searchProducts(query: string): Promise<Product[]> {
 
 export async function getNavCategories(): Promise<NavCategory[]> {
   return svcGetNavCategories();
+}
+
+// 단건 카테고리(표시명 등) — DB 기반. 관리자에서 추가한 카테고리도 즉시 반영된다.
+export async function getCategory(slug: string): Promise<Category | undefined> {
+  const cats = await svcGetCategories();
+  return cats.find((c) => c.slug === slug);
 }

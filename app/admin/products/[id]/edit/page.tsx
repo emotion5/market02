@@ -4,6 +4,7 @@ import {
   getProductForAdmin,
   getProductOptions,
   getProductImages,
+  getCategoriesForAdmin,
 } from "@/lib/admin";
 import ProductEditForm from "@/components/admin/ProductEditForm";
 import ProductOptionsForm from "@/components/admin/ProductOptionsForm";
@@ -18,10 +19,11 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [product, options, images] = await Promise.all([
+  const [product, options, images, categories] = await Promise.all([
     getProductForAdmin(id),
     getProductOptions(id),
     getProductImages(id),
+    getCategoriesForAdmin(),
   ]);
   if (!product || !options || !images) notFound();
 
@@ -36,7 +38,7 @@ export default async function EditProductPage({
       </p>
 
       <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>
-        <ProductEditForm product={product} />
+        <ProductEditForm product={product} categories={categories} />
       </div>
 
       <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>

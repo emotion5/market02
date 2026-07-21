@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CATEGORIES } from "@/lib/constants";
 import styles from "@/app/admin/admin.module.css";
 
 interface Product {
@@ -15,7 +14,13 @@ interface Product {
   isActive: boolean;
 }
 
-export default function ProductEditForm({ product }: { product: Product }) {
+export default function ProductEditForm({
+  product,
+  categories,
+}: {
+  product: Product;
+  categories: { slug: string; name: string }[];
+}) {
   const router = useRouter();
   const [name, setName] = useState(product.name);
   const [categorySlug, setCategorySlug] = useState(product.categorySlug);
@@ -77,7 +82,7 @@ export default function ProductEditForm({ product }: { product: Product }) {
           value={categorySlug}
           onChange={(e) => setCategorySlug(e.target.value)}
         >
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <option key={c.slug} value={c.slug}>
               {c.name}
             </option>

@@ -348,6 +348,8 @@ export interface AdminFeaturedCategory {
 export interface AdminCategoryRow {
   slug: string;
   name: string; // 한글 표시명
+  nameEn: string;
+  sortOrder: number;
   showInNav: boolean;
   showOnHome: boolean;
 }
@@ -355,11 +357,20 @@ export interface AdminCategoryRow {
 export async function getCategoriesForAdmin(): Promise<AdminCategoryRow[]> {
   const cats = await prisma.category.findMany({
     orderBy: { sortOrder: "asc" },
-    select: { slug: true, nameKo: true, showInNav: true, showOnHome: true },
+    select: {
+      slug: true,
+      nameKo: true,
+      nameEn: true,
+      sortOrder: true,
+      showInNav: true,
+      showOnHome: true,
+    },
   });
   return cats.map((c) => ({
     slug: c.slug,
     name: c.nameKo,
+    nameEn: c.nameEn,
+    sortOrder: c.sortOrder,
     showInNav: c.showInNav,
     showOnHome: c.showOnHome,
   }));
@@ -381,6 +392,118 @@ export async function setCategoryVisibility(
         }),
       ),
   );
+}
+
+// ── 카테고리 CRUD (관리자) ──────────────────────────
+// slug 는 상품 ID 접두(예: bathmatch-0001)·URL·이미지 폴더를 잇는 내부 키라
+// 생성 후 변경 불가. 표시명(한/영)·순서만 수정한다.
+export type CategoryMutationResult =
+  | { ok: true; slug: string }
+  | { ok: false; status: number; error: string };
+
+const CATEGORY_SLUG_RE = /^[a-z][a-z0-9]*$/;
+
+export async function createCategory(input: {
+  slug: string;
+  nameKo: string;
+  nameEn: string;
+}): Promise<CategoryMutationResult> {
+  const slug = input.slug.trim().toLowerCase();
+  const nameKo = input.nameKo.trim();
+  const nameEn = input.nameEn.trim();
+  if (!CATEGORY_SLUG_RE.test(slug)) {
+    return {
+      ok: false,
+      status: 400,
+      error: "slug은 영문 소문자로 시작하고 영소문자·숫자만 쓸 수 있습니다.",
+    };
+  }
+  if (!nameKo || !nameEn) {
+    return { ok: false, status: 400, error: "카테고리 이름(한글·영문)을 입력하세요." };
+  }
+  const dup = await prisma.category.findUnique({
+    where: { slug },
+    select: { slug: true },
+  });
+  if (dup) return { ok: false, status: 409, error: "이미 존재하는 slug입니다." };
+
+  const agg = await prisma.category.aggregate({ _max: { sortOrder: true } });
+  const sortOrder = (agg._max.sortOrder ?? -1) + 1;
+  await prisma.category.create({
+    data: { slug, nameKo, nameEn, sortOrder, showInNav: true, showOnHome: true },
+  });
+  return { ok: true, slug };
+}
+
+export async function updateCategory(
+  slug: string,
+  input: { nameKo?: string; nameEn?: string; sortOrder?: number },
+): Promise<CategoryMutationResult> {
+  const existing = await prisma.category.findUnique({
+    where: { slug },
+    select: { slug: true },
+  });
+  if (!existing) return { ok: false, status: 404, error: "카테고리를 찾을 수 없습니다." };
+
+  const data: Prisma.CategoryUpdateInput = {};
+  if (input.nameKo !== undefined) {
+    const v = input.nameKo.trim();
+    if (!v) return { ok: false, status: 400, error: "한글 이름을 입력하세요." };
+    data.nameKo = v;
+  }
+  if (input.nameEn !== undefined) {
+    const v = input.nameEn.trim();
+    if (!v) return { ok: false, status: 400, error: "영문 이름을 입력하세요." };
+    data.nameEn = v;
+  }
+  if (input.sortOrder !== undefined) data.sortOrder = input.sortOrder;
+
+  await prisma.category.update({ where: { slug }, data });
+  return { ok: true, slug };
+}
+
+// 카테고리 순서 일괄 저장 — 받은 순서대로 sortOrder=index 재기록.
+// 존재하지 않거나 중복된 slug 는 조용히 건너뛴다.
+export async function reorderCategories(orderedSlugs: string[]): Promise<void> {
+  const existing = await prisma.category.findMany({ select: { slug: true } });
+  const valid = new Set(existing.map((c) => c.slug));
+  const seen = new Set<string>();
+  const updates = [];
+  let i = 0;
+  for (const slug of orderedSlugs) {
+    if (!valid.has(slug) || seen.has(slug)) continue;
+    seen.add(slug);
+    updates.push(
+      prisma.category.update({ where: { slug }, data: { sortOrder: i } }),
+    );
+    i++;
+  }
+  if (updates.length) await prisma.$transaction(updates);
+}
+
+export async function deleteCategory(
+  slug: string,
+): Promise<CategoryMutationResult> {
+  const existing = await prisma.category.findUnique({
+    where: { slug },
+    select: { slug: true },
+  });
+  if (!existing) return { ok: false, status: 404, error: "카테고리를 찾을 수 없습니다." };
+
+  const productCount = await prisma.product.count({ where: { categorySlug: slug } });
+  if (productCount > 0) {
+    return {
+      ok: false,
+      status: 409,
+      error: `이 카테고리에 상품 ${productCount}개가 있어 삭제할 수 없습니다. 상품을 옮기거나 삭제한 뒤 다시 시도하세요.`,
+    };
+  }
+  // 상품이 없으면 featured 행도 없지만, 방어적으로 함께 정리한 뒤 삭제.
+  await prisma.$transaction([
+    prisma.featured.deleteMany({ where: { categorySlug: slug } }),
+    prisma.category.delete({ where: { slug } }),
+  ]);
+  return { ok: true, slug };
 }
 
 // FEATURED_MAX(카테고리당 최대 노출 수)는 lib/constants 에서 공용 정의(위에서 re-export).
