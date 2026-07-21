@@ -33,9 +33,13 @@
   padding-top: var(--top-gap);
 }
 
-/* 패딩 안쪽 폭이 견적서 패널과 같으므로 로고 왼쪽 끝이 패널 왼쪽 끝과 맞는다 */
+/* 패딩 안쪽 폭이 견적서 패널과 같으므로 로고 왼쪽 끝이 패널 왼쪽 끝과 맞는다.
+   스크롤해도 로고는 상단에 고정된다(그 아래로 견적서가 채워진다). */
 .logoCell {
   grid-area: logo;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .navCell {
@@ -49,12 +53,23 @@
   padding-right: 24px;
 }
 
-/* 배경(흰 밴드)은 칸 전체를 덮고, 패널만 스크롤을 따라온다 */
+/* 배경(흰 밴드)은 칸 전체를 덮고, 패널은 로고 아래부터 화면 하단까지 채운다.
+   높이를 화면에 맞추면 QuotePanel 내부 구조(항목 스크롤 + 합계·버튼 하단 고정)가
+   그대로 화면 하단 고정으로 이어진다. */
 .panelInner {
   position: sticky;
-  top: 24px;
-  margin-top: 48px;
-  padding-bottom: 24px;
+  top: calc(76px + var(--top-gap));
+  height: calc(100vh - 76px - var(--top-gap));
+  display: flex;
+  flex-direction: column;
+  padding-top: 12px;
+  padding-bottom: 20px;
+}
+
+/* 견적서 패널이 남은 높이를 채워 하단 버튼이 화면 하단에 고정되게 한다 */
+.panelFill {
+  flex: 1;
+  min-height: 0;
 }
 
 .content {
@@ -78,6 +93,7 @@
   .logoCell,
   .panel {
     background: none;
+    position: static; /* 모바일에선 로고 고정 해제(상단 바로 흐른다) */
   }
 
   .logoCell,

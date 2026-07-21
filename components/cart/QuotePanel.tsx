@@ -51,22 +51,24 @@ export default function QuotePanel({ className }: { className?: string }) {
                 </Link>
 
                 <div className={styles.itemInfo}>
-                  <Link
-                    href={`/products/${item.productId}`}
-                    className={styles.itemName}
-                  >
-                    {item.productName}
-                  </Link>
-                  <p className={styles.itemVariant}>
-                    {item.color && (
-                      <span
-                        className={styles.colorDot}
-                        style={{ backgroundColor: item.color }}
-                        aria-hidden
-                      />
-                    )}
-                    {item.variantName}
-                  </p>
+                  <div className={styles.itemTop}>
+                    <Link
+                      href={`/products/${item.productId}`}
+                      className={styles.itemName}
+                    >
+                      {item.productName}
+                    </Link>
+                    <span className={styles.itemVariant}>
+                      {item.color && (
+                        <span
+                          className={styles.colorDot}
+                          style={{ backgroundColor: item.color }}
+                          aria-hidden
+                        />
+                      )}
+                      {item.variantName}
+                    </span>
+                  </div>
 
                   <div className={styles.itemRow}>
                     <div className={styles.quantity}>

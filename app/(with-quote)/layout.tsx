@@ -28,7 +28,7 @@ export default async function WithQuoteLayout({
       </div>
       <div className={styles.panel}>
         <div className={styles.panelInner}>
-          <QuotePanel />
+          <QuotePanel className={styles.panelFill} />
         </div>
       </div>
       <div className={styles.content}>

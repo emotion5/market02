@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, FileText, User, CircleUserRound, LogOut } from "lucide-react";
+import { Search, ShoppingCart, User, CircleUserRound, LogOut } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import styles from "./HeaderNav.module.css";
@@ -91,7 +91,7 @@ export default function HeaderNav() {
         </button>
       </form>
       <Link href="/quote" className={styles.navLink} aria-label="견적서" title="견적서">
-        <FileText size={20} strokeWidth={1.25} />
+        <ShoppingCart size={20} strokeWidth={1.25} />
         {totalCount > 0 && <span className={styles.badge}>{totalCount}</span>}
       </Link>
       <Link

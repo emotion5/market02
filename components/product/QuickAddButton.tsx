@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/hooks/useCart";
 import styles from "./ProductCard.module.css";
@@ -55,7 +55,7 @@ export default function QuickAddButton({ product }: { product: Product }) {
       aria-pressed={inQuote}
       data-tip={label}
     >
-      <Heart size={10} strokeWidth={1.75} fill="currentColor" />
+      <ShoppingCart size={13} strokeWidth={1.75} />
     </button>
   );
 }
