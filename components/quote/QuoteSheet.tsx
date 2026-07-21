@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import type { CartItem } from "@/lib/types";
 import type { QuoteCustomer } from "@/lib/quotes";
 import { quoteTotals } from "@/lib/quotes";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, thumbUrl } from "@/lib/utils";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import styles from "./QuoteSheet.module.css";
 
@@ -243,18 +243,42 @@ export default function QuoteSheet({
               <tr key={`${item.productId}-${item.variantId}`}>
                 <td className={styles.colNo}>{i + 1}</td>
                 <td className={styles.colName}>
-                  {item.productName}
-                  {editable && (
-                    /* 화면 전용 삭제 버튼 (인쇄 시 숨김) */
-                    <button
-                      type="button"
-                      className={styles.removeItem}
-                      onClick={() => onRemove?.(item.productId, item.variantId)}
-                      aria-label={`${item.productName} 삭제`}
-                    >
-                      <X size={14} strokeWidth={2} />
-                    </button>
-                  )}
+                  <div className={styles.itemName}>
+                    {item.image && (
+                      // 경량 파생 썸네일(.thumb.webp)을 우선 로드하고, 없으면
+                      // onError 로 원본 이미지로 폴백한다.
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={thumbUrl(item.image)}
+                        alt=""
+                        className={styles.thumb}
+                        loading="lazy"
+                        decoding="async"
+                        onError={(e) => {
+                          const img = e.currentTarget;
+                          if (img.dataset.fallback) return;
+                          img.dataset.fallback = "1";
+                          img.src = item.image;
+                        }}
+                      />
+                    )}
+                    <span className={styles.itemNameText}>
+                      {item.productName}
+                      {editable && (
+                        /* 화면 전용 삭제 버튼 (인쇄 시 숨김) */
+                        <button
+                          type="button"
+                          className={styles.removeItem}
+                          onClick={() =>
+                            onRemove?.(item.productId, item.variantId)
+                          }
+                          aria-label={`${item.productName} 삭제`}
+                        >
+                          <X size={14} strokeWidth={2} />
+                        </button>
+                      )}
+                    </span>
+                  </div>
                 </td>
                 <td className={styles.colSpec}>{item.variantName}</td>
                 <td className={styles.colQty}>

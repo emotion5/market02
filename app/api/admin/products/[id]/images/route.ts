@@ -1,3 +1,4 @@
+import sharp from "sharp";
 import { getAdmin } from "@/lib/admin-guard";
 import { uploadPublic, deletePublic } from "@/server/storage";
 import {
@@ -42,8 +43,42 @@ export async function POST(
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const key = `products/${id}/${crypto.randomUUID()}.${ext}`;
-  const url = await uploadPublic(key, buffer, file.type);
+
+  // 대표 이미지(master): EXIF 회전 보정 후 긴 변 1600px로 자동 축소 + WebP 변환.
+  // 원본을 그대로 두지 않고 상한을 걸어 저장·전송량을 통제한다.
+  // (withoutEnlargement: 원본이 1600px 미만이면 억지로 늘려 흐려지지 않게 유지)
+  const key = `products/${id}/${crypto.randomUUID()}.webp`;
+  let master: Buffer;
+  try {
+    master = await sharp(buffer, { animated: true })
+      .rotate()
+      .resize(1600, 1600, { fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+  } catch {
+    return Response.json(
+      { error: "이미지를 처리할 수 없습니다." },
+      { status: 400 },
+    );
+  }
+  const url = await uploadPublic(key, master, "image/webp");
+
+  // 경량 썸네일(.thumb.webp) 동반 업로드 — 견적서·목록·장바구니에서 원본 대신
+  // 이 파일을 불러 전송량을 줄인다. 실패해도 원본으로 폴백되므로 치명적이지 않다.
+  try {
+    const thumb = await sharp(buffer)
+      .rotate()
+      .resize(96, 96, { fit: "cover" })
+      .webp({ quality: 70 })
+      .toBuffer();
+    await uploadPublic(
+      key.replace(/\.[^.]+$/, ".thumb.webp"),
+      thumb,
+      "image/webp",
+    );
+  } catch {
+    // 썸네일 생성 실패 무시
+  }
 
   if (kind === "rep") {
     await setRepImage(id, url);
@@ -74,10 +109,17 @@ export async function DELETE(
   const marker = "/product-images/";
   const idx = url.indexOf(marker);
   if (idx >= 0) {
+    const storageKey = url.slice(idx + marker.length);
     try {
-      await deletePublic(url.slice(idx + marker.length));
+      await deletePublic(storageKey);
     } catch {
       // 스토리지 삭제 실패는 무시(DB는 이미 삭제됨)
+    }
+    // 동반 생성했던 썸네일도 함께 제거(고아 파일 방지)
+    try {
+      await deletePublic(storageKey.replace(/\.[^.]+$/, ".thumb.webp"));
+    } catch {
+      // 썸네일이 없거나 삭제 실패해도 무시
     }
   }
   return Response.json({ ok: true });

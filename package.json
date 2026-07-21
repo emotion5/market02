@@ -12,7 +12,8 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "make-admin": "node --env-file=.env prisma/make-admin.ts"
+    "make-admin": "node --env-file=.env prisma/make-admin.ts",
+    "thumbs": "node scripts/gen-product-thumbs.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1090.0",
@@ -29,6 +30,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "server-only": "^0.0.1",
+    "sharp": "^0.34.5",
     "zod": "^4.4.3"
   },
   "devDependencies": {

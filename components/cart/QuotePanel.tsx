@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, thumbUrl } from "@/lib/utils";
 import styles from "./QuotePanel.module.css";
 
 // 리스트/상세 페이지 좌측에 항상 표시되는 견적서 패널
@@ -33,11 +33,20 @@ export default function QuotePanel({ className }: { className?: string }) {
                 className={styles.item}
               >
                 <Link href={`/products/${item.productId}`}>
+                  {/* 경량 썸네일(.thumb.webp) 우선, 없으면 onError 로 원본 폴백 */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={item.image}
+                    src={thumbUrl(item.image)}
                     alt={item.productName}
                     className={styles.thumb}
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (img.dataset.fallback) return;
+                      img.dataset.fallback = "1";
+                      img.src = item.image;
+                    }}
                   />
                 </Link>
 
