@@ -131,6 +131,17 @@ model Product {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // 상품정보제공고시(전자상거래) — "기타 재화" 기준 + 인테리어 자재 규격.
+  // 비우면 상세페이지 고시표에 "상세페이지 참조"/"해당없음" 으로 노출된다.
+  modelName   String? // 모델명
+  origin      String? // 제조국(원산지)
+  maker       String? // 제조자/수입자
+  dimensions  String? // 크기·규격
+  material    String? // 재질/소재
+  colorInfo   String? // 색상(텍스트)
+  composition String? // 구성품
+  certInfo    String? // KC 등 인증정보
+
   variants Variant[]
   colors   ProductColor[]
   images   ProductImage[]

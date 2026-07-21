@@ -71,14 +71,16 @@ async function nextIdAndSort(
 
 // 신규 상품 생성 — 기본 옵션 1개를 함께 만든다(상품은 옵션이 최소 1개 필요).
 // 이미지는 placeholder 로 두고 이후 편집/업로드에서 교체.
-export async function createProduct(input: {
-  name: string;
-  categorySlug: string;
-  summary: string | null;
-  description: string;
-  price: number;
-  isActive: boolean;
-}): Promise<string> {
+export async function createProduct(
+  input: {
+    name: string;
+    categorySlug: string;
+    summary: string | null;
+    description: string;
+    price: number;
+    isActive: boolean;
+  } & Partial<ProductNoticeFields>,
+): Promise<string> {
   for (let attempt = 0; attempt < 3; attempt++) {
     const { id, sortOrder } = await nextIdAndSort(input.categorySlug);
     try {
@@ -93,6 +95,14 @@ export async function createProduct(input: {
           price: input.price,
           isActive: input.isActive,
           sortOrder,
+          modelName: input.modelName ?? null,
+          origin: input.origin ?? null,
+          maker: input.maker ?? null,
+          dimensions: input.dimensions ?? null,
+          material: input.material ?? null,
+          colorInfo: input.colorInfo ?? null,
+          composition: input.composition ?? null,
+          certInfo: input.certInfo ?? null,
           variants: {
             create: {
               id: `${id}-default`,
@@ -119,7 +129,19 @@ export async function createProduct(input: {
   throw new Error("상품 ID 생성에 실패했습니다.");
 }
 
-export interface AdminProductDetail {
+// 상품정보제공고시 필드(선택) — 등록/수정 공용.
+export interface ProductNoticeFields {
+  modelName: string | null;
+  origin: string | null;
+  maker: string | null;
+  dimensions: string | null;
+  material: string | null;
+  colorInfo: string | null;
+  composition: string | null;
+  certInfo: string | null;
+}
+
+export interface AdminProductDetail extends ProductNoticeFields {
   id: string;
   name: string;
   categorySlug: string;
@@ -142,6 +164,14 @@ export async function getProductForAdmin(
     description: p.description,
     price: p.price,
     isActive: p.isActive,
+    modelName: p.modelName,
+    origin: p.origin,
+    maker: p.maker,
+    dimensions: p.dimensions,
+    material: p.material,
+    colorInfo: p.colorInfo,
+    composition: p.composition,
+    certInfo: p.certInfo,
   };
 }
 
@@ -154,7 +184,7 @@ export async function updateProductFields(
     description: string;
     price: number;
     isActive: boolean;
-  },
+  } & Partial<ProductNoticeFields>,
 ): Promise<boolean> {
   try {
     await prisma.product.update({ where: { id }, data: input });

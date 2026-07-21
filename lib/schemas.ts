@@ -51,6 +51,15 @@ export const productUpdateSchema = z.object({
   description: z.string().min(1, "설명을 입력하세요.").max(5000),
   price: z.number().int("금액은 정수여야 합니다.").min(0, "0 이상이어야 합니다."),
   isActive: z.boolean(),
+  // 상품정보제공고시 (선택 — 비우면 상세에서 "상세페이지 참조"/"해당없음")
+  modelName: z.string().max(100).optional(),
+  origin: z.string().max(100).optional(),
+  maker: z.string().max(100).optional(),
+  dimensions: z.string().max(200).optional(),
+  material: z.string().max(200).optional(),
+  colorInfo: z.string().max(200).optional(),
+  composition: z.string().max(300).optional(),
+  certInfo: z.string().max(200).optional(),
 });
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
 

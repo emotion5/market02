@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ProductNoticeFields, {
+  type NoticeValues,
+} from "@/components/admin/ProductNoticeFields";
 import styles from "@/app/admin/admin.module.css";
 
 interface Product {
@@ -12,6 +15,14 @@ interface Product {
   description: string;
   price: number;
   isActive: boolean;
+  modelName: string | null;
+  origin: string | null;
+  maker: string | null;
+  dimensions: string | null;
+  material: string | null;
+  colorInfo: string | null;
+  composition: string | null;
+  certInfo: string | null;
 }
 
 export default function ProductEditForm({
@@ -28,6 +39,16 @@ export default function ProductEditForm({
   const [description, setDescription] = useState(product.description);
   const [price, setPrice] = useState(String(product.price));
   const [isActive, setIsActive] = useState(product.isActive);
+  const [notice, setNotice] = useState<NoticeValues>({
+    modelName: product.modelName ?? "",
+    origin: product.origin ?? "",
+    maker: product.maker ?? "",
+    dimensions: product.dimensions ?? "",
+    material: product.material ?? "",
+    colorInfo: product.colorInfo ?? "",
+    composition: product.composition ?? "",
+    certInfo: product.certInfo ?? "",
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -48,6 +69,7 @@ export default function ProductEditForm({
           description,
           price: Number(price),
           isActive,
+          ...notice,
         }),
       });
       const data = await res.json();
@@ -130,6 +152,9 @@ export default function ProductEditForm({
           <span>활성 (쇼핑몰에 노출)</span>
         </label>
       </div>
+
+      <h2 className={styles.sectionTitle}>상품정보제공고시</h2>
+      <ProductNoticeFields value={notice} onChange={setNotice} />
 
       <div className={styles.formActions}>
         {error && <span className={styles.errorText}>{error}</span>}

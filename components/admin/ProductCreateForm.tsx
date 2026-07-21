@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ProductNoticeFields, {
+  EMPTY_NOTICE,
+  type NoticeValues,
+} from "@/components/admin/ProductNoticeFields";
 import styles from "@/app/admin/admin.module.css";
 
 export default function ProductCreateForm({
@@ -16,6 +20,7 @@ export default function ProductCreateForm({
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("0");
   const [isActive, setIsActive] = useState(false);
+  const [notice, setNotice] = useState<NoticeValues>(EMPTY_NOTICE);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,6 +39,7 @@ export default function ProductCreateForm({
           description,
           price: Number(price),
           isActive,
+          ...notice,
         }),
       });
       const data = await res.json();
@@ -120,6 +126,9 @@ export default function ProductCreateForm({
           <span>활성 (쇼핑몰에 노출) — 이미지 등록 후 켜는 것을 권장</span>
         </label>
       </div>
+
+      <h2 className={styles.sectionTitle}>상품정보제공고시</h2>
+      <ProductNoticeFields value={notice} onChange={setNotice} />
 
       <div className={styles.formActions}>
         {error && <span className={styles.errorText}>{error}</span>}

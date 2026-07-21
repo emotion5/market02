@@ -24,6 +24,14 @@ export async function POST(request: Request) {
     description: d.description,
     price: d.price,
     isActive: d.isActive,
+    modelName: d.modelName?.trim() || null,
+    origin: d.origin?.trim() || null,
+    maker: d.maker?.trim() || null,
+    dimensions: d.dimensions?.trim() || null,
+    material: d.material?.trim() || null,
+    colorInfo: d.colorInfo?.trim() || null,
+    composition: d.composition?.trim() || null,
+    certInfo: d.certInfo?.trim() || null,
   });
   return Response.json({ id }, { status: 201 });
 }

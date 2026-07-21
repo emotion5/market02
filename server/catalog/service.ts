@@ -62,6 +62,16 @@ function toDetailProduct(p: DetailRow, wholesale: boolean): Product {
   return {
     ...toListProduct(p, wholesale),
     images: p.images.map((img) => img.url),
+    notice: {
+      modelName: p.modelName ?? undefined,
+      origin: p.origin ?? undefined,
+      maker: p.maker ?? undefined,
+      dimensions: p.dimensions ?? undefined,
+      material: p.material ?? undefined,
+      colorInfo: p.colorInfo ?? undefined,
+      composition: p.composition ?? undefined,
+      certInfo: p.certInfo ?? undefined,
+    },
   };
 }
 

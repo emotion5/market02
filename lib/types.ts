@@ -5,6 +5,18 @@ export interface Variant {
   consumerPrice: number; // 표시용 소비자가(항상 실제 소비자가). 회원도매가 노출은 자격 있는 뷰어에게만
 }
 
+// 상품정보제공고시 (상세페이지 고시표). 상세 조회에서만 채운다.
+export interface ProductNotice {
+  modelName?: string;
+  origin?: string; // 제조국(원산지)
+  maker?: string; // 제조자/수입자
+  dimensions?: string; // 크기·규격
+  material?: string; // 재질/소재
+  colorInfo?: string; // 색상(텍스트)
+  composition?: string; // 구성품
+  certInfo?: string; // KC 등 인증정보
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -16,6 +28,7 @@ export interface Product {
   images?: string[]; // 상세 갤러리용 이미지들. getProduct에서 파일명 규칙으로 자동 구성
   variants: Variant[];
   colors?: string[]; // 색상 옵션(hex). 있을 때만 원형 스와치로 표시 (현재 표시 전용)
+  notice?: ProductNotice; // 상품정보제공고시 (상세에서만)
 }
 
 export interface Category {

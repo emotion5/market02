@@ -81,3 +81,27 @@
   line-height: 1.7;
   color: var(--color-text-muted);
 }
+
+/* 상품정보제공고시 표 (아코디언 내부) */
+.noticeTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.noticeTable th,
+.noticeTable td {
+  border: 1px solid var(--color-border, #e5e5e5);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.noticeTable th {
+  width: 34%;
+  white-space: nowrap;
+  font-weight: var(--fw-emphasis);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted, #fafafa);
+}
