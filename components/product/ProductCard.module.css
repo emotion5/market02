@@ -14,7 +14,7 @@
 .card:hover {
   z-index: 1;
   background: var(--color-bg);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.09);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.117);
 }
 
 .thumb {

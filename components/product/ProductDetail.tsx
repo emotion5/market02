@@ -2,7 +2,7 @@ import VariantSelector from "@/components/product/VariantSelector";
 import ProductGallery from "@/components/product/ProductGallery";
 import ProductAccordion from "@/components/product/ProductAccordion";
 import { getSiteSettings } from "@/lib/settings";
-import type { Product } from "@/lib/types";
+import type { Product, SiteSettings } from "@/lib/types";
 import styles from "./ProductDetail.module.css";
 
 // 상품 상세 본문(이미지 + 정보 + 옵션). 전체 페이지와 모달에서 공용으로 사용.
@@ -12,14 +12,16 @@ export default async function ProductDetail({
   categoryName,
   variant = "page",
   wholesale = false,
+  settings: settingsProp,
 }: {
   product: Product;
   categoryName?: string; // 표시용 카테고리명(서버에서 DB 조회 후 주입)
   variant?: "page" | "modal";
   wholesale?: boolean; // 회원도매가 노출 자격(승인 사업자). 기본 비노출
+  settings?: SiteSettings; // 호출부가 이미 조회했으면 주입(중복 DB 조회 방지)
 }) {
   const images = product.images ?? [product.image];
-  const settings = await getSiteSettings();
+  const settings = settingsProp ?? (await getSiteSettings());
   const n = product.notice ?? {};
 
   // 상품정보제공고시 표 — 비운 상품별 항목은 "상세페이지 참조", 인증은 "해당없음".
@@ -80,7 +82,11 @@ export default async function ProductDetail({
       }`}
     >
       <div className={styles.galleryCol}>
-        <ProductGallery images={images} alt={product.name} />
+        <ProductGallery
+          images={images}
+          alt={product.name}
+          fallbackSrc={product.image}
+        />
       </div>
 
       <div className={styles.info}>

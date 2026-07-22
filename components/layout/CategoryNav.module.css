@@ -141,6 +141,63 @@
   opacity: 1;
 }
 
+/* 하위 카테고리 있음을 알리는 작은 캐럿 */
+.caret {
+  margin-left: 4px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--color-text-muted);
+}
+
+/* 하위(중분류) 드롭다운 — fixed 로 칩 아래에 띄운다(오버플로 밖) */
+.dropdown {
+  position: fixed;
+  z-index: 20;
+  pointer-events: auto;
+  margin-top: 6px;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.94),
+    rgba(255, 255, 255, 0.86)
+  );
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 14px;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .dropdown {
+    background: var(--color-bg);
+    border-color: var(--color-border);
+  }
+}
+
+.dropItem {
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--color-text);
+  transition: background 0.12s ease;
+}
+
+.dropItem:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.dropItemActive {
+  font-weight: var(--fw-heading, 600);
+  background: rgba(0, 0, 0, 0.05);
+}
+
 /* 접근성용 시각적 숨김 (스크린리더는 한글 명칭을 읽음) */
 .srOnly {
   position: absolute;

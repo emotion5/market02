@@ -21,6 +21,27 @@ export default function CategoryNav({
   const [spyActive, setSpyActive] = useState<string | null>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  // 하위(중분류) 드롭다운: overflow 컨테이너에 잘리지 않게 fixed 패널로 띄운다.
+  const [openSub, setOpenSub] = useState<{
+    slug: string;
+    left: number;
+    top: number;
+  } | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  };
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpenSub(null), 140);
+  };
+  const openSubFor = (slug: string, anchor: HTMLElement) => {
+    cancelClose();
+    const r = anchor.getBoundingClientRect();
+    setOpenSub({ slug, left: r.left, top: r.bottom });
+  };
 
   // 표시할 활성 칩: 홈 → 스크롤 스파이, 카테고리 페이지 → 해당 slug, 그 외 → 없음
   const active =
@@ -52,6 +73,15 @@ export default function CategoryNav({
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
   }, [pathname, categories]);
+
+  // 칩 바를 가로 스크롤하면 패널 위치가 어긋나므로 닫는다.
+  useEffect(() => {
+    const s = scrollerRef.current;
+    if (!s) return;
+    const close = () => setOpenSub(null);
+    s.addEventListener("scroll", close, { passive: true });
+    return () => s.removeEventListener("scroll", close);
+  }, []);
 
   // 활성 칩을 스크롤 바 안에서 가운데로 자동 이동
   useEffect(() => {
@@ -122,28 +152,46 @@ export default function CategoryNav({
 
         <div className={styles.scroller} ref={scrollerRef}>
           <ul className={styles.list}>
-            {categories.map((category) => (
-              <li key={category.slug} data-key={category.slug}>
-                <Link
-                  href={
-                    category.onHome
-                      ? `/#category-${category.slug}`
-                      : `/category/${category.slug}`
+            {categories.map((category) => {
+              const hasSub = (category.children?.length ?? 0) > 0;
+              return (
+                <li
+                  key={category.slug}
+                  data-key={category.slug}
+                  onMouseEnter={
+                    hasSub
+                      ? (e) => openSubFor(category.slug, e.currentTarget)
+                      : undefined
                   }
-                  className={`${styles.chip} ${
-                    active === category.slug ? styles.active : ""
-                  }`}
+                  onMouseLeave={hasSub ? scheduleClose : undefined}
                 >
-                  {/* 기본은 영문, hover 시 영문이 위로 사라지고 한글이 올라옴 */}
-                  <span className={styles.label} aria-hidden="true">
-                    <span className={styles.labelEn}>{category.en}</span>
-                    <span className={styles.labelKo}>{category.name}</span>
-                  </span>
-                  {/* 스크린리더/접근성용: 한글 명칭 */}
-                  <span className={styles.srOnly}>{category.name}</span>
-                </Link>
-              </li>
-            ))}
+                  <Link
+                    href={
+                      category.onHome
+                        ? `/#category-${category.slug}`
+                        : `/category/${category.slug}`
+                    }
+                    className={`${styles.chip} ${
+                      active === category.slug ? styles.active : ""
+                    }`}
+                    onClick={hasSub ? () => setOpenSub(null) : undefined}
+                  >
+                    {/* 기본은 영문, hover 시 영문이 위로 사라지고 한글이 올라옴 */}
+                    <span className={styles.label} aria-hidden="true">
+                      <span className={styles.labelEn}>{category.en}</span>
+                      <span className={styles.labelKo}>{category.name}</span>
+                    </span>
+                    {hasSub && (
+                      <span className={styles.caret} aria-hidden="true">
+                        ▾
+                      </span>
+                    )}
+                    {/* 스크린리더/접근성용: 한글 명칭 */}
+                    <span className={styles.srOnly}>{category.name}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -159,6 +207,39 @@ export default function CategoryNav({
           <ChevronRight size={18} strokeWidth={2} />
         </button>
       </div>
+
+      {/* 하위(중분류) 드롭다운 — overflow 컨테이너 밖에서 fixed 로 띄운다 */}
+      {openSub &&
+        (() => {
+          const parent = categories.find((c) => c.slug === openSub.slug);
+          const subs = parent?.children ?? [];
+          if (subs.length === 0) return null;
+          return (
+            <div
+              className={styles.dropdown}
+              style={{ left: openSub.left, top: openSub.top }}
+              onMouseEnter={cancelClose}
+              onMouseLeave={scheduleClose}
+            >
+              {subs.map((sub) => (
+                <Link
+                  key={sub.slug}
+                  href={
+                    sub.onHome
+                      ? `/#category-${sub.slug}`
+                      : `/category/${sub.slug}`
+                  }
+                  className={`${styles.dropItem} ${
+                    active === sub.slug ? styles.dropItemActive : ""
+                  }`}
+                  onClick={() => setOpenSub(null)}
+                >
+                  {sub.name}
+                </Link>
+              ))}
+            </div>
+          );
+        })()}
     </nav>
   );
 }

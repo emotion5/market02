@@ -41,6 +41,7 @@ export interface Category {
 // onHome=true 면 홈 섹션 앵커로 스크롤, false 면 카테고리 전용 페이지로 이동한다.
 export interface NavCategory extends Category {
   onHome: boolean;
+  children?: NavCategory[]; // 하위(중분류) — 대분류 칩 hover 시 펼쳐지는 드롭다운
 }
 
 // 사이트 설정(공급자·입금계좌·견적 유효기간·고객센터). DB SiteSetting 의 편집 가능한 필드.

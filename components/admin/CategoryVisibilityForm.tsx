@@ -62,9 +62,16 @@ export default function CategoryVisibilityForm({
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
+          {rows
+            .filter((r) => !r.parentSlug)
+            .flatMap((top) => [
+              top,
+              ...rows.filter((r) => r.parentSlug === top.slug),
+            ])
+            .map((r) => (
             <tr key={r.slug}>
-              <td>
+              <td style={{ paddingLeft: r.parentSlug ? 28 : undefined }}>
+                {r.parentSlug ? "└ " : ""}
                 {r.name} <span className={styles.pId}>{r.slug}</span>
               </td>
               <td style={{ textAlign: "center" }}>

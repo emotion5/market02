@@ -3,6 +3,7 @@ import {
   findAllProducts,
   findProductById,
   findProductsByCategory,
+  findChildCategorySlugs,
   searchProducts as searchProductsRepo,
   findCategories,
   findFeatured,
@@ -95,7 +96,9 @@ export async function getProductsByCategory(
   slug: string,
   opts: PriceOpts = {},
 ): Promise<Product[]> {
-  const rows = await findProductsByCategory(slug);
+  // 대분류면 자기 + 하위(중분류) 상품까지 모아서 보여준다. 중분류면 자기 것만.
+  const childSlugs = await findChildCategorySlugs(slug);
+  const rows = await findProductsByCategory([slug, ...childSlugs]);
   return rows.map((r) => toListProduct(r, opts.wholesale ?? false));
 }
 
@@ -115,16 +118,29 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 // 상단 내비에 노출할 카테고리(showInNav=true)만. onHome 으로 링크 방식을 구분한다.
+// 대분류(parentSlug=null)를 상단 칩으로, 그 하위(중분류)는 children 으로 묶어 반환한다.
+// rows 는 sortOrder 순이라 형제(같은 부모)끼리 상대 순서가 유지된다.
 export async function getNavCategories(): Promise<NavCategory[]> {
   const rows = await findCategories();
+  const toNav = (c: (typeof rows)[number]): NavCategory => ({
+    slug: c.slug,
+    name: c.nameKo,
+    en: c.nameEn,
+    onHome: c.showOnHome,
+  });
+
+  const childrenByParent = new Map<string, NavCategory[]>();
+  for (const c of rows) {
+    if (c.parentSlug && c.showInNav) {
+      const arr = childrenByParent.get(c.parentSlug) ?? [];
+      arr.push(toNav(c));
+      childrenByParent.set(c.parentSlug, arr);
+    }
+  }
+
   return rows
-    .filter((c) => c.showInNav)
-    .map((c) => ({
-      slug: c.slug,
-      name: c.nameKo,
-      en: c.nameEn,
-      onHome: c.showOnHome,
-    }));
+    .filter((c) => c.parentSlug == null && c.showInNav)
+    .map((c) => ({ ...toNav(c), children: childrenByParent.get(c.slug) ?? [] }));
 }
 
 export async function getFeaturedSections(

@@ -113,6 +113,8 @@ export const categoryCreateSchema = z.object({
     .max(50),
   nameKo: z.string().trim().min(1, "한글 이름을 입력하세요.").max(30),
   nameEn: z.string().trim().min(1, "영문 이름을 입력하세요.").max(30),
+  // 상위(대분류) slug. 없으면 대분류로 생성. 존재·깊이 검증은 서버(createCategory)에서.
+  parentSlug: z.string().trim().max(50).optional(),
 });
 export type CategoryCreateInput = z.infer<typeof categoryCreateSchema>;
 

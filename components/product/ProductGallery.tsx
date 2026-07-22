@@ -12,9 +12,11 @@ const PLACEHOLDER = "/images/placeholder.svg";
 export default function ProductGallery({
   images,
   alt,
+  fallbackSrc,
 }: {
   images: string[];
   alt: string;
+  fallbackSrc?: string; // 대표이미지 — 갤러리 로드 실패 시 우선 폴백(그것도 실패하면 placeholder)
 }) {
   const [active, setActive] = useState(0);
 
@@ -23,17 +25,26 @@ export default function ProductGallery({
 
   return (
     <div className={styles.gallery}>
-      {/* 최종 방어선: src 가 비었거나 로드 실패하면 placeholder 로 대체(엑박 방지) */}
+      {/* 폴백 체인: 깨진 갤러리 이미지 → 대표이미지(fallbackSrc) → placeholder */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={current || PLACEHOLDER}
+        src={current || fallbackSrc || PLACEHOLDER}
         alt={alt}
         className={styles.main}
         onError={(e) => {
           const img = e.currentTarget;
-          if (img.dataset.fallback) return;
-          img.dataset.fallback = "1";
-          img.src = PLACEHOLDER;
+          const step = img.dataset.fallback;
+          // 1단계: 대표이미지로 폴백(아직 시도 안 했고, 유효하면)
+          if (!step && fallbackSrc) {
+            img.dataset.fallback = "rep";
+            img.src = fallbackSrc;
+            return;
+          }
+          // 2단계: 대표이미지도 실패 → placeholder (최종)
+          if (step !== "ph") {
+            img.dataset.fallback = "ph";
+            img.src = PLACEHOLDER;
+          }
         }}
       />
 

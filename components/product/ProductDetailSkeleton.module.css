@@ -1,0 +1,98 @@
+/* 상세 모달이 서버에서 로드되는 동안 즉시 표시되는 자리표시자.
+   ProductDetail 의 2열(갤러리 | 정보) 레이아웃을 근사해 레이아웃 점프를 줄인다. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 48px;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.main {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.thumb {
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.title {
+  height: 26px;
+  width: 70%;
+  border-radius: 4px;
+}
+
+.price {
+  height: 20px;
+  width: 40%;
+  border-radius: 4px;
+}
+
+.line {
+  height: 14px;
+  border-radius: 4px;
+}
+
+.block {
+  height: 44px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.w90 {
+  width: 90%;
+}
+.w80 {
+  width: 80%;
+}
+.w60 {
+  width: 60%;
+}
+
+/* 은은한 shimmer */
+.sk {
+  background: linear-gradient(
+    100deg,
+    var(--color-surface) 30%,
+    rgba(0, 0, 0, 0.06) 50%,
+    var(--color-surface) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}

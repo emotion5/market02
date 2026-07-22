@@ -379,6 +379,7 @@ export interface AdminCategoryRow {
   sortOrder: number;
   showInNav: boolean;
   showOnHome: boolean;
+  parentSlug: string | null; // null = 대분류, 값 = 그 대분류의 중분류
 }
 
 export async function getCategoriesForAdmin(): Promise<AdminCategoryRow[]> {
@@ -391,6 +392,7 @@ export async function getCategoriesForAdmin(): Promise<AdminCategoryRow[]> {
       sortOrder: true,
       showInNav: true,
       showOnHome: true,
+      parentSlug: true,
     },
   });
   return cats.map((c) => ({
@@ -400,6 +402,7 @@ export async function getCategoriesForAdmin(): Promise<AdminCategoryRow[]> {
     sortOrder: c.sortOrder,
     showInNav: c.showInNav,
     showOnHome: c.showOnHome,
+    parentSlug: c.parentSlug,
   }));
 }
 
@@ -434,10 +437,12 @@ export async function createCategory(input: {
   slug: string;
   nameKo: string;
   nameEn: string;
+  parentSlug?: string | null;
 }): Promise<CategoryMutationResult> {
   const slug = input.slug.trim().toLowerCase();
   const nameKo = input.nameKo.trim();
   const nameEn = input.nameEn.trim();
+  const parentSlug = input.parentSlug?.trim() || null;
   if (!CATEGORY_SLUG_RE.test(slug)) {
     return {
       ok: false,
@@ -454,10 +459,37 @@ export async function createCategory(input: {
   });
   if (dup) return { ok: false, status: 409, error: "이미 존재하는 slug입니다." };
 
+  // 상위 카테고리 검증: 존재해야 하고, 그 자체가 대분류(parentSlug=null)여야 한다.
+  // → 깊이를 1단계(대→중)로 제한(중분류 밑에 또 만들 수 없음).
+  if (parentSlug) {
+    const parent = await prisma.category.findUnique({
+      where: { slug: parentSlug },
+      select: { parentSlug: true },
+    });
+    if (!parent) {
+      return { ok: false, status: 400, error: "상위 카테고리를 찾을 수 없습니다." };
+    }
+    if (parent.parentSlug !== null) {
+      return {
+        ok: false,
+        status: 400,
+        error: "중분류 아래에는 다시 하위 카테고리를 만들 수 없습니다(2단계까지).",
+      };
+    }
+  }
+
   const agg = await prisma.category.aggregate({ _max: { sortOrder: true } });
   const sortOrder = (agg._max.sortOrder ?? -1) + 1;
   await prisma.category.create({
-    data: { slug, nameKo, nameEn, sortOrder, showInNav: true, showOnHome: true },
+    data: {
+      slug,
+      nameKo,
+      nameEn,
+      sortOrder,
+      showInNav: true,
+      showOnHome: true,
+      parentSlug,
+    },
   });
   return { ok: true, slug };
 }
@@ -516,6 +548,15 @@ export async function deleteCategory(
     select: { slug: true },
   });
   if (!existing) return { ok: false, status: 404, error: "카테고리를 찾을 수 없습니다." };
+
+  const childCount = await prisma.category.count({ where: { parentSlug: slug } });
+  if (childCount > 0) {
+    return {
+      ok: false,
+      status: 409,
+      error: `이 카테고리에 하위 카테고리 ${childCount}개가 있어 삭제할 수 없습니다. 하위를 먼저 삭제하거나 옮긴 뒤 다시 시도하세요.`,
+    };
+  }
 
   const productCount = await prisma.product.count({ where: { categorySlug: slug } });
   if (productCount > 0) {

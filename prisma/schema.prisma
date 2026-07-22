@@ -113,8 +113,16 @@ model Category {
   showInNav  Boolean @default(true) // 상단 카테고리 내비에 노출
   showOnHome Boolean @default(true) // 메인(홈) 진열대에 노출
 
+  // 2단계 분류(adjacency list). null = 대분류, 값 = 그 대분류의 중분류.
+  // 깊이는 1단계(대→중)까지만 허용한다(서버에서 검증).
+  parentSlug String?
+  parent     Category?  @relation("Sub", fields: [parentSlug], references: [slug], onDelete: NoAction, onUpdate: NoAction)
+  children   Category[] @relation("Sub")
+
   products Product[]
   featured Featured[]
+
+  @@index([parentSlug])
 }
 
 model Product {

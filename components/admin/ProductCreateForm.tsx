@@ -6,12 +6,13 @@ import ProductNoticeFields, {
   EMPTY_NOTICE,
   type NoticeValues,
 } from "@/components/admin/ProductNoticeFields";
+import { hierarchicalOptions } from "@/components/admin/categoryOptions";
 import styles from "@/app/admin/admin.module.css";
 
 export default function ProductCreateForm({
   categories,
 }: {
-  categories: { slug: string; name: string }[];
+  categories: { slug: string; name: string; parentSlug?: string | null }[];
 }) {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -79,9 +80,9 @@ export default function ProductCreateForm({
           value={categorySlug}
           onChange={(e) => setCategorySlug(e.target.value)}
         >
-          {categories.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.name}
+          {hierarchicalOptions(categories).map((o) => (
+            <option key={o.slug} value={o.slug}>
+              {o.label}
             </option>
           ))}
         </select>

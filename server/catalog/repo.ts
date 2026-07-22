@@ -22,12 +22,22 @@ export function findAllProducts() {
   });
 }
 
-export function findProductsByCategory(slug: string) {
+// 대분류 페이지는 자기 + 하위(중분류) 상품을 모두 모아 보여준다 → slug 목록으로 조회.
+export function findProductsByCategory(slugs: string[]) {
   return prisma.product.findMany({
-    where: { isActive: true, categorySlug: slug },
-    orderBy: { sortOrder: "asc" },
+    where: { isActive: true, categorySlug: { in: slugs } },
+    orderBy: [{ categorySlug: "asc" }, { sortOrder: "asc" }],
     include: listInclude,
   });
+}
+
+// 한 카테고리의 직속 하위(중분류) slug 목록.
+export async function findChildCategorySlugs(slug: string): Promise<string[]> {
+  const rows = await prisma.category.findMany({
+    where: { parentSlug: slug },
+    select: { slug: true },
+  });
+  return rows.map((r) => r.slug);
 }
 
 export function findProductById(id: string) {
