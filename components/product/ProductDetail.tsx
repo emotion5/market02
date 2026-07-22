@@ -2,6 +2,7 @@ import VariantSelector from "@/components/product/VariantSelector";
 import ProductGallery from "@/components/product/ProductGallery";
 import ProductAccordion from "@/components/product/ProductAccordion";
 import { getSiteSettings } from "@/lib/settings";
+import { DELIVERY_NOTICE } from "@/lib/product-copy";
 import type { Product, SiteSettings } from "@/lib/types";
 import styles from "./ProductDetail.module.css";
 
@@ -60,10 +61,7 @@ export default async function ProductDetail({
   const accordionItems = [
     {
       title: "배송",
-      content:
-        "평일 14시 이전 결제 시 당일 출발합니다.\n" +
-        "기본 배송비는 무료이며, 제주·도서산간 지역은 추가 배송비가 발생할 수 있습니다.\n" +
-        "단순 변심 반품은 상품 수령 후 7일 이내 가능합니다(왕복 배송비 고객 부담).",
+      content: DELIVERY_NOTICE,
     },
     {
       title: "상세설명",

@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { isWholesaleViewer } from "@/lib/data";
 import { getProduct, getCategories } from "@/server/catalog/service";
 import { getSiteSettings } from "@/lib/settings";
-import ProductModal from "@/components/product/ProductModal";
 import ProductDetail from "@/components/product/ProductDetail";
 
 // 목록에서 상품을 클릭(소프트 내비게이션)하면 이 인터셉트가 상세를 모달로 띄운다.
@@ -25,15 +24,14 @@ export default async function ProductModalPage({
   if (!product) notFound();
   const category = categories.find((c) => c.slug === product.category);
 
+  // 모달 껍데기(ProductModal)는 이 세그먼트의 layout 이 감싼다.
   return (
-    <ProductModal>
-      <ProductDetail
-        product={product}
-        categoryName={category?.name}
-        variant="modal"
-        wholesale={wholesale}
-        settings={settings}
-      />
-    </ProductModal>
+    <ProductDetail
+      product={product}
+      categoryName={category?.name}
+      variant="modal"
+      wholesale={wholesale}
+      settings={settings}
+    />
   );
 }

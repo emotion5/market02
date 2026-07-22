@@ -56,6 +56,7 @@ function toListProduct(p: ListRow, wholesale: boolean): Product {
     image: p.repImage,
     variants: p.variants.map((v) => toVariant(v, wholesale)),
     colors: p.colors.length ? p.colors.map((c) => c.hex) : undefined,
+    imageCount: p._count.images,
   };
 }
 

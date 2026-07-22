@@ -6,12 +6,16 @@ import { Prisma } from "@prisma/client";
 const listInclude = {
   variants: { orderBy: { sortOrder: "asc" } },
   colors: { orderBy: { sortOrder: "asc" } },
+  // 갤러리 이미지 "개수"만 — 목록에서 상세 모달을 낙관적으로 열 때 썸네일 줄 자리를
+  // 미리 예약해 레이아웃 시프트를 없애기 위함(URL은 상세 조회 때 받는다).
+  _count: { select: { images: true } },
 } satisfies Prisma.ProductInclude;
 
 const detailInclude = {
   variants: { orderBy: { sortOrder: "asc" } },
   colors: { orderBy: { sortOrder: "asc" } },
   images: { orderBy: { sortOrder: "asc" } },
+  _count: { select: { images: true } },
 } satisfies Prisma.ProductInclude;
 
 export function findAllProducts() {

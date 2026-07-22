@@ -29,6 +29,7 @@ export interface Product {
   variants: Variant[];
   colors?: string[]; // 색상 옵션(hex). 있을 때만 원형 스와치로 표시 (현재 표시 전용)
   notice?: ProductNotice; // 상품정보제공고시 (상세에서만)
+  imageCount?: number; // 갤러리 이미지 수(목록에 실림). 낙관적 모달의 썸네일 줄 자리 예약용
 }
 
 export interface Category {

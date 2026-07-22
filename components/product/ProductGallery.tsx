@@ -13,15 +13,24 @@ export default function ProductGallery({
   images,
   alt,
   fallbackSrc,
+  reserveThumbs,
 }: {
   images: string[];
   alt: string;
   fallbackSrc?: string; // 대표이미지 — 갤러리 로드 실패 시 우선 폴백(그것도 실패하면 placeholder)
+  reserveThumbs?: number; // 낙관적 미리보기: 실제 이미지가 오기 전, 이 개수만큼 썸네일 줄 자리를 예약
 }) {
   const [active, setActive] = useState(0);
 
   const list = (images.length > 0 ? images : [""]).slice(0, MAX_THUMBS);
   const current = list[Math.min(active, list.length - 1)];
+
+  // 실제 썸네일이 아직 없을 때(낙관적 모달), 상세가 보여줄 개수만큼 회색 자리를 잡아
+  // 실제 상세로 교체될 때 갤러리 열 높이가 변하지 않도록 한다(레이아웃 시프트 제거).
+  const reserveCount =
+    list.length <= 1 && reserveThumbs && reserveThumbs > 1
+      ? Math.min(reserveThumbs, MAX_THUMBS)
+      : 0;
 
   return (
     <div className={styles.gallery}>
@@ -80,6 +89,20 @@ export default function ProductGallery({
                   }}
                 />
               </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {reserveCount > 0 && (
+        <ul
+          className={styles.thumbs}
+          style={{ gridTemplateColumns: `repeat(${reserveCount}, 1fr)` }}
+          aria-hidden
+        >
+          {Array.from({ length: reserveCount }).map((_, i) => (
+            <li key={i}>
+              <span className={styles.thumb} style={{ pointerEvents: "none" }} />
             </li>
           ))}
         </ul>

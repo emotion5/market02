@@ -18,7 +18,9 @@
   position: relative;
   width: 100%;
   max-width: 1060px;
-  margin: auto;
+  /* 세로는 상단 고정(overlay 의 align-items: flex-start), 가로만 중앙.
+     내용 높이가 변해도 아래로만 늘어나 재중앙정렬 점프가 없다. */
+  margin: 0 auto;
   /* 화면 높이 안으로 제한(안전장치) — 실제 높이 제어는 오른쪽 info의 max-height */
   max-height: calc(100vh - 96px);
   overflow: hidden;

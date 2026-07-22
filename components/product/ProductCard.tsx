@@ -3,11 +3,14 @@ import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import QuickAddButton from "./QuickAddButton";
 import ProductThumb from "./ProductThumb";
+import RememberProduct from "./RememberProduct";
 import styles from "./ProductCard.module.css";
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <article className={styles.card}>
+      {/* 클릭 시 상세 모달을 낙관적으로 즉시 그리도록 상품을 클라이언트 캐시에 등록 */}
+      <RememberProduct product={product} />
       <div className={styles.thumb}>
         <ProductThumb
           src={product.image}
