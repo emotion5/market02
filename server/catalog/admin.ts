@@ -1,8 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/db";
-import { FEATURED_MAX } from "@/lib/constants";
-
-export { FEATURED_MAX };
 
 // 어드민 상품 관리용 조회/쓰기 (공개 카탈로그의 repo/service 와 분리).
 // 공개 쪽은 isActive=true 만 보지만, 어드민은 비활성 포함 전체를 본다.
@@ -536,7 +533,6 @@ export async function deleteCategory(
   return { ok: true, slug };
 }
 
-// FEATURED_MAX(카테고리당 최대 노출 수)는 lib/constants 에서 공용 정의(위에서 re-export).
 export async function getFeaturedForAdmin(): Promise<AdminFeaturedCategory[]> {
   const [cats, products, featured] = await Promise.all([
     prisma.category.findMany({ orderBy: { sortOrder: "asc" } }),

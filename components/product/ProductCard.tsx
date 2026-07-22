@@ -2,14 +2,18 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import QuickAddButton from "./QuickAddButton";
+import ProductThumb from "./ProductThumb";
 import styles from "./ProductCard.module.css";
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <article className={styles.card}>
       <div className={styles.thumb}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={product.image} alt={product.name} className={styles.image} />
+        <ProductThumb
+          src={product.image}
+          alt={product.name}
+          className={styles.image}
+        />
         <QuickAddButton product={product} />
       </div>
 

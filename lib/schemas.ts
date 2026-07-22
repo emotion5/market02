@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { FEATURED_MAX } from "./constants";
 
 // 프론트·API 공용 입력 검증 스키마. (도메인이 늘면 phase 별로 여기에 추가)
 
@@ -86,9 +85,7 @@ export type ProductOptionsInput = z.infer<typeof productOptionsSchema>;
 // 홈 큐레이션(featured) 편성 (어드민) — 카테고리별 노출 상품 목록 전체를 순서대로 전송.
 export const featuredUpdateSchema = z.object({
   categorySlug: z.string().min(1, "카테고리를 선택하세요.").max(50),
-  productIds: z
-    .array(z.string())
-    .max(FEATURED_MAX, `홈에는 카테고리당 최대 ${FEATURED_MAX}개까지 편성할 수 있습니다.`),
+  productIds: z.array(z.string()),
 });
 export type FeaturedUpdateInput = z.infer<typeof featuredUpdateSchema>;
 

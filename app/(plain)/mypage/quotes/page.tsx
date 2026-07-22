@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import ProductThumb from "@/components/product/ProductThumb";
 import { type SavedQuote } from "@/lib/quotes";
 import styles from "./page.module.css";
 
@@ -87,11 +88,11 @@ export default function QuotesPage() {
 
               <div className={styles.body}>
                 {first && (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
+                  <ProductThumb
                     src={first.image}
                     alt={first.productName}
                     className={styles.thumb}
+                    size="thumb"
                   />
                 )}
                 <div className={styles.summary}>

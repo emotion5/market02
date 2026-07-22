@@ -57,7 +57,6 @@ export {
   updateCategory,
   deleteCategory,
   reorderCategories,
-  FEATURED_MAX,
   type AdminProductRow,
   type AdminProductDetail,
   type AdminProductOptions,

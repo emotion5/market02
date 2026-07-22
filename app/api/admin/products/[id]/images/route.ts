@@ -63,8 +63,8 @@ export async function POST(
   }
   const url = await uploadPublic(key, master, "image/webp");
 
-  // 경량 썸네일(.thumb.webp) 동반 업로드 — 견적서·목록·장바구니에서 원본 대신
-  // 이 파일을 불러 전송량을 줄인다. 실패해도 원본으로 폴백되므로 치명적이지 않다.
+  // 경량 썸네일(.thumb.webp) 동반 업로드 — 견적서·장바구니 초소형 이미지에서
+  // 원본 대신 이 파일을 불러 전송량을 줄인다. 실패해도 원본으로 폴백되므로 치명적이지 않다.
   try {
     const thumb = await sharp(buffer)
       .rotate()
@@ -78,6 +78,24 @@ export async function POST(
     );
   } catch {
     // 썸네일 생성 실패 무시
+  }
+
+  // 중간 썸네일(.med.webp) 동반 업로드 — 상품 카드·목록·상세 썸네일에서 원본(1600px)
+  // 대신 이 600px 파일을 불러 전송량을 줄인다. master 와 같은 프레이밍(fit: inside)을
+  // 유지하고, 실패해도 원본으로 폴백된다.
+  try {
+    const medium = await sharp(buffer, { animated: true })
+      .rotate()
+      .resize(600, 600, { fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+    await uploadPublic(
+      key.replace(/\.[^.]+$/, ".med.webp"),
+      medium,
+      "image/webp",
+    );
+  } catch {
+    // 중간 썸네일 생성 실패 무시
   }
 
   if (kind === "rep") {
@@ -115,11 +133,16 @@ export async function DELETE(
     } catch {
       // 스토리지 삭제 실패는 무시(DB는 이미 삭제됨)
     }
-    // 동반 생성했던 썸네일도 함께 제거(고아 파일 방지)
+    // 동반 생성했던 썸네일(.thumb.webp / .med.webp)도 함께 제거(고아 파일 방지)
     try {
       await deletePublic(storageKey.replace(/\.[^.]+$/, ".thumb.webp"));
     } catch {
       // 썸네일이 없거나 삭제 실패해도 무시
+    }
+    try {
+      await deletePublic(storageKey.replace(/\.[^.]+$/, ".med.webp"));
+    } catch {
+      // 중간 썸네일이 없거나 삭제 실패해도 무시
     }
   }
   return Response.json({ ok: true });

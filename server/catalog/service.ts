@@ -59,9 +59,12 @@ function toListProduct(p: ListRow, wholesale: boolean): Product {
 }
 
 function toDetailProduct(p: DetailRow, wholesale: boolean): Product {
+  const gallery = p.images.map((img) => img.url);
   return {
     ...toListProduct(p, wholesale),
-    images: p.images.map((img) => img.url),
+    // 갤러리 이미지가 없으면 대표이미지 1장으로 대체(상세 갤러리가 빈 src로 깨지는 것 방지).
+    // repImage 는 최소 placeholder.svg 라 항상 유효하다.
+    images: gallery.length > 0 ? gallery : [p.repImage],
     notice: {
       modelName: p.modelName ?? undefined,
       origin: p.origin ?? undefined,
@@ -139,8 +142,8 @@ export async function getFeaturedSections(
   const sections: FeaturedSection[] = [];
   for (const c of cats) {
     if (!c.showOnHome) continue; // 홈 노출 off 카테고리는 진열대 자체를 만들지 않음
-    // 한 세트 최대 8개(4열 × 2행)
-    const products = (byCat.get(c.slug) ?? []).slice(0, 8);
+    // 편성(featured)된 상품은 개수 제한 없이 전부 노출한다.
+    const products = byCat.get(c.slug) ?? [];
     if (products.length > 0) {
       sections.push({
         category: { slug: c.slug, name: c.nameKo, en: c.nameEn },

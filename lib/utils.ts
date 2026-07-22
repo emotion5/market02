@@ -12,3 +12,11 @@ export function thumbUrl(src: string): string {
   if (!src || /\.thumb\.webp$/i.test(src) || !IMG_EXT.test(src)) return src;
   return src.replace(IMG_EXT, ".thumb.webp");
 }
+
+// 원본 이미지 경로/URL → 파생 중간 썸네일 경로(.med.webp, 600px).
+// 상품 카드·목록·상세 썸네일에서 원본(1600px master) 대신 불러 전송량을 줄인다.
+// thumbUrl 과 동일하게, 파일이 없으면 <img onError>가 원본으로 폴백한다.
+export function mediumUrl(src: string): string {
+  if (!src || /\.(thumb|med)\.webp$/i.test(src) || !IMG_EXT.test(src)) return src;
+  return src.replace(IMG_EXT, ".med.webp");
+}

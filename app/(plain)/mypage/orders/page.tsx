@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Truck, Package } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import ProductThumb from "@/components/product/ProductThumb";
 import {
   DEFAULT_COURIER,
   STATUS_FLOW,
@@ -90,11 +91,11 @@ export default function OrdersPage() {
                     className={styles.item}
                   >
                     <Link href={`/products/${item.productId}`}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <ProductThumb
                         src={item.image}
                         alt={item.productName}
                         className={styles.thumb}
+                        size="thumb"
                       />
                     </Link>
                     <div className={styles.itemInfo}>

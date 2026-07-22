@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FEATURED_MAX } from "@/lib/constants";
 import type { AdminFeaturedCategory, AdminFeaturedItem } from "@/lib/admin";
 import styles from "@/app/admin/admin.module.css";
 
@@ -37,7 +36,6 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
   const available = cat.products.filter(
     (p) => p.isActive && !ids.includes(p.id),
   );
-  const full = ids.length >= FEATURED_MAX;
 
   const move = (i: number, dir: -1 | 1) =>
     setIds((prev) => {
@@ -50,7 +48,7 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
   const remove = (id: string) =>
     setIds((prev) => prev.filter((x) => x !== id));
   const add = () => {
-    if (!pick || full || ids.includes(pick)) return;
+    if (!pick || ids.includes(pick)) return;
     setIds((prev) => [...prev, pick]);
     setPick("");
   };
@@ -83,7 +81,7 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
     <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>
       <h2 className={styles.sectionTitle}>{cat.name}</h2>
       <p className={styles.sectionDesc}>
-        홈에 노출할 상품과 순서 (최대 {FEATURED_MAX}개). 위에 있을수록 앞에 진열됩니다.
+        홈에 노출할 상품과 순서. 위에 있을수록 앞에 진열됩니다. (개수 제한 없음)
       </p>
 
       {ids.length === 0 ? (
@@ -150,7 +148,7 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
           style={{ maxWidth: 320 }}
           value={pick}
           onChange={(e) => setPick(e.target.value)}
-          disabled={full || available.length === 0}
+          disabled={available.length === 0}
         >
           <option value="">
             {available.length === 0
@@ -167,15 +165,10 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
           type="button"
           className={styles.addBtn}
           onClick={add}
-          disabled={!pick || full}
+          disabled={!pick}
         >
           + 추가
         </button>
-        {full && (
-          <span className={styles.sectionDesc} style={{ margin: 0 }}>
-            최대 {FEATURED_MAX}개까지 편성됩니다.
-          </span>
-        )}
       </div>
 
       <div className={styles.formActions}>

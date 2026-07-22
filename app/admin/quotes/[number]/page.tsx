@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getQuoteForAdmin } from "@/lib/admin";
+import ProductThumb from "@/components/product/ProductThumb";
 import styles from "../../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -80,8 +81,12 @@ export default async function AdminQuoteDetailPage({
             {qt.items.map((it, i) => (
               <tr key={i}>
                 <td>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img className={styles.thumb} src={it.image} alt="" />
+                  <ProductThumb
+                    className={styles.thumb}
+                    src={it.image}
+                    alt=""
+                    size="thumb"
+                  />
                 </td>
                 <td>
                   <div className={styles.pName}>{it.productName}</div>

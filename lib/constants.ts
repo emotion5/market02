@@ -36,9 +36,6 @@ export const BANK_ACCOUNT = {
 // 견적서 유효기간 (발행일로부터 일수)
 export const QUOTE_VALID_DAYS = 14;
 
-// 홈 큐레이션(featured) 카테고리당 최대 노출 수 (4열 × 2행). 클라이언트·서버 공용 상수.
-export const FEATURED_MAX = 8;
-
 // 사이트 설정 기본값 — DB SiteSetting 의 시드값이자, 행이 없을 때의 읽기 폴백.
 // (기존 하드코딩 상수를 그대로 이어받아 초기 동작을 보존한다)
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {

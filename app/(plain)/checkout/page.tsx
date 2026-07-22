@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
+import ProductThumb from "@/components/product/ProductThumb";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import { type Order } from "@/lib/orders";
 import styles from "./page.module.css";
@@ -205,11 +206,11 @@ export default function CheckoutPage() {
                   key={`${item.productId}-${item.variantId}`}
                   className={styles.orderItem}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <ProductThumb
                     src={item.image}
                     alt={item.productName}
                     className={styles.thumb}
+                    size="thumb"
                   />
                   <div className={styles.orderItemInfo}>
                     <p className={styles.orderItemName}>{item.productName}</p>
