@@ -18,6 +18,7 @@ interface Row {
   variantCount: number;
   image: string;
   isFeatured: boolean;
+  hasOrders: boolean;
   single: { consumerPrice: number; wholesalePrice: number | null } | null;
 }
 interface Cat {
@@ -66,6 +67,7 @@ export default function ProductRowsEditor({
     Object.fromEntries(products.map((p) => [p.id, p.isFeatured])),
   );
   const [toggleBusyId, setToggleBusyId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const draftOf = (p: Row): Draft => drafts[p.id] ?? toDraft(p);
   const isDirty = (p: Row) => {
@@ -183,6 +185,34 @@ export default function ProductRowsEditor({
       setError({ id: p.id, msg: "네트워크 오류가 발생했습니다." });
     } finally {
       setToggleBusyId(null);
+    }
+  }
+
+  async function remove(p: Row) {
+    if (p.hasOrders) return; // 주문 이력 있으면 삭제 불가
+    if (
+      !confirm(
+        `'${p.name}' 상품을 삭제할까요?\n옵션·이미지도 함께 삭제되며 되돌릴 수 없습니다.`,
+      )
+    ) {
+      return;
+    }
+    setError(null);
+    setDeletingId(p.id);
+    try {
+      const res = await fetch(`/api/admin/products/${p.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError({ id: p.id, msg: data.error ?? "삭제에 실패했습니다." });
+        return;
+      }
+      router.refresh();
+    } catch {
+      setError({ id: p.id, msg: "네트워크 오류가 발생했습니다." });
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -345,7 +375,20 @@ export default function ProductRowsEditor({
                   className={styles.button}
                 >
                   상품 수정
-                </Link>
+                </Link>{" "}
+                <button
+                  type="button"
+                  className={styles.deleteBtn}
+                  onClick={() => remove(p)}
+                  disabled={p.hasOrders || deletingId === p.id}
+                  title={
+                    p.hasOrders
+                      ? "주문 이력이 있어 삭제할 수 없습니다 — 비활성으로 숨겨주세요"
+                      : "상품 삭제 (되돌릴 수 없음)"
+                  }
+                >
+                  {deletingId === p.id ? "삭제 중…" : "삭제"}
+                </button>
               </td>
             </tr>
           );

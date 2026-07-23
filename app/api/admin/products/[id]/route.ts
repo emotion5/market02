@@ -1,5 +1,5 @@
 import { getAdmin } from "@/lib/admin-guard";
-import { updateProductFields } from "@/server/catalog/admin";
+import { updateProductFields, deleteProduct } from "@/server/catalog/admin";
 import { productUpdateSchema } from "@/lib/schemas";
 
 export async function PATCH(
@@ -37,6 +37,32 @@ export async function PATCH(
     certInfo: d.certInfo?.trim() || null,
   });
   if (!ok) {
+    return Response.json({ error: "상품을 찾을 수 없습니다." }, { status: 404 });
+  }
+  return Response.json({ ok: true });
+}
+
+// 상품 삭제 — 주문 이력이 없는 상품만(있으면 409). 옵션·이미지 등은 함께 정리된다.
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const admin = await getAdmin();
+  if (!admin) {
+    return Response.json({ error: "권한이 없습니다." }, { status: 403 });
+  }
+  const { id } = await params;
+  const result = await deleteProduct(id);
+  if (result === "has_orders") {
+    return Response.json(
+      {
+        error:
+          "주문 이력이 있는 상품은 삭제할 수 없습니다. 비활성으로 숨겨주세요.",
+      },
+      { status: 409 },
+    );
+  }
+  if (result === "not_found") {
     return Response.json({ error: "상품을 찾을 수 없습니다." }, { status: 404 });
   }
   return Response.json({ ok: true });

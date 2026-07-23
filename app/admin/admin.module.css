@@ -283,6 +283,24 @@
   background: #f3f4f6;
   color: #6b7280;
 }
+/* 상품 삭제 — 평소엔 눈에 안 띄는 회색, hover 시에만 위험(빨강) */
+.deleteBtn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 6px;
+}
+.deleteBtn:hover:not(:disabled) {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+.deleteBtn:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
 /* 홈 노출 즉시 토글 — 상태(초록/회색)와 구분되게 파란 계열/외곽선 */
 .featOn,
 .featOff {

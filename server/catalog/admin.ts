@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/db";
+import { deletePublicByUrl } from "@/server/storage";
 
 // 어드민 상품 관리용 조회/쓰기 (공개 카탈로그의 repo/service 와 분리).
 // 공개 쪽은 isActive=true 만 보지만, 어드민은 비활성 포함 전체를 본다.
@@ -13,6 +14,7 @@ export interface AdminProductRow {
   variantCount: number;
   image: string;
   isFeatured: boolean; // 자기 카테고리의 홈 편성(Featured)에 올라가 있는지
+  hasOrders: boolean; // 주문 이력이 있으면 삭제 불가(비활성만) — 기록 보존
   // 옵션이 1개(단일 상품)일 때만 채워짐 — 목록에서 소비자가/도매가 인라인 수정용.
   single: {
     consumerPrice: number;
@@ -32,7 +34,7 @@ export async function listProductsForAdmin(
       { id: { contains: q, mode: "insensitive" } },
     ];
   }
-  const [rows, featured] = await Promise.all([
+  const [rows, featured, ordered] = await Promise.all([
     prisma.product.findMany({
       where,
       orderBy: [{ categorySlug: "asc" }, { sortOrder: "asc" }],
@@ -44,11 +46,17 @@ export async function listProductsForAdmin(
       },
     }),
     prisma.featured.findMany({ select: { categorySlug: true, productId: true } }),
+    // 주문에 한 번이라도 쓰인 상품 id (스냅샷 productId 기준) — 삭제 가드용
+    prisma.orderItem.findMany({
+      distinct: ["productId"],
+      select: { productId: true },
+    }),
   ]);
   // 상품이 자기 카테고리에 편성돼 있으면 홈 노출. (categorySlug::productId 로 판정)
   const featuredKeys = new Set(
     featured.map((f) => `${f.categorySlug}::${f.productId}`),
   );
+  const orderedIds = new Set(ordered.map((o) => o.productId));
   return rows.map((p) => ({
     id: p.id,
     name: p.name,
@@ -61,6 +69,7 @@ export async function listProductsForAdmin(
     variantCount: p.variants.length,
     image: p.repImage,
     isFeatured: featuredKeys.has(`${p.categorySlug}::${p.id}`),
+    hasOrders: orderedIds.has(p.id),
     single:
       p.variants.length === 1
         ? {
@@ -69,6 +78,27 @@ export async function listProductsForAdmin(
           }
         : null,
   }));
+}
+
+// 상품 하드 삭제 — 주문 이력이 없는 상품만 허용(기록 보존). 옵션·색상·이미지row·홈편성은
+// FK Cascade 로 함께 정리되고, 주문·견적은 스냅샷이라 영향 없음. 스토리지 이미지 파일도 정리.
+export async function deleteProduct(
+  id: string,
+): Promise<"ok" | "not_found" | "has_orders"> {
+  const orders = await prisma.orderItem.count({ where: { productId: id } });
+  if (orders > 0) return "has_orders";
+  const product = await prisma.product.findUnique({
+    where: { id },
+    select: { repImage: true, images: { select: { url: true } } },
+  });
+  if (!product) return "not_found";
+  await prisma.product.delete({ where: { id } }); // cascade
+  // 고아 이미지 파일 정리(best-effort) — 이력 없는 상품이라 보존할 주문 썸네일도 없음
+  const urls = [product.repImage, ...product.images.map((i) => i.url)];
+  for (const url of urls) {
+    await deletePublicByUrl(url);
+  }
+  return "ok";
 }
 
 // 목록에서 상품 활성(쇼핑몰 노출) 상태를 바로 켜고 끈다.

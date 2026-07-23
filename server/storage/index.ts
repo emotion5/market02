@@ -36,6 +36,28 @@ export async function deletePublic(key: string): Promise<void> {
   await s3.send(new DeleteObjectCommand({ Bucket: BUCKET_PUBLIC, Key: key }));
 }
 
+// 공개 URL(상품 이미지)로부터 스토리지 파일을 best-effort 삭제.
+// 원본 + 동반 생성한 .thumb.webp / .med.webp 까지 정리한다(고아 파일 방지).
+// placeholder 등 우리 버킷 밖 URL 은 건너뛰고, 실패는 무시(DB 는 이미 정리된 상태).
+export async function deletePublicByUrl(url: string): Promise<void> {
+  const marker = "/product-images/";
+  const idx = url.indexOf(marker);
+  if (idx < 0) return;
+  const key = url.slice(idx + marker.length);
+  const keys = [
+    key,
+    key.replace(/\.[^.]+$/, ".thumb.webp"),
+    key.replace(/\.[^.]+$/, ".med.webp"),
+  ];
+  for (const k of keys) {
+    try {
+      await deletePublic(k);
+    } catch {
+      // 없거나 삭제 실패해도 무시
+    }
+  }
+}
+
 // 비공개 파일 업로드 (사업자등록증 등)
 export async function uploadPrivate(
   key: string,
