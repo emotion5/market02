@@ -107,7 +107,7 @@ export default function ProductCreateForm({
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>대표가 (원)</label>
+        <label className={styles.label}>판매가 (원)</label>
         <input
           className={styles.input}
           type="number"
@@ -115,6 +115,9 @@ export default function ProductCreateForm({
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
+        <p className={styles.sectionDesc} style={{ marginTop: 6 }}>
+          기본 옵션의 판매가로 등록됩니다. 옵션·가격은 등록 후 편집에서 조정하세요.
+        </p>
       </div>
 
       <div className={styles.field}>

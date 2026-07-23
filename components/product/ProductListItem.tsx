@@ -19,19 +19,22 @@ export default function ProductListItem({ product }: { product: Product }) {
           <p className={styles.description}>{product.description}</p>
           {product.colors && product.colors.length > 0 && (
             <ul className={styles.colors} aria-label="색상 옵션">
-              {product.colors.map((color) => (
+              {product.colors.map((c) => (
                 <li
-                  key={color}
+                  key={c.hex}
                   className={styles.swatch}
-                  style={{ backgroundColor: color }}
-                  title={color}
+                  style={{ backgroundColor: c.hex }}
+                  title={c.name || c.hex}
                 />
               ))}
             </ul>
           )}
         </div>
 
-        <p className={styles.price}>{formatPrice(product.price)}</p>
+        <p className={styles.price}>
+          {formatPrice(product.price)}
+          {product.variants.length > 1 && "~"}
+        </p>
       </Link>
     </li>
   );

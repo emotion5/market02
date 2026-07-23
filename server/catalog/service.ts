@@ -49,13 +49,17 @@ function toListProduct(p: ListRow, wholesale: boolean): Product {
     id: p.id,
     name: p.name,
     category: p.categorySlug,
-    // 대표가(목록 표시용). Phase 2에서 회원가 기준 최저가 반영 여지.
-    price: p.price,
+    // 목록 표시가 = 옵션 최저 소비자가(파생). 별도 대표가 필드를 두지 않는다.
+    price: p.variants.length
+      ? Math.min(...p.variants.map((v) => v.price))
+      : p.price,
     summary: p.summary ?? undefined,
     description: p.description,
     image: p.repImage,
     variants: p.variants.map((v) => toVariant(v, wholesale)),
-    colors: p.colors.length ? p.colors.map((c) => c.hex) : undefined,
+    colors: p.colors.length
+      ? p.colors.map((c) => ({ hex: c.hex, name: c.name }))
+      : undefined,
     imageCount: p._count.images,
   };
 }

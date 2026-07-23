@@ -12,7 +12,8 @@ export default function QuickAddButton({ product }: { product: Product }) {
   const { items, addItem, removeItem } = useCart();
 
   const variant = product.variants[0];
-  const color = product.colors?.[0];
+  const colorOpt = product.colors?.[0];
+  const color = colorOpt?.hex;
   // 색상이 있으면 색상까지 구분되도록 variantId를 합성 (VariantSelector와 동일 규칙)
   const variantId = color ? `${variant.id}::${color}` : variant.id;
 
@@ -39,6 +40,7 @@ export default function QuickAddButton({ product }: { product: Product }) {
         price: variant.price,
         image: product.image,
         color: color || undefined,
+        colorName: colorOpt?.name || undefined,
       },
       1,
     );

@@ -67,6 +67,7 @@ export default function QuotePanel({ className }: { className?: string }) {
                         />
                       )}
                       {item.variantName}
+                      {item.colorName ? ` / ${item.colorName}` : ""}
                     </span>
                   </div>
 

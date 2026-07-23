@@ -1,3 +1,9 @@
+// 상품 색상 옵션 — 스와치 색(hex) + 표시 이름. 이름은 비어 있을 수 있다(구데이터 호환).
+export interface ProductColorOption {
+  hex: string; // #rrggbb
+  name: string; // 예: "블랙". 비우면 이름 표시 없이 스와치만.
+}
+
 export interface Variant {
   id: string;
   name: string; // 예: "크롬", "무광 블랙"
@@ -27,7 +33,7 @@ export interface Product {
   image: string; // 대표 이미지(썸네일). 목록 카드에 사용
   images?: string[]; // 상세 갤러리용 이미지들. getProduct에서 파일명 규칙으로 자동 구성
   variants: Variant[];
-  colors?: string[]; // 색상 옵션(hex). 있을 때만 원형 스와치로 표시 (현재 표시 전용)
+  colors?: ProductColorOption[]; // 색상 옵션. 있을 때만 원형 스와치로 표시 (가격·재고 없는 표시용)
   notice?: ProductNotice; // 상품정보제공고시 (상세에서만)
   imageCount?: number; // 갤러리 이미지 수(목록에 실림). 낙관적 모달의 썸네일 줄 자리 예약용
 }
@@ -69,5 +75,6 @@ export interface CartItem {
   price: number;
   image: string;
   quantity: number;
-  color?: string; // 선택한 색상(hex). 표시용
+  color?: string; // 선택한 색상(hex). 스와치 표시용
+  colorName?: string; // 선택한 색상 이름(예: "블랙"). 표시용
 }

@@ -2,6 +2,24 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import type { AdminFeaturedCategory, AdminFeaturedItem } from "@/lib/admin";
 import styles from "@/app/admin/admin.module.css";
 
@@ -15,6 +33,74 @@ export default function FeaturedForm({
       {categories.map((cat) => (
         <CategoryBlock key={cat.slug} cat={cat} />
       ))}
+    </div>
+  );
+}
+
+// 드래그로 순서를 바꾸는 편성 행. 손잡이(⠿)를 잡아 끌면 재정렬된다.
+function SortableFeatRow({
+  id,
+  index,
+  product,
+  onRemove,
+}: {
+  id: string;
+  index: number;
+  product: AdminFeaturedItem;
+  onRemove: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+    // 드래그 중인 행을 위로 띄워 다른 행 위에 겹쳐 보이게
+    zIndex: isDragging ? 2 : undefined,
+    position: "relative",
+  };
+  return (
+    <div ref={setNodeRef} style={style} className={styles.featRow}>
+      <button
+        type="button"
+        className={styles.dragHandle}
+        aria-label={`${product.name} 순서 변경 (드래그 또는 스페이스 후 방향키)`}
+        title="드래그로 순서 변경"
+        {...attributes}
+        {...listeners}
+      >
+        ⠿
+      </button>
+      <span className={styles.featOrder}>{index + 1}</span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className={styles.thumb} src={product.image} alt="" />
+      <div className={styles.featName}>
+        <div className={styles.pName}>
+          {product.name}
+          {!product.isActive && (
+            <span className={styles.badgeOff} style={{ marginLeft: 8 }}>
+              비활성
+            </span>
+          )}
+        </div>
+        <div className={styles.pId}>{product.id}</div>
+      </div>
+      <div className={styles.featControls}>
+        <button
+          type="button"
+          className={styles.button}
+          onClick={onRemove}
+          title="이 카테고리 홈 편성에서만 제외합니다 (상품은 삭제되지 않아요)"
+        >
+          홈노출 제외
+        </button>
+      </div>
     </div>
   );
 }
@@ -33,24 +119,39 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
 
+  const sensors = useSensors(
+    // 살짝(4px) 움직여야 드래그 시작 — 삭제 버튼 클릭 등과 충돌 방지
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
   const available = cat.products.filter(
     (p) => p.isActive && !ids.includes(p.id),
   );
 
-  const move = (i: number, dir: -1 | 1) =>
+  function onDragEnd(e: DragEndEvent) {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
     setIds((prev) => {
-      const j = i + dir;
-      if (j < 0 || j >= prev.length) return prev;
-      const next = [...prev];
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
+      const oldIndex = prev.indexOf(String(active.id));
+      const newIndex = prev.indexOf(String(over.id));
+      if (oldIndex < 0 || newIndex < 0) return prev;
+      return arrayMove(prev, oldIndex, newIndex);
     });
-  const remove = (id: string) =>
+    setSaved(false);
+  }
+
+  const remove = (id: string) => {
     setIds((prev) => prev.filter((x) => x !== id));
+    setSaved(false);
+  };
   const add = () => {
     if (!pick || ids.includes(pick)) return;
     setIds((prev) => [...prev, pick]);
     setPick("");
+    setSaved(false);
   };
 
   async function save() {
@@ -81,7 +182,8 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
     <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>
       <h2 className={styles.sectionTitle}>{cat.name}</h2>
       <p className={styles.sectionDesc}>
-        홈에 노출할 상품과 순서. 위에 있을수록 앞에 진열됩니다. (개수 제한 없음)
+        홈에 노출할 상품과 순서. 위에 있을수록 앞에 진열됩니다. 왼쪽 손잡이(⠿)를
+        끌어 순서를 바꾸세요. (개수 제한 없음)
       </p>
 
       {ids.length === 0 ? (
@@ -89,57 +191,30 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
           편성된 상품이 없습니다. 이 카테고리는 홈에 노출되지 않습니다.
         </div>
       ) : (
-        <div className={styles.featList}>
-          {ids.map((id, i) => {
-            const p = byId.get(id);
-            if (!p) return null;
-            return (
-              <div key={id} className={styles.featRow}>
-                <span className={styles.featOrder}>{i + 1}</span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={styles.thumb} src={p.image} alt="" />
-                <div className={styles.featName}>
-                  <div className={styles.pName}>
-                    {p.name}
-                    {!p.isActive && (
-                      <span className={styles.badgeOff} style={{ marginLeft: 8 }}>
-                        비활성
-                      </span>
-                    )}
-                  </div>
-                  <div className={styles.pId}>{p.id}</div>
-                </div>
-                <div className={styles.featControls}>
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={() => move(i, -1)}
-                    disabled={i === 0}
-                    title="위로"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={() => move(i, 1)}
-                    disabled={i === ids.length - 1}
-                    title="아래로"
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.linkBtn}
-                    onClick={() => remove(id)}
-                  >
-                    삭제
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={onDragEnd}
+          modifiers={[restrictToVerticalAxis]}
+        >
+          <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+            <div className={styles.featList}>
+              {ids.map((id, i) => {
+                const p = byId.get(id);
+                if (!p) return null;
+                return (
+                  <SortableFeatRow
+                    key={id}
+                    id={id}
+                    index={i}
+                    product={p}
+                    onRemove={() => remove(id)}
+                  />
+                );
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       <div className={styles.featAdd}>
@@ -151,9 +226,7 @@ function CategoryBlock({ cat }: { cat: AdminFeaturedCategory }) {
           disabled={available.length === 0}
         >
           <option value="">
-            {available.length === 0
-              ? "추가할 상품 없음"
-              : "상품 선택…"}
+            {available.length === 0 ? "추가할 상품 없음" : "상품 선택…"}
           </option>
           {available.map((p) => (
             <option key={p.id} value={p.id}>

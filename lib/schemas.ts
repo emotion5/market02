@@ -62,6 +62,34 @@ export const productUpdateSchema = z.object({
 });
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
 
+// 상품 목록 인라인 수정(어드민) — 상품명·카테고리 + (단일 옵션 상품이면) 가격까지
+// 한 번에 저장. price/wholesalePrice 는 단일 상품일 때만 함께 보낸다(옵션 상품은 옵션
+// 편집화면에서). 상태·홈노출은 별도 즉시 토글이라 여기서 다루지 않는다.
+export const productBasicsSchema = z.object({
+  name: z.string().min(1, "상품명을 입력하세요.").max(100),
+  categorySlug: z.string().min(1, "카테고리를 선택하세요.").max(50),
+  price: z
+    .number()
+    .int("금액은 정수여야 합니다.")
+    .min(0, "0 이상이어야 합니다.")
+    .optional(),
+  wholesalePrice: z
+    .number()
+    .int("금액은 정수여야 합니다.")
+    .min(0, "0 이상이어야 합니다.")
+    .nullable()
+    .optional(),
+});
+export type ProductBasicsInput = z.infer<typeof productBasicsSchema>;
+
+// 상품 목록에서 홈 노출(Featured) 즉시 토글.
+export const productFeaturedSchema = z.object({ featured: z.boolean() });
+export type ProductFeaturedInput = z.infer<typeof productFeaturedSchema>;
+
+// 상품 목록에서 활성(쇼핑몰 노출) 상태 즉시 토글.
+export const productActiveSchema = z.object({ active: z.boolean() });
+export type ProductActiveInput = z.infer<typeof productActiveSchema>;
+
 // 상품 옵션(variant)·색상 편집 (어드민). 목록 전체를 보내 동기화.
 export const productOptionsSchema = z.object({
   variants: z
@@ -76,7 +104,12 @@ export const productOptionsSchema = z.object({
     .min(1, "옵션이 최소 1개 필요합니다."),
   colors: z
     .array(
-      z.string().regex(/^#[0-9a-fA-F]{6}$/, "색상은 #RRGGBB 형식이어야 합니다."),
+      z.object({
+        hex: z
+          .string()
+          .regex(/^#[0-9a-fA-F]{6}$/, "색상은 #RRGGBB 형식이어야 합니다."),
+        name: z.string().trim().max(30),
+      }),
     )
     .max(20),
 });

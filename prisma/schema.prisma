@@ -175,6 +175,7 @@ model ProductColor {
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   hex       String // 색상 스와치 (#rrggbb)
+  name      String  @default("") // 색상 이름(예: 블랙). 비우면 이름 없이 스와치만 표시
   sortOrder Int     @default(0)
 
   @@index([productId])

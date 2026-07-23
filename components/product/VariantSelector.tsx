@@ -24,7 +24,7 @@ function SingleVariantSelector({
 }) {
   const { addItem } = useCart();
   const hasColors = !!(product.colors && product.colors.length > 0);
-  const [color, setColor] = useState(product.colors?.[0] ?? "");
+  const [color, setColor] = useState(product.colors?.[0]?.hex ?? "");
   // 입력 중 빈 값을 허용하려고 문자열로 두고, 실제 수량은 여기서 파생시킨다
   const [qtyInput, setQtyInput] = useState("1");
   const [added, setAdded] = useState(false);
@@ -32,6 +32,8 @@ function SingleVariantSelector({
   const quantity = Math.max(1, parseInt(qtyInput, 10) || 1);
   const setQuantity = (q: number) => setQtyInput(String(Math.max(1, q)));
 
+  const selectedColorName =
+    product.colors?.find((c) => c.hex === color)?.name ?? "";
   const variant = product.variants[0];
   const consumerTotal = variant.consumerPrice * quantity;
   const memberTotal = variant.price * quantity;
@@ -46,6 +48,7 @@ function SingleVariantSelector({
         price: variant.price,
         image: product.image,
         color: color || undefined,
+        colorName: selectedColorName || undefined,
       },
       quantity,
     );
@@ -57,20 +60,22 @@ function SingleVariantSelector({
     <div className={styles.selector}>
       {hasColors && (
         <div className={styles.field}>
-          <span className={styles.label}>색상</span>
+          <span className={styles.label}>
+            색상{selectedColorName ? ` · ${selectedColorName}` : ""}
+          </span>
           <ul className={styles.colors}>
             {product.colors!.map((c) => (
-              <li key={c}>
+              <li key={c.hex}>
                 <button
                   type="button"
                   className={`${styles.swatch} ${
-                    color === c ? styles.swatchSelected : ""
+                    color === c.hex ? styles.swatchSelected : ""
                   }`}
-                  style={{ backgroundColor: c }}
-                  onClick={() => setColor(c)}
-                  aria-label={`색상 ${c}`}
-                  aria-pressed={color === c}
-                  title={c}
+                  style={{ backgroundColor: c.hex }}
+                  onClick={() => setColor(c.hex)}
+                  aria-label={c.name ? `색상 ${c.name}` : `색상 ${c.hex}`}
+                  aria-pressed={color === c.hex}
+                  title={c.name || c.hex}
                 />
               </li>
             ))}
@@ -157,12 +162,15 @@ function MultiVariantSelector({
 }) {
   const { addItem } = useCart();
   const hasColors = !!(product.colors && product.colors.length > 0);
-  const [color, setColor] = useState(product.colors?.[0] ?? "");
+  const [color, setColor] = useState(product.colors?.[0]?.hex ?? "");
   const [selections, setSelections] = useState<Selection[]>([]);
   const [added, setAdded] = useState(false);
 
   const variantOf = (id: string) =>
     product.variants.find((v) => v.id === id) ?? product.variants[0];
+  const colorNameOf = (hex: string) =>
+    product.colors?.find((c) => c.hex === hex)?.name ?? "";
+  const selectedColorName = colorNameOf(color);
 
   // 옵션 선택 시 목록에 추가 (같은 옵션+색상이면 수량 +1)
   const addSelection = (variantId: string) => {
@@ -215,6 +223,7 @@ function MultiVariantSelector({
           price: v.price,
           image: product.image,
           color: s.color || undefined,
+          colorName: colorNameOf(s.color) || undefined,
         },
         s.quantity,
       );
@@ -228,20 +237,22 @@ function MultiVariantSelector({
     <div className={styles.selector}>
       {hasColors && (
         <div className={styles.field}>
-          <span className={styles.label}>색상</span>
+          <span className={styles.label}>
+            색상{selectedColorName ? ` · ${selectedColorName}` : ""}
+          </span>
           <ul className={styles.colors}>
             {product.colors!.map((c) => (
-              <li key={c}>
+              <li key={c.hex}>
                 <button
                   type="button"
                   className={`${styles.swatch} ${
-                    color === c ? styles.swatchSelected : ""
+                    color === c.hex ? styles.swatchSelected : ""
                   }`}
-                  style={{ backgroundColor: c }}
-                  onClick={() => setColor(c)}
-                  aria-label={`색상 ${c}`}
-                  aria-pressed={color === c}
-                  title={c}
+                  style={{ backgroundColor: c.hex }}
+                  onClick={() => setColor(c.hex)}
+                  aria-label={c.name ? `색상 ${c.name}` : `색상 ${c.hex}`}
+                  aria-pressed={color === c.hex}
+                  title={c.name || c.hex}
                 />
               </li>
             ))}
@@ -284,7 +295,10 @@ function MultiVariantSelector({
                       aria-hidden
                     />
                   )}
-                  <span className={styles.selectedName}>{v.name}</span>
+                  <span className={styles.selectedName}>
+                    {v.name}
+                    {colorNameOf(s.color) ? ` / ${colorNameOf(s.color)}` : ""}
+                  </span>
                   <button
                     type="button"
                     className={styles.selectedRemove}

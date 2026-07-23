@@ -38,7 +38,8 @@ export default function ProductEditForm({
   const [categorySlug, setCategorySlug] = useState(product.categorySlug);
   const [summary, setSummary] = useState(product.summary ?? "");
   const [description, setDescription] = useState(product.description);
-  const [price, setPrice] = useState(String(product.price));
+  // 판매가는 옵션에서 관리(옵션 최저가로 파생). 여기선 편집하지 않고 기존 값을 그대로 유지한다.
+  const price = product.price;
   const [isActive, setIsActive] = useState(product.isActive);
   const [notice, setNotice] = useState<NoticeValues>({
     modelName: product.modelName ?? "",
@@ -68,7 +69,7 @@ export default function ProductEditForm({
           categorySlug,
           summary: summary || undefined,
           description,
-          price: Number(price),
+          price,
           isActive,
           ...notice,
         }),
@@ -132,16 +133,9 @@ export default function ProductEditForm({
         />
       </div>
 
-      <div className={styles.field}>
-        <label className={styles.label}>대표가 (원)</label>
-        <input
-          className={styles.input}
-          type="number"
-          min={0}
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-      </div>
+      <p className={styles.sectionDesc}>
+        판매가는 아래 <b>옵션</b>에서 관리합니다. (목록·카드에는 옵션 최저가가 표시됩니다.)
+      </p>
 
       <div className={styles.field}>
         <label className={styles.checkRow}>

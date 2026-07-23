@@ -12,6 +12,12 @@ export interface AdminProductRow {
   isActive: boolean;
   variantCount: number;
   image: string;
+  isFeatured: boolean; // 자기 카테고리의 홈 편성(Featured)에 올라가 있는지
+  // 옵션이 1개(단일 상품)일 때만 채워짐 — 목록에서 소비자가/도매가 인라인 수정용.
+  single: {
+    consumerPrice: number;
+    wholesalePrice: number | null;
+  } | null;
 }
 
 export async function listProductsForAdmin(
@@ -26,20 +32,90 @@ export async function listProductsForAdmin(
       { id: { contains: q, mode: "insensitive" } },
     ];
   }
-  const rows = await prisma.product.findMany({
-    where,
-    orderBy: [{ categorySlug: "asc" }, { sortOrder: "asc" }],
-    include: { _count: { select: { variants: true } } },
-  });
+  const [rows, featured] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      orderBy: [{ categorySlug: "asc" }, { sortOrder: "asc" }],
+      include: {
+        variants: {
+          orderBy: { sortOrder: "asc" },
+          select: { price: true, wholesalePrice: true },
+        },
+      },
+    }),
+    prisma.featured.findMany({ select: { categorySlug: true, productId: true } }),
+  ]);
+  // 상품이 자기 카테고리에 편성돼 있으면 홈 노출. (categorySlug::productId 로 판정)
+  const featuredKeys = new Set(
+    featured.map((f) => `${f.categorySlug}::${f.productId}`),
+  );
   return rows.map((p) => ({
     id: p.id,
     name: p.name,
     categorySlug: p.categorySlug,
-    price: p.price,
+    // 표시가 = 옵션 최저 소비자가(파생). 별도 대표가 필드 없음.
+    price: p.variants.length
+      ? Math.min(...p.variants.map((v) => v.price))
+      : p.price,
     isActive: p.isActive,
-    variantCount: p._count.variants,
+    variantCount: p.variants.length,
     image: p.repImage,
+    isFeatured: featuredKeys.has(`${p.categorySlug}::${p.id}`),
+    single:
+      p.variants.length === 1
+        ? {
+            consumerPrice: p.variants[0].price,
+            wholesalePrice: p.variants[0].wholesalePrice,
+          }
+        : null,
   }));
+}
+
+// 목록에서 상품 활성(쇼핑몰 노출) 상태를 바로 켜고 끈다.
+export async function setProductActive(
+  id: string,
+  isActive: boolean,
+): Promise<boolean> {
+  try {
+    await prisma.product.update({ where: { id }, data: { isActive } });
+    return true;
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2025"
+    ) {
+      return false;
+    }
+    throw e;
+  }
+}
+
+// 목록에서 상품의 홈 노출을 바로 켜고 끈다. 켜면 자기 카테고리 편성 맨 뒤에 추가,
+// 끄면 그 행을 제거. (순서 조정은 '홈 노출 편성' 화면에서.)
+export async function setProductFeatured(
+  id: string,
+  featured: boolean,
+): Promise<boolean> {
+  const product = await prisma.product.findUnique({
+    where: { id },
+    select: { categorySlug: true },
+  });
+  if (!product) return false;
+  const categorySlug = product.categorySlug;
+  if (featured) {
+    const max = await prisma.featured.aggregate({
+      where: { categorySlug },
+      _max: { sortOrder: true },
+    });
+    await prisma.featured.upsert({
+      where: { categorySlug_productId: { categorySlug, productId: id } },
+      create: { categorySlug, productId: id, sortOrder: (max._max.sortOrder ?? -1) + 1 },
+      update: {},
+    });
+  } else {
+    await prisma.featured.deleteMany({ where: { categorySlug, productId: id } });
+  }
+  return true;
 }
 
 // 이미지 업로드 전 신규 상품 대표 이미지 placeholder
@@ -197,6 +273,52 @@ export async function updateProductFields(
   }
 }
 
+// 상품 목록 인라인 수정 — 상품명·카테고리 + (단일 옵션 상품이면) 소비자가·회원도매가까지
+// 한 트랜잭션으로 저장(둘 다 반영되거나 둘 다 롤백). 설명·요약·고시정보는 유지한다.
+// price 가 주어져도 옵션이 여러 개면 가격은 건드리지 않는다(옵션 편집화면에서 관리).
+export async function updateProductBasics(
+  id: string,
+  input: {
+    name: string;
+    categorySlug: string;
+    price?: number;
+    wholesalePrice?: number | null;
+  },
+): Promise<boolean> {
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.product.update({
+        where: { id },
+        data: { name: input.name, categorySlug: input.categorySlug },
+      });
+      if (input.price !== undefined) {
+        const variants = await tx.variant.findMany({
+          where: { productId: id },
+          select: { id: true },
+        });
+        if (variants.length === 1) {
+          await tx.variant.update({
+            where: { id: variants[0].id },
+            data: {
+              price: input.price,
+              wholesalePrice: input.wholesalePrice ?? null,
+            },
+          });
+        }
+      }
+    });
+    return true;
+  } catch (e) {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2025"
+    ) {
+      return false; // 없는 상품
+    }
+    throw e;
+  }
+}
+
 // ── 옵션(variant)·색상 ──────────────────────────────
 
 export interface AdminVariant {
@@ -205,9 +327,13 @@ export interface AdminVariant {
   price: number;
   wholesalePrice: number | null;
 }
+export interface AdminColor {
+  hex: string;
+  name: string;
+}
 export interface AdminProductOptions {
   variants: AdminVariant[];
-  colors: string[];
+  colors: AdminColor[];
 }
 
 export async function getProductOptions(
@@ -228,7 +354,7 @@ export async function getProductOptions(
       price: v.price,
       wholesalePrice: v.wholesalePrice,
     })),
-    colors: p.colors.map((c) => c.hex),
+    colors: p.colors.map((c) => ({ hex: c.hex, name: c.name })),
   };
 }
 
@@ -237,7 +363,7 @@ export async function updateProductOptions(
   productId: string,
   input: {
     variants: { id?: string; name: string; price: number; wholesalePrice: number | null }[];
-    colors: string[];
+    colors: { hex: string; name: string }[];
   },
 ): Promise<boolean> {
   const product = await prisma.product.findUnique({
@@ -290,7 +416,12 @@ export async function updateProductOptions(
     await tx.productColor.deleteMany({ where: { productId } });
     if (input.colors.length) {
       await tx.productColor.createMany({
-        data: input.colors.map((hex, i) => ({ productId, hex, sortOrder: i })),
+        data: input.colors.map((c, i) => ({
+          productId,
+          hex: c.hex,
+          name: c.name,
+          sortOrder: i,
+        })),
       });
     }
   });

@@ -41,7 +41,11 @@ export default async function EditProductPage({
         <ProductEditForm product={product} categories={categories} />
       </div>
 
-      <div className={styles.card} style={{ padding: 24, marginBottom: 20 }}>
+      <div
+        id="options"
+        className={styles.card}
+        style={{ padding: 24, marginBottom: 20, scrollMarginTop: 16 }}
+      >
         <ProductOptionsForm
           productId={product.id}
           variants={options.variants}

@@ -8,7 +8,9 @@ import styles from "@/app/admin/admin.module.css";
 const ITEMS = [
   { href: "/admin", label: "대시보드", exact: true },
   { href: "/admin/members", label: "회원 관리" },
-  { href: "/admin/products", label: "상품 관리" },
+  // 상품 관리는 하위 편성 페이지에선 자식(홈 진열 편성)만 강조되도록 제외 처리
+  { href: "/admin/products", label: "상품 관리", exclude: ["/admin/products/featured"] },
+  { href: "/admin/products/featured", label: "홈 노출 편성", sub: true },
   { href: "/admin/categories", label: "카테고리 관리" },
   { href: "/admin/orders", label: "주문 관리" },
   { href: "/admin/quotes", label: "견적서 관리" },
@@ -21,18 +23,24 @@ export default function AdminNav() {
   return (
     <nav className={styles.nav}>
       {ITEMS.map((it) => {
-        // 대시보드(/admin)는 모든 어드민 경로의 접두사라 정확 일치로 판정
+        // 대시보드(/admin)는 모든 어드민 경로의 접두사라 정확 일치로 판정.
+        // exclude 가 있으면 그 하위 경로에선 부모를 비활성(자식만 강조).
         const active =
           "exact" in it && it.exact
             ? pathname === it.href
-            : pathname.startsWith(it.href);
+            : pathname.startsWith(it.href) &&
+              !("exclude" in it &&
+                it.exclude?.some((e) => pathname.startsWith(e)));
+        const isSub = "sub" in it && it.sub;
         return (
           <Link
             key={it.href}
             href={it.href}
-            className={`${styles.navItem} ${active ? styles.navActive : ""}`}
+            className={`${styles.navItem} ${isSub ? styles.navSub : ""} ${
+              active ? styles.navActive : ""
+            }`}
           >
-            {it.label}
+            {isSub ? `↳ ${it.label}` : it.label}
           </Link>
         );
       })}

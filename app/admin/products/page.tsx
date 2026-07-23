@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listProductsForAdmin, getCategoriesForAdmin } from "@/lib/admin";
+import ProductRowsEditor from "@/components/admin/ProductRowsEditor";
 import styles from "../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -14,11 +15,9 @@ export default async function AdminProductsPage({
     listProductsForAdmin({ category, q }),
     getCategoriesForAdmin(),
   ]);
-  const categoryName = (slug: string) =>
-    categories.find((c) => c.slug === slug)?.name ?? slug;
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${styles.pageWide}`}>
       <h1 className={styles.pageTitle}>상품 관리</h1>
       <p className={styles.pageDesc}>
         상품을 등록·수정하고 옵션·가격·이미지를 관리합니다.
@@ -60,9 +59,6 @@ export default async function AdminProductsPage({
               검색
             </button>
           </form>
-          <Link href="/admin/products/featured" className={styles.button}>
-            홈 노출 편성
-          </Link>
           <Link
             href="/admin/products/new"
             className={`${styles.button} ${styles.buttonPrimary}`}
@@ -74,55 +70,16 @@ export default async function AdminProductsPage({
 
       <p className={styles.count}>{products.length}개 상품</p>
 
+      <p className={styles.pageDesc}>
+        상품명·카테고리·대표가·상태는 아래 목록에서 바로 고쳐 저장할 수 있어요.
+        옵션·설명·이미지 등은 <b>상세</b>에서 편집합니다.
+      </p>
+
       <div className={styles.card}>
         {products.length === 0 ? (
           <div className={styles.empty}>상품이 없습니다.</div>
         ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th></th>
-                <th>상품명</th>
-                <th>카테고리</th>
-                <th>대표가</th>
-                <th>옵션</th>
-                <th>상태</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => (
-                <tr key={p.id}>
-                  <td>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img className={styles.thumb} src={p.image} alt="" />
-                  </td>
-                  <td>
-                    <div className={styles.pName}>{p.name}</div>
-                    <div className={styles.pId}>{p.id}</div>
-                  </td>
-                  <td>{categoryName(p.categorySlug)}</td>
-                  <td className={styles.mono}>
-                    {p.price.toLocaleString("ko-KR")}원
-                  </td>
-                  <td className={styles.mono}>{p.variantCount}</td>
-                  <td>
-                    <span className={p.isActive ? styles.badgeOn : styles.badgeOff}>
-                      {p.isActive ? "활성" : "비활성"}
-                    </span>
-                  </td>
-                  <td>
-                    <Link
-                      href={`/admin/products/${p.id}/edit`}
-                      className={styles.button}
-                    >
-                      수정
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ProductRowsEditor products={products} categories={categories} />
         )}
       </div>
     </div>
