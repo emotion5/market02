@@ -164,6 +164,17 @@ export async function getUserQuote(
   return toSavedQuote(q);
 }
 
+// 내 견적 삭제. 소유자(userId) 조건을 함께 걸어 남의 견적은 못 지운다.
+// 견적서는 주문·결제와 무관한 본인 문서라 하드삭제하며, 품목은 cascade 로 정리된다.
+// 없거나 남의 것이면 false.
+export async function deleteUserQuote(
+  number: string,
+  userId: string,
+): Promise<boolean> {
+  const res = await prisma.quote.deleteMany({ where: { number, userId } });
+  return res.count > 0;
+}
+
 // 내 견적 목록(최신순).
 export async function listUserQuotes(userId: string): Promise<SavedQuote[]> {
   const rows = await prisma.quote.findMany({

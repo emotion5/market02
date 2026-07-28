@@ -1,5 +1,5 @@
 import { getSessionUser } from "@/lib/session";
-import { getUserQuote } from "@/server/quotes/service";
+import { getUserQuote, deleteUserQuote } from "@/server/quotes/service";
 
 export async function GET(
   _request: Request,
@@ -18,4 +18,24 @@ export async function GET(
     );
   }
   return Response.json({ quote });
+}
+
+// 본인 견적 삭제. 소유자만(서버에서 userId 조건으로 강제).
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ number: string }> },
+) {
+  const session = await getSessionUser();
+  if (!session) {
+    return Response.json({ error: "로그인이 필요합니다." }, { status: 401 });
+  }
+  const { number } = await params;
+  const ok = await deleteUserQuote(decodeURIComponent(number), session.userId);
+  if (!ok) {
+    return Response.json(
+      { error: "견적서를 찾을 수 없습니다." },
+      { status: 404 },
+    );
+  }
+  return Response.json({ ok: true });
 }

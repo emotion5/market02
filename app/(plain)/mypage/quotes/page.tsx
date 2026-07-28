@@ -24,6 +24,32 @@ function formatDate(iso: string): string {
 
 export default function QuotesPage() {
   const [quotes, setQuotes] = useState<SavedQuote[] | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const handleDelete = async (number: string) => {
+    if (
+      !confirm(
+        `견적번호 ${number} 견적서를 삭제할까요?\n삭제하면 되돌릴 수 없습니다.`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(number);
+    try {
+      const res = await fetch(`/api/quotes/${encodeURIComponent(number)}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setQuotes((prev) => prev?.filter((q) => q.number !== number) ?? prev);
+      } else {
+        alert("삭제에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    } catch {
+      alert("네트워크 오류로 삭제하지 못했습니다.");
+    } finally {
+      setDeleting(null);
+    }
+  };
 
   useEffect(() => {
     let alive = true;
@@ -48,7 +74,7 @@ export default function QuotesPage() {
     return (
       <div className={styles.empty}>
         <FileText size={40} strokeWidth={1.5} />
-        <p>발행한 견적서가 없습니다.</p>
+        <p>저장한 견적서가 없습니다.</p>
         <Link href="/quote" className={styles.emptyLink}>
           견적서 작성하기
         </Link>
@@ -61,7 +87,7 @@ export default function QuotesPage() {
       <div className={styles.head}>
         <h2 className={styles.heading}>견적서 내역</h2>
         <p className={styles.subnote}>
-          발행한 견적서가 최신순으로 표시됩니다. 발행 시점의 내용 그대로 보관됩니다.
+          저장한 견적서가 최신순으로 표시됩니다. 저장 시점의 내용 그대로 보관됩니다.
         </p>
       </div>
 
@@ -112,12 +138,22 @@ export default function QuotesPage() {
                 <span className={styles.total}>
                   합계금액 <strong>{formatPrice(quote.total)}</strong>
                 </span>
-                <Link
-                  href={`/quotes/${quote.number}`}
-                  className={styles.viewButton}
-                >
-                  견적서 보기
-                </Link>
+                <div className={styles.footActions}>
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={() => handleDelete(quote.number)}
+                    disabled={deleting === quote.number}
+                  >
+                    {deleting === quote.number ? "삭제 중…" : "삭제"}
+                  </button>
+                  <Link
+                    href={`/quotes/${quote.number}`}
+                    className={styles.viewButton}
+                  >
+                    견적서 보기
+                  </Link>
+                </div>
               </div>
             </li>
           );
@@ -125,7 +161,7 @@ export default function QuotesPage() {
       </ul>
 
       <p className={styles.mockNote}>
-        ※ 견적서는 발행 당시의 가격·품목으로 저장되며, 이후 상품 가격이 변경되어도
+        ※ 견적서는 저장 당시의 가격·품목으로 보관되며, 이후 상품 가격이 변경되어도
         바뀌지 않습니다.
       </p>
     </div>
