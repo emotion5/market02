@@ -40,6 +40,8 @@ export interface AdminOrderRow {
   itemCount: number;
   firstItemName: string | null;
   tax: TaxInvoiceState;
+  paidAt: string | null; // 취소 라벨(환불/반품/취소) 판정용
+  trackingNumber: string | null;
 }
 
 export interface AdminOrderListResult {
@@ -79,6 +81,7 @@ export async function listOrdersForAdmin(
         _count: { select: { items: true } },
         items: { take: 1, orderBy: { id: "asc" }, select: { productName: true } },
         taxInvoice: { select: { requested: true, status: true } },
+        payment: { select: { paidAt: true } },
       },
     }),
   ]);
@@ -94,6 +97,8 @@ export async function listOrdersForAdmin(
       itemCount: o._count.items,
       firstItemName: o.items[0]?.productName ?? null,
       tax: taxState(o.taxInvoice),
+      paidAt: o.payment?.paidAt?.toISOString() ?? null,
+      trackingNumber: o.trackingNumber ?? null,
     })),
     total,
     page,
@@ -130,6 +135,9 @@ export interface AdminOrderDetail {
   };
   courier: string | null;
   trackingNumber: string | null;
+  paidAt: string | null;
+  canceledAt: string | null;
+  cancelReason: string | null;
 }
 
 export async function getOrderForAdmin(
@@ -141,6 +149,7 @@ export async function getOrderForAdmin(
       items: { orderBy: { id: "asc" } },
       taxInvoice: true,
       user: { select: { email: true } },
+      payment: { select: { paidAt: true } },
     },
   });
   if (!o) return null;
@@ -179,6 +188,9 @@ export async function getOrderForAdmin(
     },
     courier: o.courier,
     trackingNumber: o.trackingNumber,
+    paidAt: o.payment?.paidAt?.toISOString() ?? null,
+    canceledAt: o.canceledAt?.toISOString() ?? null,
+    cancelReason: o.cancelReason,
   };
 }
 
@@ -188,7 +200,8 @@ export type OrderAction =
   | "start_preparing"
   | "start_shipping"
   | "complete_delivery"
-  | "issue_tax_invoice";
+  | "issue_tax_invoice"
+  | "cancel";
 
 export type OrderActionResult =
   | { ok: true }
@@ -203,7 +216,7 @@ const fail = (status: number, error: string): OrderActionResult => ({
 export async function performOrderAction(
   orderNo: string,
   action: OrderAction,
-  extra: { courier?: string; trackingNumber?: string } = {},
+  extra: { courier?: string; trackingNumber?: string; reason?: string } = {},
 ): Promise<OrderActionResult> {
   const o = await prisma.order.findUnique({
     where: { orderNo },
@@ -256,6 +269,29 @@ export async function performOrderAction(
         data: { status: "ISSUED", issuedAt: new Date() },
       });
       return { ok: true };
+
+    case "cancel": {
+      // 취소·환불(반품 포함) 처리. 배송 전 취소든 배송 후 반품이든 여기서 마감한다.
+      // 실제 환불 이체는 관리자가 계좌로 직접 처리하고, 여기선 결과만 기록한다.
+      if (o.status === "CANCELLED") return fail(409, "이미 취소된 주문입니다.");
+      // 입금대기는 관리자 취소 대상이 아니다(고객 셀프취소·입금기한 자동취소로 해소).
+      if (o.status === "PENDING") {
+        return fail(
+          409,
+          "입금대기 주문은 관리자가 취소할 수 없습니다. 고객 취소 또는 입금기한 자동취소로 처리됩니다.",
+        );
+      }
+      await prisma.order.update({
+        where: { orderNo },
+        data: {
+          status: "CANCELLED",
+          canceledAt: new Date(),
+          cancelReason: extra.reason?.trim() || "관리자 취소·환불 처리",
+          payment: { update: { status: "CANCELLED" } },
+        },
+      });
+      return { ok: true };
+    }
 
     default:
       return fail(400, "알 수 없는 작업입니다.");

@@ -134,7 +134,11 @@ export default async function AdminOrdersPage({
                     {o.total.toLocaleString("ko-KR")}원
                   </td>
                   <td>
-                    <OrderStatusBadge status={o.status} />
+                    <OrderStatusBadge
+                      status={o.status}
+                      paidAt={o.paidAt}
+                      trackingNumber={o.trackingNumber}
+                    />
                   </td>
                   <td>{TAX_LABEL[o.tax]}</td>
                   <td>

@@ -44,7 +44,11 @@ export default async function AdminOrderDetailPage({
               {fmt(o.createdAt)} · {o.userEmail}
             </div>
           </div>
-          <OrderStatusBadge status={o.status} />
+          <OrderStatusBadge
+            status={o.status}
+            paidAt={o.paidAt}
+            trackingNumber={o.trackingNumber}
+          />
         </div>
 
         <div className={styles.detailActions}>

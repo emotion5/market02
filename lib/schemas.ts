@@ -264,9 +264,11 @@ export const orderActionSchema = z.object({
     "start_shipping",
     "complete_delivery",
     "issue_tax_invoice",
+    "cancel", // 취소·환불(반품 포함) 처리
   ]),
   courier: z.string().trim().max(50).optional(),
   trackingNumber: z.string().trim().max(50).optional(),
+  reason: z.string().trim().max(200).optional(), // 취소·환불 사유
 });
 export type OrderActionInput = z.infer<typeof orderActionSchema>;
 export type PersonalSignupInput = z.infer<typeof personalSignupSchema>;

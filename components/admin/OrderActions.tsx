@@ -21,10 +21,11 @@ export default function OrderActions({
   const [busy, setBusy] = useState(false);
   const [courier, setCourier] = useState("");
   const [tracking, setTracking] = useState("");
+  const [reason, setReason] = useState("");
 
   async function run(
     action: string,
-    extra?: { courier?: string; trackingNumber?: string },
+    extra?: { courier?: string; trackingNumber?: string; reason?: string },
   ) {
     setBusy(true);
     const res = await fetch(`/api/admin/orders/${encodeURIComponent(orderNo)}`, {
@@ -42,6 +43,19 @@ export default function OrderActions({
   }
 
   const canIssueTax = tax === "pending" && status !== "pending";
+  const taxIssued = tax === "issued";
+
+  // 배송 나간 뒤(배송중·배송완료)면 반품, 그 전이면 취소로 표기.
+  const isReturn = status === "shipping" || status === "delivered";
+  const cancelLabel = isReturn ? "반품·환불 처리" : "취소·환불 처리";
+
+  async function cancelOrder() {
+    const confirmMsg = isReturn
+      ? "이 주문을 반품·환불 처리합니다. 환불 이체를 완료한 뒤 진행하세요. 계속할까요?"
+      : "이 주문을 취소·환불 처리합니다. 입금된 건이면 환불 이체를 완료한 뒤 진행하세요. 계속할까요?";
+    if (!window.confirm(confirmMsg)) return;
+    await run("cancel", { reason: reason.trim() || undefined });
+  }
 
   return (
     <div className={styles.orderActions}>
@@ -130,6 +144,36 @@ export default function OrderActions({
           </button>
           <span className={styles.sectionDesc} style={{ margin: 0 }}>
             국세청 발행 후 완료로 표시합니다.
+          </span>
+        </div>
+      )}
+
+      {status === "cancelled" && (
+        <p className={styles.sectionDesc} style={{ margin: 0 }}>
+          취소·환불 처리된 주문입니다.
+        </p>
+      )}
+
+      {/* 취소·환불은 입금완료 이후부터. 입금대기는 고객 셀프취소·입금기한
+          자동취소로 해소되므로, 여기 버튼을 두지 않아 오취소를 막는다. */}
+      {status !== "pending" && status !== "cancelled" && (
+        <div className={styles.trackForm}>
+          <input
+            className={styles.smallInput}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="취소·환불 사유 (선택)"
+          />
+          <button
+            className={styles.button}
+            disabled={busy}
+            onClick={cancelOrder}
+          >
+            {cancelLabel}
+          </button>
+          <span className={styles.sectionDesc} style={{ margin: 0 }}>
+            실제 환불 이체를 완료한 뒤 눌러 취소로 기록합니다.
+            {taxIssued && " 세금계산서 발행 건은 수정세금계산서가 필요합니다."}
           </span>
         </div>
       )}

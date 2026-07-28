@@ -22,7 +22,11 @@ export async function PATCH(
   const result = await performOrderAction(
     decodeURIComponent(orderNo),
     parsed.data.action,
-    { courier: parsed.data.courier, trackingNumber: parsed.data.trackingNumber },
+    {
+      courier: parsed.data.courier,
+      trackingNumber: parsed.data.trackingNumber,
+      reason: parsed.data.reason,
+    },
   );
   if (!result.ok) {
     return Response.json({ error: result.error }, { status: result.status });
