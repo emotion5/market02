@@ -28,8 +28,12 @@ export default function WithdrawPage() {
         setError(d.error ?? "탈퇴 처리에 실패했습니다.");
         return;
       }
-      // 아직 localStorage에 있는 목업 데이터(장바구니·주문 등)도 함께 정리
-      CLEAR_KEYS.forEach((k) => localStorage.removeItem(k));
+      // 브라우저에 남은 로컬 데이터 정리. 장바구니(견적서)는 이제 sessionStorage,
+      // 나머지 목업(주문·배송지·프로필)은 localStorage라 양쪽 모두 지운다.
+      CLEAR_KEYS.forEach((k) => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
       setDone(true);
     } catch {
       setError("네트워크 오류가 발생했습니다.");

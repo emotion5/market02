@@ -236,6 +236,26 @@ export const orderDraftSchema = z.object({
 });
 export type OrderDraftSchemaInput = z.infer<typeof orderDraftSchema>;
 
+// 장바구니 정합성 대조 — 담긴 항목 스냅샷을 현재 DB와 맞춰본다.
+// 삭제 감지·가격 변경 안내를 위해 표시용 스냅샷(가격·상품명 등)도 함께 받는다.
+export const cartReconcileSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1),
+        variantId: z.string().min(1),
+        productName: z.string().max(200).default(""),
+        variantName: z.string().max(200).default(""),
+        price: z.number().nonnegative(),
+        image: z.string().max(500).default(""),
+        quantity: z.number().int().min(1).max(9999),
+        color: z.string().max(20).optional(),
+        colorName: z.string().max(40).optional(),
+      }),
+    )
+    .max(200),
+});
+
 // 주문 상태 전이(어드민)
 export const orderActionSchema = z.object({
   action: z.enum([

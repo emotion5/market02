@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { useCart } from "@/hooks/useCart";
+import { useCartReconcile } from "@/hooks/useCartReconcile";
 import { formatPrice } from "@/lib/utils";
+import CartReconcileNotice from "@/components/cart/CartReconcileNotice";
 import ProductThumb from "@/components/product/ProductThumb";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import { type Order } from "@/lib/orders";
@@ -22,6 +24,8 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalPrice } = useCart();
   const settings = useSiteSettings();
+  // 진입 시 담긴 상품을 현재 DB와 대조 — 사라진 항목 제외·가격 갱신 후 안내
+  const reconcileNotice = useCartReconcile();
 
   // 주문자 / 배송 정보
   const [ordererName, setOrdererName] = useState("");
@@ -137,6 +141,8 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className={styles.empty}>
+        {/* 담긴 항목이 모두 제외된 경우에도 이유를 볼 수 있게 안내를 남긴다 */}
+        <CartReconcileNotice notice={reconcileNotice} />
         <p>주문할 상품이 없습니다.</p>
         <Link href="/products" className={styles.emptyLink}>
           상품 보러 가기
@@ -149,6 +155,8 @@ export default function CheckoutPage() {
   return (
     <form className={styles.page} onSubmit={handleSubmit}>
       <h1 className={styles.title}>주문 / 결제</h1>
+
+      <CartReconcileNotice notice={reconcileNotice} />
 
       <div className={styles.layout}>
         <div className={styles.main}>

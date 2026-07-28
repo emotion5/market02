@@ -7,7 +7,7 @@ import styles from "./ProductCard.module.css";
 
 // 썸네일 위 빠른 추가 버튼: 상세로 들어가지 않고 대표 옵션을 견적서에 바로 담는다.
 // 담긴 상태는 따로 저장하지 않고 견적서 내용에서 파생시킨다 —
-// 견적서 자체가 localStorage에 저장되므로 새로고침해도 그대로 유지된다.
+// 견적서 자체가 sessionStorage에 저장되므로 새로고침해도 세션 동안 유지된다.
 export default function QuickAddButton({ product }: { product: Product }) {
   const { items, addItem, removeItem } = useCart();
 

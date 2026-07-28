@@ -113,26 +113,28 @@ export async function placeOrder(
   const vmap = new Map(variants.map((v) => [v.id, v]));
   const wholesale = await isWholesaleUser(userId);
 
-  const lineItems = input.items.map((i) => {
+  // 담긴 뒤 삭제된 옵션은 조용히 제외한다(화면에서 이미 대조·안내됨).
+  const lineItems = input.items.flatMap((i) => {
     const v = vmap.get(baseVariantId(i.variantId));
-    if (!v) {
-      throw new OrderError(
-        "일부 상품 정보가 변경되었습니다. 견적서를 새로 담아주세요.",
-      );
-    }
+    if (!v) return [];
     const unitPrice =
       wholesale && v.wholesalePrice != null ? v.wholesalePrice : v.price;
-    return {
-      productId: v.productId,
-      productName: v.product.name,
-      variantId: i.variantId,
-      variantName: v.name,
-      color: i.color ?? null,
-      image: v.product.repImage,
-      unitPrice,
-      quantity: Math.max(1, Math.floor(i.quantity)),
-    };
+    return [
+      {
+        productId: v.productId,
+        productName: v.product.name,
+        variantId: i.variantId,
+        variantName: v.name,
+        color: i.color ?? null,
+        image: v.product.repImage,
+        unitPrice,
+        quantity: Math.max(1, Math.floor(i.quantity)),
+      },
+    ];
   });
+  if (!lineItems.length) {
+    throw new OrderError("주문할 상품이 없습니다.");
+  }
 
   const total = lineItems.reduce((s, l) => s + l.unitPrice * l.quantity, 0);
   const supply = Math.round(total / 1.1);

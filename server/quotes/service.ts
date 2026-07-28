@@ -80,26 +80,29 @@ export async function issueQuote(
   const vmap = new Map(variants.map((v) => [v.id, v]));
   const wholesale = await isWholesaleUser(userId);
 
-  const lineItems = input.items.map((i) => {
+  // 담긴 뒤 삭제된 옵션은 조용히 제외한다(화면에서 이미 대조·안내됨).
+  // 전체를 막던 blanket 에러 대신 항목 단위로 처리한다.
+  const lineItems = input.items.flatMap((i) => {
     const v = vmap.get(baseVariantId(i.variantId));
-    if (!v) {
-      throw new QuoteError(
-        "일부 상품 정보가 변경되었습니다. 견적서를 새로 담아주세요.",
-      );
-    }
+    if (!v) return [];
     const unitPrice =
       wholesale && v.wholesalePrice != null ? v.wholesalePrice : v.price;
-    return {
-      productId: v.productId,
-      productName: v.product.name,
-      variantId: i.variantId, // 색상 포함 합성 id 보존(재주문 시 그대로 담김)
-      variantName: v.name,
-      color: i.color ?? null,
-      image: v.product.repImage,
-      unitPrice,
-      quantity: Math.max(1, Math.floor(i.quantity)),
-    };
+    return [
+      {
+        productId: v.productId,
+        productName: v.product.name,
+        variantId: i.variantId, // 색상 포함 합성 id 보존(재주문 시 그대로 담김)
+        variantName: v.name,
+        color: i.color ?? null,
+        image: v.product.repImage,
+        unitPrice,
+        quantity: Math.max(1, Math.floor(i.quantity)),
+      },
+    ];
   });
+  if (!lineItems.length) {
+    throw new QuoteError("견적서에 담긴 상품이 없습니다.");
+  }
 
   const { total, supply, vat } = quoteTotals(
     lineItems.map((l) => ({ price: l.unitPrice, quantity: l.quantity })),

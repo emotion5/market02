@@ -5,17 +5,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Printer, FileCheck } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { useCartReconcile } from "@/hooks/useCartReconcile";
 import { formatPrice } from "@/lib/utils";
+import CartReconcileNotice from "@/components/cart/CartReconcileNotice";
 import QuoteSheet from "@/components/quote/QuoteSheet";
 import { makeQuoteNumber, type QuoteCustomer } from "@/lib/quotes";
 import styles from "./page.module.css";
 
 // 작성 중인 견적서 = 담아둔 상품(장바구니). 화면에 보이는 견적번호·발행일은
-// 아직 확정되지 않은 미리보기이며, "견적서 발행"을 눌러야 그 시점 값으로 굳어
+// 아직 확정되지 않은 미리보기이며, "견적서 저장"을 눌러야 그 시점 값으로 굳어
 // 저장된다 (그 뒤로는 /quotes/[number]에서 그대로 다시 열린다).
 export default function QuotePage() {
   const router = useRouter();
-  const { items, totalPrice, updateQuantity, removeItem } = useCart();
+  const { items, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
+  // 진입 시 담긴 상품을 현재 DB와 대조 — 사라진 항목 제외·가격 갱신 후 안내
+  const reconcileNotice = useCartReconcile();
 
   const [customer, setCustomer] = useState<QuoteCustomer>({
     company: "",
@@ -59,15 +63,19 @@ export default function QuotePage() {
       });
       if (res.status === 401) {
         // 발행은 로그인 사용자에 귀속된다 → 로그인 후 다시 시도(장바구니는 유지됨)
-        setError("견적서 발행은 로그인이 필요합니다.");
+        setError("견적서 저장은 로그인이 필요합니다.");
         router.push("/login");
         return;
       }
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "견적서 발행에 실패했습니다.");
+        setError(data.error ?? "견적서 저장에 실패했습니다.");
         return;
       }
+      // 저장 = 초안(장바구니)을 번호 확정 문서로 굳히는 최종 동작.
+      // 담아둔 목록은 비워 "저장 완료"를 명확히 하고 중복 저장을 막는다.
+      // (필요하면 저장본에서 "이 견적으로 주문하기"로 다시 담을 수 있다)
+      clearCart();
       router.push(`/quotes/${data.number}`);
     } catch {
       setError("네트워크 오류가 발생했습니다.");
@@ -79,6 +87,8 @@ export default function QuotePage() {
   if (items.length === 0) {
     return (
       <div className={styles.empty}>
+        {/* 담긴 항목이 모두 제외된 경우에도 이유를 볼 수 있게 안내를 남긴다 */}
+        <CartReconcileNotice notice={reconcileNotice} />
         <p>견적서에 담긴 상품이 없습니다.</p>
         <Link href="/products" className={styles.emptyLink}>
           상품 보러 가기
@@ -103,6 +113,8 @@ export default function QuotePage() {
           인쇄 / PDF 저장
         </button>
       </div>
+
+      <CartReconcileNotice notice={reconcileNotice} />
 
       <QuoteSheet
         number={preview?.number ?? null}
@@ -132,16 +144,16 @@ export default function QuotePage() {
           disabled={publishing}
         >
           <FileCheck size={16} strokeWidth={1.75} />
-          {publishing ? "발행 중…" : "견적서 발행"}
+          {publishing ? "저장 중…" : "견적서 저장"}
         </button>
         <Link href="/checkout" className={styles.orderButton}>
-          주문 / 결제하기
+          바로 주문하기
         </Link>
       </div>
 
       <p className={styles.publishNote}>
-        ※ &lsquo;견적서 발행&rsquo;을 누르면 지금 내용 그대로 견적번호가 확정되어
-        저장됩니다. 발행한 견적서는 마이페이지 &gt; 견적서 내역에서 다시 볼 수
+        ※ &lsquo;견적서 저장&rsquo;을 누르면 지금 내용 그대로 견적번호가 확정되어
+        저장됩니다. 저장한 견적서는 마이페이지 &gt; 견적서 내역에서 다시 볼 수
         있습니다.
       </p>
     </div>
