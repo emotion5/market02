@@ -9,6 +9,7 @@ import {
   DEFAULT_COURIER,
   STATUS_FLOW,
   STATUS_LABEL,
+  orderStatusLabel,
   type Order,
   type OrderStatus,
 } from "@/lib/orders";
@@ -25,6 +26,7 @@ function formatDateTime(iso: string): string {
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [openTracking, setOpenTracking] = useState<string | null>(null);
+  const [canceling, setCanceling] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -40,6 +42,38 @@ export default function OrdersPage() {
       alive = false;
     };
   }, []);
+
+  // 입금 전(입금대기) 주문만 셀프 취소. 입금 후에는 CS 요청 안내(서버에서도 차단).
+  const cancelOrder = async (orderNo: string) => {
+    if (
+      !confirm(
+        "입금 전 주문을 취소합니다.\n취소하면 되돌릴 수 없습니다. 계속할까요?",
+      )
+    ) {
+      return;
+    }
+    setCanceling(orderNo);
+    try {
+      const res = await fetch(`/api/orders/${encodeURIComponent(orderNo)}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "cancel" }),
+      });
+      if (res.ok) {
+        const data = await fetch("/api/orders")
+          .then((r) => (r.ok ? r.json() : { orders: [] }))
+          .catch(() => ({ orders: [] }));
+        setOrders(data.orders ?? []);
+      } else {
+        const d = await res.json().catch(() => ({}));
+        alert(d.error ?? "취소에 실패했습니다.");
+      }
+    } catch {
+      alert("네트워크 오류로 취소하지 못했습니다.");
+    } finally {
+      setCanceling(null);
+    }
+  };
 
   if (orders === null) {
     return <p className={styles.loading}>불러오는 중…</p>;
@@ -80,7 +114,7 @@ export default function OrdersPage() {
                   </span>
                 </div>
                 <span className={`${styles.badge} ${styles[`s_${status}`]}`}>
-                  {STATUS_LABEL[status]}
+                  {orderStatusLabel(order)}
                 </span>
               </div>
 
@@ -120,18 +154,42 @@ export default function OrdersPage() {
                 <span className={styles.total}>
                   결제금액 <strong>{formatPrice(order.total)}</strong>
                 </span>
-                <button
-                  type="button"
-                  className={styles.trackButton}
-                  onClick={() => setOpenTracking(open ? null : order.orderNo)}
-                  aria-expanded={open}
-                >
-                  <Truck size={16} strokeWidth={1.75} />
-                  배송조회
-                </button>
+                <div className={styles.footActions}>
+                  {status === "pending" && (
+                    <button
+                      type="button"
+                      className={styles.cancelButton}
+                      onClick={() => cancelOrder(order.orderNo)}
+                      disabled={canceling === order.orderNo}
+                    >
+                      {canceling === order.orderNo ? "취소 중…" : "주문 취소"}
+                    </button>
+                  )}
+                  {status !== "cancelled" && (
+                    <button
+                      type="button"
+                      className={styles.trackButton}
+                      onClick={() => setOpenTracking(open ? null : order.orderNo)}
+                      aria-expanded={open}
+                    >
+                      <Truck size={16} strokeWidth={1.75} />
+                      배송조회
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {open && (
+              {status === "cancelled" && (
+                <div className={styles.cancelInfo}>
+                  {orderStatusLabel(order)}
+                  {order.cancelReason ? ` · ${order.cancelReason}` : ""}
+                  {order.canceledAt
+                    ? ` · ${formatDateTime(order.canceledAt)}`
+                    : ""}
+                </div>
+              )}
+
+              {open && status !== "cancelled" && (
                 <div className={styles.tracking}>
                   <div className={styles.trackingMeta}>
                     <span>택배사 {order.courier ?? DEFAULT_COURIER}</span>

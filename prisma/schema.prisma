@@ -319,6 +319,9 @@ model Order {
   courier        String? // 택배사
   trackingNumber String? // 운송장번호
 
+  canceledAt   DateTime? // 취소·환불 처리 시각
+  cancelReason String? // 취소·환불 사유(고객취소 표시 / 관리자 메모)
+
   items      OrderItem[]
   payment    Payment?
   taxInvoice TaxInvoice?

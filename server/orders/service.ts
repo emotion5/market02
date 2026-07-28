@@ -74,6 +74,9 @@ function toOrder(o: OrderRow): Order {
     },
     courier: o.courier ?? undefined,
     trackingNumber: o.trackingNumber ?? undefined,
+    paidAt: o.payment?.paidAt?.toISOString(),
+    canceledAt: o.canceledAt?.toISOString(),
+    cancelReason: o.cancelReason ?? undefined,
     virtualAccount:
       o.payment?.vaAccountNumber && o.payment.vaBank
         ? {
@@ -199,6 +202,43 @@ export async function placeOrder(
     }
   }
   throw new OrderError("주문번호 생성에 실패했습니다. 다시 시도해주세요.");
+}
+
+export type CancelResult =
+  | { ok: true }
+  | { ok: false; status: number; error: string };
+
+// 본인 주문 취소 — 입금 전(입금대기)만 셀프 취소 가능.
+// 입금 후에는 돈이 오갔으므로 고객센터 요청 → 관리자 환불 처리로 안내한다.
+export async function cancelOwnOrder(
+  userId: string,
+  orderNo: string,
+): Promise<CancelResult> {
+  const o = await prisma.order.findUnique({
+    where: { orderNo },
+    select: { userId: true, status: true },
+  });
+  if (!o || o.userId !== userId) {
+    return { ok: false, status: 404, error: "주문을 찾을 수 없습니다." };
+  }
+  if (o.status !== "PENDING") {
+    return {
+      ok: false,
+      status: 409,
+      error:
+        "입금 전(입금대기) 주문만 직접 취소할 수 있습니다. 입금 후에는 고객센터로 취소를 요청해주세요.",
+    };
+  }
+  await prisma.order.update({
+    where: { orderNo },
+    data: {
+      status: "CANCELLED",
+      canceledAt: new Date(),
+      cancelReason: "고객 취소(입금 전)",
+      payment: { update: { status: "CANCELLED" } },
+    },
+  });
+  return { ok: true };
 }
 
 export async function getUserOrder(
