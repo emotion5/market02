@@ -22,7 +22,7 @@ export default function SavedQuotePage() {
   const params = useParams<{ number: string }>();
   const number = decodeURIComponent(params.number);
   const router = useRouter();
-  const { items: cartItems, addItem, clearCart } = useCart();
+  const { addItem, clearCart } = useCart();
 
   // (undefined = 로딩 중, null = 없는/권한 없는 견적번호)
   const [quote, setQuote] = useState<SavedQuote | null | undefined>(undefined);
@@ -59,17 +59,9 @@ export default function SavedQuotePage() {
 
   const expired = quote.expired;
 
-  // 발행본의 품목으로 견적서(장바구니)를 채운 뒤 결제로 보낸다.
-  // 담아둔 게 있으면 덮어쓰게 되므로 먼저 확인을 받는다.
+  // 이 견적서의 품목으로 장바구니를 채운 뒤 결제로 보낸다(재주문 성격).
+  // "이 견적으로 주문하기" 의도가 명확해 별도 확인 없이 장바구니를 교체한다.
   const orderThis = () => {
-    if (
-      cartItems.length > 0 &&
-      !window.confirm(
-        "현재 견적서에 담긴 상품이 이 발행본의 내용으로 대체됩니다. 계속할까요?",
-      )
-    ) {
-      return;
-    }
     clearCart();
     quote.items.forEach(({ quantity, ...item }) => addItem(item, quantity));
     router.push("/checkout");
@@ -126,12 +118,12 @@ export default function SavedQuotePage() {
       </div>
 
       <p className={styles.note}>
-        ※ 발행된 견적서는 수정할 수 없습니다. 내용을 바꾸려면 상품을 다시 담아
-        새로 발행해주세요.
+        ※ 저장된 견적서는 수정할 수 없습니다. 내용을 바꾸려면 상품을 다시 담아
+        새로 저장해주세요.
         {expired && (
           <>
             <br />※ 유효기간이 지난 견적서입니다. 가격이 달라졌을 수 있으니 새로
-            발행해 확인해주세요.
+            저장해 확인해주세요.
           </>
         )}
       </p>

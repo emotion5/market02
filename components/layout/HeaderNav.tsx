@@ -3,15 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingCart, User, CircleUserRound, LogOut } from "lucide-react";
-import { useCart } from "@/hooks/useCart";
+import { Search, FileText, User, CircleUserRound, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import styles from "./HeaderNav.module.css";
 
 // 검색 + 유틸 아이콘(견적서·마이페이지·로그인·회원가입) 묶음.
 // 셸 페이지에서는 콘텐츠 우측 상단, 그 외 페이지에서는 헤더 바 오른쪽에 놓인다.
 export default function HeaderNav() {
-  const { totalCount } = useCart();
   const { isLoggedIn, logout } = useAuth();
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -90,9 +88,13 @@ export default function HeaderNav() {
           <Search size={18} strokeWidth={1.25} />
         </button>
       </form>
-      <Link href="/quote" className={styles.navLink} aria-label="견적서" title="견적서">
-        <ShoppingCart size={20} strokeWidth={1.25} />
-        {totalCount > 0 && <span className={styles.badge}>{totalCount}</span>}
+      <Link
+        href="/mypage/quotes"
+        className={styles.navLink}
+        aria-label="내 견적서"
+        title="내 견적서"
+      >
+        <FileText size={20} strokeWidth={1.25} />
       </Link>
       <Link
         href="/mypage/orders"
