@@ -1,6 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/db";
 import type { OrderStatus } from "@/lib/orders";
+import {
+  getTaxInvoiceProvider,
+  type TaxInvoiceIssueItem,
+} from "@/server/tax-invoice/provider";
 
 // 어드민 주문 관리(조회 + 상태전이). 소비자용 server/orders/service 와 분리.
 
@@ -28,6 +32,42 @@ function taxState(
 ): TaxInvoiceState {
   if (!t || !t.requested) return "none";
   return t.status === "ISSUED" ? "issued" : "pending";
+}
+
+// 작성일자용 KST 오늘(YYYY-MM-DD). 서버 TZ 무관하게 서울 기준으로 고정.
+function todayKST(): string {
+  return new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" });
+}
+
+// 주문 라인 → 세금계산서 품목. unitPrice 는 VAT 포함 판매가이므로 공급가액/세액으로 분해한다.
+// 라인별 반올림 합계가 주문 공급가액(order.supply)과 어긋나면 마지막 줄에서 보정해
+// 계산서 총액이 주문 총액과 정확히 일치하도록 맞춘다.
+function buildTaxItems(order: {
+  supply: number;
+  items: {
+    productName: string;
+    variantName: string;
+    unitPrice: number;
+    quantity: number;
+  }[];
+}): TaxInvoiceIssueItem[] {
+  const rows: TaxInvoiceIssueItem[] = order.items.map((it) => {
+    const lineTotal = it.unitPrice * it.quantity; // VAT 포함
+    const supplyCost = Math.round(lineTotal / 1.1);
+    return {
+      name: `${it.productName} / ${it.variantName}`.slice(0, 100),
+      supplyCost,
+      tax: lineTotal - supplyCost,
+      quantity: it.quantity,
+    };
+  });
+  const diff = order.supply - rows.reduce((s, r) => s + r.supplyCost, 0);
+  if (diff !== 0 && rows.length) {
+    const last = rows[rows.length - 1];
+    last.supplyCost += diff; // 공급가액 합계를 주문값에 맞춤
+    last.tax -= diff; // 라인 총액 보존 → 세액 합계도 자동 일치
+  }
+  return rows;
 }
 
 export interface AdminOrderRow {
@@ -254,7 +294,7 @@ export async function performOrderAction(
       await prisma.order.update({ where: { orderNo }, data: { status: "DELIVERED" } });
       return { ok: true };
 
-    case "issue_tax_invoice":
+    case "issue_tax_invoice": {
       if (!o.taxInvoice || !o.taxInvoice.requested) {
         return fail(409, "세금계산서를 신청한 주문이 아닙니다.");
       }
@@ -264,11 +304,53 @@ export async function performOrderAction(
       if (o.status === "PENDING") {
         return fail(409, "입금확인 후 발행할 수 있습니다.");
       }
+
+      // 발행에 필요한 공급받는자 정보·품목을 로드한다.
+      // 상호·사업자번호는 신청 시점(taxInvoice)에 저장, 대표자는 사업자 프로필에서 보완.
+      const full = await prisma.order.findUnique({
+        where: { orderNo },
+        include: {
+          items: true,
+          user: { include: { business: true } },
+        },
+      });
+      const bp = full?.user.business ?? null;
+      const bizNo = o.taxInvoice.bizNo ?? bp?.bizNo ?? null;
+      const company = o.taxInvoice.company ?? bp?.company ?? null;
+      const owner = bp?.owner ?? null;
+      const email = full?.user.email ?? null;
+      if (!bizNo || !company || !owner) {
+        return fail(
+          400,
+          "발행에 필요한 사업자 정보(사업자번호·상호·대표자)가 없습니다. 회원 정보를 확인하세요.",
+        );
+      }
+      if (!email) return fail(400, "담당자 이메일(회원 이메일)이 없습니다.");
+
+      let issuanceKey: string;
+      try {
+        const result = await getTaxInvoiceProvider().issue({
+          orderNo,
+          date: todayKST(),
+          supplied: {
+            bizNo,
+            organizationName: company,
+            representativeName: owner,
+            email,
+          },
+          items: buildTaxItems(full!),
+        });
+        issuanceKey = result.issuanceKey;
+      } catch (e) {
+        return fail(502, `세금계산서 발행에 실패했습니다: ${(e as Error).message}`);
+      }
+
       await prisma.taxInvoice.update({
         where: { orderId: o.id },
-        data: { status: "ISSUED", issuedAt: new Date() },
+        data: { status: "ISSUED", issuedAt: new Date(), ntsRef: issuanceKey },
       });
       return { ok: true };
+    }
 
     case "cancel": {
       // 취소·환불(반품 포함) 처리. 배송 전 취소든 배송 후 반품이든 여기서 마감한다.
