@@ -64,7 +64,8 @@ export default function SavedQuotePage() {
   const orderThis = () => {
     clearCart();
     quote.items.forEach(({ quantity, ...item }) => addItem(item, quantity));
-    router.push("/checkout");
+    // 견적번호를 실어 보내면 체크아웃에서 이 견적서와 대조해 안내한다(안전판).
+    router.push(`/checkout?from=${encodeURIComponent(quote.number)}`);
   };
 
   return (

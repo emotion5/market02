@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { formatPhone } from "@/lib/utils";
 import styles from "../signup.module.css";
 
 // 사업자등록번호 10자리를 000-00-00000 형태로 표시
@@ -16,6 +17,8 @@ export default function BusinessSignupPage() {
   const [email, setEmail] = useState("");
   const [bizNo, setBizNo] = useState("");
   const [password, setPassword] = useState("");
+  const [managerName, setManagerName] = useState("");
+  const [managerTel, setManagerTel] = useState("");
   const [license, setLicense] = useState<File | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -40,6 +43,8 @@ export default function BusinessSignupPage() {
       form.set("email", email);
       form.set("password", password);
       form.set("bizNo", bizNo);
+      form.set("managerName", managerName);
+      form.set("managerTel", managerTel);
       form.set("license", license);
       const res = await fetch("/api/auth/signup/business", {
         method: "POST",
@@ -135,6 +140,37 @@ export default function BusinessSignupPage() {
               {bizNo.length > 0 && !bizValid
                 ? "사업자등록번호 10자리를 정확히 입력해주세요."
                 : "사업자 확인용입니다."}
+            </span>
+          </label>
+
+          <label className={styles.field}>
+            <span className={styles.label}>담당자명</span>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="담당자 성함"
+              value={managerName}
+              onChange={(e) => setManagerName(e.target.value)}
+              autoComplete="name"
+            />
+            <span className={styles.hint}>
+              주문·견적 관련 연락에 사용됩니다. (선택)
+            </span>
+          </label>
+
+          <label className={styles.field}>
+            <span className={styles.label}>담당자 연락처</span>
+            <input
+              type="tel"
+              inputMode="numeric"
+              className={styles.input}
+              placeholder="010-0000-0000"
+              value={managerTel}
+              onChange={(e) => setManagerTel(formatPhone(e.target.value))}
+              autoComplete="tel"
+            />
+            <span className={styles.hint}>
+              승인 결과 안내와 문의에 사용됩니다. (선택)
             </span>
           </label>
 

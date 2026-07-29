@@ -29,6 +29,7 @@ export interface TaxInvoiceIssueInput {
 
 export interface TaxInvoiceIssueResult {
   issuanceKey: string; // 발행키 → TaxInvoice.ntsRef 에 저장
+  ntsApprovalNo: string | null; // 국세청승인번호 → TaxInvoice.ntsApprovalNo (best-effort)
 }
 
 export interface TaxInvoiceProvider {

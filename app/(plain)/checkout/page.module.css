@@ -61,6 +61,82 @@
   cursor: pointer;
 }
 
+/* 저장된 배송지 선택(카드형) */
+.addrChoices {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.addrChoice {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.addrChoice:hover {
+  border-color: var(--color-text-muted);
+}
+
+.addrChoiceOn {
+  border-color: var(--color-text);
+  box-shadow: inset 0 0 0 1px var(--color-text);
+}
+
+/* 1줄: 배송지명 · (기본) · 받는분 · 연락처 */
+.addrChoiceHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: var(--fw-emphasis);
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.addrChoiceDefault {
+  padding: 1px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: var(--fw-body);
+  color: var(--color-text-muted);
+}
+
+.addrChoiceWho {
+  font-weight: var(--fw-body);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 2줄: 주소 (한 줄로 유지) */
+.addrChoiceText {
+  font-size: 13px;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 배송지 목록 저장 체크박스 */
+.saveAddrCheck {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
 /* 입력 필드 */
 .field {
   display: flex;
@@ -159,6 +235,14 @@
   font-size: 12px;
   color: var(--color-text-muted);
   line-height: 1.6;
+}
+
+/* 필드 바로 아래 붙는 주의 문구 (예: 배송지 확인 안내) */
+.fieldNote {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--color-warning, #c0392b);
+  line-height: 1.5;
 }
 
 /* 결제수단 */
@@ -367,6 +451,9 @@
 }
 
 .primaryAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 48px;
   background: var(--color-text);

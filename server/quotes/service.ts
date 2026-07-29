@@ -51,6 +51,11 @@ function toSavedQuote(q: QuoteWithItems): SavedQuote {
       company: q.customerCompany,
       contactName: q.customerContactName,
       contactTel: q.customerContactTel,
+      bizNo: q.customerBizNo ?? undefined,
+      owner: q.customerOwner ?? undefined,
+      address: q.customerAddress ?? undefined,
+      bizType: q.customerBizType ?? undefined,
+      bizItem: q.customerBizItem ?? undefined,
     },
     total: q.total,
     supply: q.supply,
@@ -70,6 +75,10 @@ export async function issueQuote(
   if (!company) {
     throw new QuoteError("공급받는 자의 상호를 입력해주세요.");
   }
+
+  // 공급받는자 사업자 정보는 클라이언트 값을 믿지 않고 승인된 회원 프로필에서 스냅샷한다
+  // (개인회원은 프로필이 없어 null → 견적서에 사업자 항목이 표시되지 않는다).
+  const bp = await prisma.businessProfile.findUnique({ where: { userId } });
 
   // 옵션가·상품명·이미지를 DB에서 조회(클라이언트 값 불신)
   const baseIds = [...new Set(input.items.map((i) => baseVariantId(i.variantId)))];
@@ -129,6 +138,11 @@ export async function issueQuote(
           customerCompany: company,
           customerContactName: input.customer.contactName.trim(),
           customerContactTel: input.customer.contactTel.trim(),
+          customerBizNo: bp?.bizNo ?? null,
+          customerOwner: bp?.owner ?? null,
+          customerAddress: bp?.address ?? null,
+          customerBizType: bp?.bizType ?? null,
+          customerBizItem: bp?.bizItem ?? null,
           supply,
           vat,
           total,

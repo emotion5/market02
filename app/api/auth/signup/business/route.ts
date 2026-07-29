@@ -26,6 +26,8 @@ export async function POST(request: Request) {
     email: form.get("email"),
     password: form.get("password"),
     bizNo: form.get("bizNo"),
+    managerName: form.get("managerName") || undefined,
+    managerTel: form.get("managerTel") || undefined,
     company: form.get("company") || undefined,
   });
   if (!parsed.success) {

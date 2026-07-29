@@ -21,14 +21,41 @@ export const personalSignupSchema = z.object({
   password: passwordSchema,
 });
 
-// 사업자가입: + 사업자등록번호. 상호·등록증파일은 가입 폼 미수집(추후 스토리지/프로필 연동).
+// 사업자가입: 이메일·비밀번호·사업자등록번호 + 담당자 연락처.
+// 상호·대표자·주소·업태·종목은 가입 폼 미수집 — 승인 시 관리자가 등록증 보고 확정한다.
 export const businessSignupSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
   bizNo: bizNoSchema,
+  managerName: z.string().trim().max(50).optional(),
+  managerTel: z.string().trim().max(30).optional(),
   company: z.string().min(1).optional(),
   licenseFileUrl: z.url().optional(),
 });
+
+// 사업자 승인(관리자) — 등록증을 보고 세금계산서 필수적기재사항을 확정한다.
+// 상호·대표자는 세금계산서 발행에 필수라 승인 시 필수 입력, 나머지는 문서 표기용(선택).
+export const businessApproveSchema = z.object({
+  company: z.string().trim().min(1, "상호를 입력하세요.").max(100),
+  owner: z.string().trim().min(1, "대표자를 입력하세요.").max(50),
+  address: z.string().trim().max(200).optional(),
+  bizType: z.string().trim().max(100).optional(),
+  bizItem: z.string().trim().max(100).optional(),
+  managerName: z.string().trim().max(50).optional(),
+  managerTel: z.string().trim().max(30).optional(),
+  taxEmail: z.union([z.email("올바른 이메일 형식이 아닙니다."), z.literal("")]).optional(),
+});
+export type BusinessApproveInput = z.infer<typeof businessApproveSchema>;
+
+// 배송지 등록(마이페이지 배송지 관리)
+export const addressCreateSchema = z.object({
+  label: z.string().trim().max(30).optional(),
+  recipient: z.string().trim().min(1, "받는 분을 입력하세요.").max(50),
+  tel: z.string().trim().max(30).optional(),
+  address: z.string().trim().min(1, "주소를 입력하세요.").max(200),
+  isDefault: z.boolean().optional(),
+});
+export type AddressCreateInput = z.infer<typeof addressCreateSchema>;
 
 // 회원정보 수정 (변경할 필드만 전송)
 export const profileUpdateSchema = z.object({

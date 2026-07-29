@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { OrderStatus } from "@/lib/orders";
 import type { TaxInvoiceState } from "@/lib/admin";
+import { COURIERS } from "@/lib/couriers";
 import styles from "@/app/admin/admin.module.css";
 
 // 주문 상세의 관리 동작: 입금확인 → 배송준비 → 배송시작(운송장) → 배송완료,
@@ -88,12 +89,19 @@ export default function OrderActions({
 
       {status === "preparing" && (
         <div className={styles.trackForm}>
-          <input
+          {/* 택배사는 배송조회 코드 매핑을 위해 목록에서 선택한다(자유 입력 금지). */}
+          <select
             className={styles.smallInput}
             value={courier}
             onChange={(e) => setCourier(e.target.value)}
-            placeholder="택배사 (예: MMM 물류)"
-          />
+          >
+            <option value="">택배사 선택</option>
+            {COURIERS.map((c) => (
+              <option key={c.code} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
           <input
             className={styles.smallInput}
             value={tracking}
@@ -140,10 +148,10 @@ export default function OrderActions({
             disabled={busy}
             onClick={() => run("issue_tax_invoice")}
           >
-            세금계산서 발행완료 처리
+            세금계산서 발행
           </button>
           <span className={styles.sectionDesc} style={{ margin: 0 }}>
-            국세청 발행 후 완료로 표시합니다.
+            지금 전자세금계산서를 발행합니다.
           </span>
         </div>
       )}

@@ -97,6 +97,8 @@ export async function signupBusiness(input: {
   email: string;
   password: string;
   bizNo: string;
+  managerName?: string;
+  managerTel?: string;
   company?: string;
   licenseFileUrl?: string;
 }): Promise<AuthUser> {
@@ -119,6 +121,8 @@ export async function signupBusiness(input: {
           create: {
             bizNo: input.bizNo,
             company: input.company ?? null,
+            managerName: input.managerName ?? null,
+            managerTel: input.managerTel ?? null,
             licenseFileUrl: input.licenseFileUrl ?? null,
           },
         },
@@ -191,19 +195,47 @@ export async function listPendingBusinesses(): Promise<PendingBusiness[]> {
   }));
 }
 
+// 승인 = 활성화 + 회원도매가 부여 + 등록증 기준 사업자 정보 확정.
+// details 는 관리자가 등록증을 보고 확정한 값(상호·대표자는 세금계산서 필수라 필수 입력).
+export interface BusinessApproveDetails {
+  company: string;
+  owner: string;
+  address?: string;
+  bizType?: string;
+  bizItem?: string;
+  managerName?: string;
+  managerTel?: string;
+  taxEmail?: string;
+}
+
+// 빈 문자열 → null (선택 항목 미입력 시 컬럼을 비운다)
+const orNull = (v: string | undefined) => (v && v.trim() ? v.trim() : null);
+
 export async function approveBusiness(
   userId: string,
   adminId: string,
+  details: BusinessApproveDetails,
 ): Promise<void> {
   await prisma.$transaction([
-    // 승인 = 활성화 + 회원도매가 등급 부여
     prisma.user.update({
       where: { id: userId },
       data: { status: "ACTIVE", grade: "WHOLESALE" },
     }),
     prisma.businessProfile.update({
       where: { userId },
-      data: { approvedAt: new Date(), approvedById: adminId, rejectReason: null },
+      data: {
+        company: details.company.trim(),
+        owner: details.owner.trim(),
+        address: orNull(details.address),
+        bizType: orNull(details.bizType),
+        bizItem: orNull(details.bizItem),
+        managerName: orNull(details.managerName),
+        managerTel: orNull(details.managerTel),
+        taxEmail: orNull(details.taxEmail),
+        approvedAt: new Date(),
+        approvedById: adminId,
+        rejectReason: null,
+      },
     }),
   ]);
 }
@@ -299,8 +331,15 @@ export interface Profile {
   name: string | null;
   tel: string | null;
   type: "PERSONAL" | "BUSINESS";
-  bizNo: string | null; // 사업자회원만
-  company: string | null; // 사업자회원만
+  // ↓ 사업자회원만 (승인 시 확정된 값). 견적서 공급받는자 프리필에 사용.
+  bizNo: string | null;
+  company: string | null;
+  owner: string | null;
+  address: string | null;
+  bizType: string | null;
+  bizItem: string | null;
+  managerName: string | null;
+  managerTel: string | null;
 }
 
 export async function getProfile(userId: string): Promise<Profile | null> {
@@ -316,6 +355,12 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     type: u.type,
     bizNo: u.business?.bizNo ?? null,
     company: u.business?.company ?? null,
+    owner: u.business?.owner ?? null,
+    address: u.business?.address ?? null,
+    bizType: u.business?.bizType ?? null,
+    bizItem: u.business?.bizItem ?? null,
+    managerName: u.business?.managerName ?? null,
+    managerTel: u.business?.managerTel ?? null,
   };
 }
 

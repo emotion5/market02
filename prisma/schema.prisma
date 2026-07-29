@@ -79,9 +79,19 @@ model BusinessProfile {
   userId         String    @unique
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   bizNo          String    @unique // 사업자등록번호 000-00-00000 (한 사업자번호=한 계정)
-  company        String? // 가입 폼 미수집 — 승인/프로필 단계에서 보완
-  owner          String?
+  company        String? // 상호 — 가입 폼 미수집. 승인 시 관리자가 등록증 보고 확정
+  owner          String? // 대표자 — 상동(세금계산서 필수적기재사항)
   licenseFileUrl String? // 사업자등록증 (오브젝트 스토리지 URL). 업로드 연동 전까지 null
+
+  // 세금계산서·견적서·거래명세서용 사업자 상세.
+  // 담당자(managerName/Tel)는 가입 시 수집, 나머지는 승인 시 관리자가 등록증 기준 확정.
+  address     String? // 사업장 소재지
+  bizType     String? // 업태
+  bizItem     String? // 종목
+  managerName String? // 담당자명
+  managerTel  String? // 담당자 연락처
+  taxEmail    String? // 전자세금계산서 수신 이메일 (기본=계정 이메일)
+
   approvedAt     DateTime?
   approvedById   String? // 승인 처리한 관리자 userId (감사용, FK는 걸지 않음)
   rejectReason   String?
@@ -250,6 +260,13 @@ model Quote {
   customerCompany     String // 공급받는 자(고객) 상호
   customerContactName String
   customerContactTel  String
+  // ↓ 발행 시점 공급받는자 사업자 스냅샷 (BusinessProfile 에서 복제 — 개인회원은 null).
+  //   상호처럼 발행 후 프로필이 바뀌어도 문서는 불변이어야 하므로 값을 굳혀 저장.
+  customerBizNo   String? // 사업자등록번호
+  customerOwner   String? // 대표자
+  customerAddress String? // 사업장 주소
+  customerBizType String? // 업태
+  customerBizItem String? // 종목
   supply              Int // 공급가액
   vat                 Int // 부가세(10%)
   total               Int // 합계(부가세 포함)
@@ -395,7 +412,8 @@ model TaxInvoice {
   company   String?
   status    TaxInvoiceStatus @default(NONE)
   issuedAt  DateTime?
-  ntsRef    String? // 전자세금계산서 국세청 참조번호(연동 시)
+  ntsRef       String? // 발급대행(볼타) 발행키 issuanceKey — 조회/취소 등 후속 호출용
+  ntsApprovalNo String? // 국세청승인번호(볼타 ntsTransactionId) — 발행 후 조회로 확보
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 }

@@ -172,6 +172,8 @@ export interface AdminOrderDetail {
     bizNo: string | null;
     company: string | null;
     issuedAt: string | null;
+    issuanceKey: string | null; // 볼타 발행키(ntsRef)
+    ntsApprovalNo: string | null; // 국세청승인번호
   };
   courier: string | null;
   trackingNumber: string | null;
@@ -225,6 +227,8 @@ export async function getOrderForAdmin(
       issuedAt: o.taxInvoice?.issuedAt
         ? o.taxInvoice.issuedAt.toISOString()
         : null,
+      issuanceKey: o.taxInvoice?.ntsRef ?? null,
+      ntsApprovalNo: o.taxInvoice?.ntsApprovalNo ?? null,
     },
     courier: o.courier,
     trackingNumber: o.trackingNumber,
@@ -232,6 +236,110 @@ export async function getOrderForAdmin(
     canceledAt: o.canceledAt?.toISOString() ?? null,
     cancelReason: o.cancelReason,
   };
+}
+
+// ── 세금계산서 목록 (관리자) ──────────────────────────
+// 주문에 흩어진 세금계산서를 한 곳에서: 발행대기(발행가능/입금대기) 큐 + 발행완료 대장.
+export type TaxRowState = "issuable" | "waiting" | "issued";
+
+export interface AdminTaxInvoiceRow {
+  orderNo: string;
+  createdAt: string; // 신청일(주문일)
+  issuedAt: string | null;
+  company: string | null;
+  bizNo: string | null;
+  supply: number;
+  vat: number;
+  total: number;
+  ntsApprovalNo: string | null; // 국세청승인번호(발행완료 시)
+  state: TaxRowState;
+}
+
+export interface AdminTaxInvoiceListResult {
+  rows: AdminTaxInvoiceRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  counts: { issuable: number; waiting: number; issued: number };
+}
+
+export const TAX_PAGE_SIZE = 20;
+
+function taxRowState(taxStatus: string, orderStatus: string): TaxRowState {
+  if (taxStatus === "ISSUED") return "issued";
+  if (orderStatus === "PENDING") return "waiting"; // 입금 전 → 발행 불가
+  return "issuable"; // 입금확인 이후 → 발행 가능
+}
+
+export async function listTaxInvoicesForAdmin(
+  opts: { tab?: string; q?: string; page?: number } = {},
+): Promise<AdminTaxInvoiceListResult> {
+  const tab = opts.tab === "issued" ? "issued" : "pending";
+  const page = opts.page && opts.page > 0 ? opts.page : 1;
+  const q = opts.q?.trim();
+
+  // 공통 조건: 신청된 것만. 검색(주문번호·상호·사업자번호).
+  const base: Prisma.TaxInvoiceWhereInput = { requested: true };
+  if (q) {
+    base.OR = [
+      { order: { orderNo: { contains: q, mode: "insensitive" } } },
+      { company: { contains: q, mode: "insensitive" } },
+      { bizNo: { contains: q } },
+    ];
+  }
+  // 발행대기 큐는 취소 주문을 제외(처리 대상 아님). 발행완료 대장은 상태 그대로.
+  const where: Prisma.TaxInvoiceWhereInput =
+    tab === "issued"
+      ? { ...base, status: "ISSUED" }
+      : { ...base, status: { not: "ISSUED" }, order: { status: { not: "CANCELLED" } } };
+
+  const [records, total, issuable, waiting, issued] = await Promise.all([
+    prisma.taxInvoice.findMany({
+      where,
+      include: {
+        order: {
+          select: {
+            orderNo: true,
+            status: true,
+            supply: true,
+            vat: true,
+            total: true,
+            createdAt: true,
+          },
+        },
+      },
+      // 발행대기: 발행가능(입금완료)을 위로, 그다음 신청 최신순. 발행완료: 발행일 최신순.
+      orderBy:
+        tab === "issued"
+          ? { issuedAt: "desc" }
+          : [{ order: { status: "desc" } }, { order: { createdAt: "desc" } }],
+      skip: (page - 1) * TAX_PAGE_SIZE,
+      take: TAX_PAGE_SIZE,
+    }),
+    prisma.taxInvoice.count({ where }),
+    prisma.taxInvoice.count({
+      where: { ...base, status: { not: "ISSUED" }, order: { status: { notIn: ["PENDING", "CANCELLED"] } } },
+    }),
+    prisma.taxInvoice.count({
+      where: { ...base, status: { not: "ISSUED" }, order: { status: "PENDING" } },
+    }),
+    prisma.taxInvoice.count({ where: { ...base, status: "ISSUED" } }),
+  ]);
+
+  const rows: AdminTaxInvoiceRow[] = records.map((t) => ({
+    orderNo: t.order.orderNo,
+    createdAt: t.order.createdAt.toISOString(),
+    issuedAt: t.issuedAt?.toISOString() ?? null,
+    company: t.company,
+    bizNo: t.bizNo,
+    supply: t.order.supply,
+    vat: t.order.vat,
+    total: t.order.total,
+    ntsApprovalNo: t.ntsApprovalNo ?? null,
+    state: taxRowState(t.status, t.order.status),
+  }));
+
+  return { rows, total, page, pageSize: TAX_PAGE_SIZE, counts: { issuable, waiting, issued } };
 }
 
 // ── 상태 전이 (관리자) ──────────────────────────────
@@ -301,6 +409,9 @@ export async function performOrderAction(
       if (o.taxInvoice.status === "ISSUED") {
         return fail(409, "이미 발행 완료된 세금계산서입니다.");
       }
+      if (o.status === "CANCELLED") {
+        return fail(409, "취소된 주문은 세금계산서를 발행할 수 없습니다.");
+      }
       if (o.status === "PENDING") {
         return fail(409, "입금확인 후 발행할 수 있습니다.");
       }
@@ -318,7 +429,8 @@ export async function performOrderAction(
       const bizNo = o.taxInvoice.bizNo ?? bp?.bizNo ?? null;
       const company = o.taxInvoice.company ?? bp?.company ?? null;
       const owner = bp?.owner ?? null;
-      const email = full?.user.email ?? null;
+      // 수신 이메일: 승인 시 확정한 세금계산서 수신 이메일 우선, 없으면 계정 이메일.
+      const email = bp?.taxEmail ?? full?.user.email ?? null;
       if (!bizNo || !company || !owner) {
         return fail(
           400,
@@ -328,6 +440,7 @@ export async function performOrderAction(
       if (!email) return fail(400, "담당자 이메일(회원 이메일)이 없습니다.");
 
       let issuanceKey: string;
+      let ntsApprovalNo: string | null;
       try {
         const result = await getTaxInvoiceProvider().issue({
           orderNo,
@@ -341,13 +454,19 @@ export async function performOrderAction(
           items: buildTaxItems(full!),
         });
         issuanceKey = result.issuanceKey;
+        ntsApprovalNo = result.ntsApprovalNo;
       } catch (e) {
         return fail(502, `세금계산서 발행에 실패했습니다: ${(e as Error).message}`);
       }
 
       await prisma.taxInvoice.update({
         where: { orderId: o.id },
-        data: { status: "ISSUED", issuedAt: new Date(), ntsRef: issuanceKey },
+        data: {
+          status: "ISSUED",
+          issuedAt: new Date(),
+          ntsRef: issuanceKey,
+          ntsApprovalNo,
+        },
       });
       return { ok: true };
     }

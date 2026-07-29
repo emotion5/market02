@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getMemberForAdmin } from "@/lib/admin";
 import { signedPrivateUrl } from "@/server/storage";
 import StatusPill from "@/components/admin/StatusPill";
-import MemberActions from "@/components/admin/MemberActions";
+import MemberApproveForm from "@/components/admin/MemberApproveForm";
 import MemberControls from "@/components/admin/MemberControls";
 import styles from "../../admin.module.css";
 
@@ -51,12 +51,6 @@ export default async function MemberDetailPage({
           </div>
           <StatusPill status={m.status} />
         </div>
-
-        {isPendingBusiness && (
-          <div className={styles.detailActions}>
-            <MemberActions id={m.id} />
-          </div>
-        )}
 
         <table className={styles.table} style={{ marginTop: 8 }}>
           <tbody>
@@ -119,22 +113,13 @@ export default async function MemberDetailPage({
       {m.business && (
         <div className={styles.card} style={{ padding: 24 }}>
           <h2 className={styles.sectionTitle}>사업자 정보</h2>
-          <p className={styles.sectionDesc}>
-            사업자등록 정보와 승인 처리 이력입니다.
-          </p>
+
+          {/* 사업자번호·등록증은 어느 상태에서나 노출(승인 심사 시 대조용) */}
           <table className={styles.table}>
             <tbody>
               <tr>
                 <th style={{ width: 160 }}>사업자등록번호</th>
                 <td className={styles.mono}>{m.business.bizNo}</td>
-              </tr>
-              <tr>
-                <th>상호</th>
-                <td>{m.business.company ?? "—"}</td>
-              </tr>
-              <tr>
-                <th>대표자</th>
-                <td>{m.business.owner ?? "—"}</td>
               </tr>
               <tr>
                 <th>사업자등록증</th>
@@ -153,20 +138,77 @@ export default async function MemberDetailPage({
                   )}
                 </td>
               </tr>
-              <tr>
-                <th>승인일</th>
-                <td className={styles.mono}>
-                  {m.business.approvedAt ? fmt(m.business.approvedAt) : "—"}
-                </td>
-              </tr>
-              {m.business.rejectReason && (
-                <tr>
-                  <th>반려 사유</th>
-                  <td>{m.business.rejectReason}</td>
-                </tr>
-              )}
             </tbody>
           </table>
+
+          {isPendingBusiness ? (
+            // 승인 대기: 등록증 보고 상호·대표자 등 확정 후 승인/반려
+            <div style={{ marginTop: 16 }}>
+              <MemberApproveForm
+                id={m.id}
+                initial={{
+                  company: m.business.company ?? "",
+                  owner: m.business.owner ?? "",
+                  address: m.business.address ?? "",
+                  bizType: m.business.bizType ?? "",
+                  bizItem: m.business.bizItem ?? "",
+                  managerName: m.business.managerName ?? "",
+                  managerTel: m.business.managerTel ?? "",
+                  taxEmail: m.business.taxEmail ?? "",
+                  accountEmail: m.email,
+                }}
+              />
+            </div>
+          ) : (
+            // 승인 완료·반려 등: 확정된 사업자 정보 표시
+            <table className={styles.table} style={{ marginTop: 8 }}>
+              <tbody>
+                <tr>
+                  <th style={{ width: 160 }}>상호</th>
+                  <td>{m.business.company ?? "—"}</td>
+                </tr>
+                <tr>
+                  <th>대표자</th>
+                  <td>{m.business.owner ?? "—"}</td>
+                </tr>
+                <tr>
+                  <th>사업장 주소</th>
+                  <td>{m.business.address ?? "—"}</td>
+                </tr>
+                <tr>
+                  <th>업태</th>
+                  <td>{m.business.bizType ?? "—"}</td>
+                </tr>
+                <tr>
+                  <th>종목</th>
+                  <td>{m.business.bizItem ?? "—"}</td>
+                </tr>
+                <tr>
+                  <th>담당자</th>
+                  <td>
+                    {m.business.managerName ?? "—"}
+                    {m.business.managerTel ? ` (${m.business.managerTel})` : ""}
+                  </td>
+                </tr>
+                <tr>
+                  <th>세금계산서 수신 이메일</th>
+                  <td>{m.business.taxEmail ?? m.email}</td>
+                </tr>
+                <tr>
+                  <th>승인일</th>
+                  <td className={styles.mono}>
+                    {m.business.approvedAt ? fmt(m.business.approvedAt) : "—"}
+                  </td>
+                </tr>
+                {m.business.rejectReason && (
+                  <tr>
+                    <th>반려 사유</th>
+                    <td>{m.business.rejectReason}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
     </div>

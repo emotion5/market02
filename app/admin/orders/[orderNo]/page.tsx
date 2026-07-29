@@ -175,6 +175,18 @@ export default async function AdminOrderDetailPage({
                     <td className={styles.mono}>{fmt(o.tax.issuedAt)}</td>
                   </tr>
                 )}
+                {o.tax.ntsApprovalNo && (
+                  <tr>
+                    <th>국세청승인번호</th>
+                    <td className={styles.mono}>{o.tax.ntsApprovalNo}</td>
+                  </tr>
+                )}
+                {o.tax.issuanceKey && (
+                  <tr>
+                    <th>발행키</th>
+                    <td className={styles.mono}>{o.tax.issuanceKey}</td>
+                  </tr>
+                )}
               </>
             )}
           </tbody>

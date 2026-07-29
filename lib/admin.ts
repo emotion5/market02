@@ -28,12 +28,17 @@ export {
 export {
   listOrdersForAdmin,
   getOrderForAdmin,
+  listTaxInvoicesForAdmin,
   ORDER_PAGE_SIZE,
+  TAX_PAGE_SIZE,
   type AdminOrderRow,
   type AdminOrderListResult,
   type AdminOrderDetail,
   type AdminOrderItem,
   type TaxInvoiceState,
+  type AdminTaxInvoiceRow,
+  type AdminTaxInvoiceListResult,
+  type TaxRowState,
 } from "@/server/orders/admin";
 
 export {

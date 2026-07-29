@@ -136,6 +136,16 @@
   grid-column: 1 / -1;
 }
 
+.addrSearchField {
+  margin-top: 10px;
+}
+
+.formError {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #c0392b;
+}
+
 .addButton {
   margin-top: 16px;
   width: 100%;

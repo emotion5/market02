@@ -1,0 +1,57 @@
+.box {
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+}
+
+/* 동일: 안심(초록) */
+.ok {
+  border-color: #b7e0c0;
+  background: #f0faf3;
+}
+.ok .title {
+  color: #1e7a3d;
+  margin: 0;
+}
+
+/* 상이: 주의(노랑) */
+.diff {
+  border-color: #e6c200;
+  background: #fffbe6;
+}
+.diff .title {
+  color: #8a6d00;
+}
+
+.title {
+  margin: 0 0 6px;
+  font-weight: var(--fw-emphasis);
+  font-size: 0.9rem;
+}
+
+.list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.list li {
+  color: var(--color-text);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.foot {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+@media print {
+  .box {
+    display: none;
+  }
+}

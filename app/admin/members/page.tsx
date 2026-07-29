@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { listMembersForAdmin } from "@/lib/admin";
 import StatusPill from "@/components/admin/StatusPill";
-import MemberActions from "@/components/admin/MemberActions";
 import styles from "../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -170,15 +169,22 @@ export default async function AdminMembersPage({
                   </td>
                   <td>
                     <div className={styles.actions}>
-                      {m.type === "BUSINESS" && m.status === "PENDING" && (
-                        <MemberActions id={m.id} />
+                      {m.type === "BUSINESS" && m.status === "PENDING" ? (
+                        // 승인은 등록증 확인·정보 입력이 필요하므로 상세에서 처리한다.
+                        <Link
+                          href={`/admin/members/${m.id}`}
+                          className={`${styles.button} ${styles.buttonPrimary}`}
+                        >
+                          검토·승인
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/admin/members/${m.id}`}
+                          className={styles.button}
+                        >
+                          상세
+                        </Link>
                       )}
-                      <Link
-                        href={`/admin/members/${m.id}`}
-                        className={styles.button}
-                      >
-                        상세
-                      </Link>
                     </div>
                   </td>
                 </tr>

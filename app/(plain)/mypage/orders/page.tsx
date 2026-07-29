@@ -13,7 +13,11 @@ import {
   type Order,
   type OrderStatus,
 } from "@/lib/orders";
+import type { TrackingResult } from "@/lib/tracking";
 import styles from "./page.module.css";
+
+// 배송조회 API 응답 (실시간 결과 없으면 tracking:null + reason)
+type TrackState = { tracking: TrackingResult | null; reason?: string };
 
 function formatDateTime(iso: string): string {
   const d = new Date(iso);
@@ -27,6 +31,36 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [openTracking, setOpenTracking] = useState<string | null>(null);
   const [canceling, setCanceling] = useState<string | null>(null);
+  // 주문별 배송조회 결과 캐시(undefined=미조회) + 조회 중 표시
+  const [track, setTrack] = useState<Record<string, TrackState>>({});
+  const [trackLoading, setTrackLoading] = useState<string | null>(null);
+
+  // 배송조회 펼치기/접기. 펼칠 때 아직 조회 전이면 실시간 배송정보를 한 번 불러온다.
+  const toggleTracking = async (orderNo: string) => {
+    const opening = openTracking !== orderNo;
+    setOpenTracking(opening ? orderNo : null);
+    if (!opening || track[orderNo] !== undefined) return;
+    setTrackLoading(orderNo);
+    try {
+      const res = await fetch(
+        `/api/orders/${encodeURIComponent(orderNo)}/tracking`,
+      );
+      const data = res.ok
+        ? await res.json()
+        : { tracking: null, reason: "배송정보를 불러오지 못했습니다." };
+      setTrack((m) => ({
+        ...m,
+        [orderNo]: { tracking: data.tracking ?? null, reason: data.reason },
+      }));
+    } catch {
+      setTrack((m) => ({
+        ...m,
+        [orderNo]: { tracking: null, reason: "네트워크 오류로 조회하지 못했습니다." },
+      }));
+    } finally {
+      setTrackLoading(null);
+    }
+  };
 
   useEffect(() => {
     let alive = true;
@@ -169,7 +203,7 @@ export default function OrdersPage() {
                     <button
                       type="button"
                       className={styles.trackButton}
-                      onClick={() => setOpenTracking(open ? null : order.orderNo)}
+                      onClick={() => toggleTracking(order.orderNo)}
                       aria-expanded={open}
                     >
                       <Truck size={16} strokeWidth={1.75} />
@@ -197,6 +231,8 @@ export default function OrdersPage() {
                       운송장번호 {order.trackingNumber ?? "배송 준비 중"}
                     </span>
                   </div>
+
+                  {/* 진행 단계 다이어그램 — 항상 표시(주문의 전체 진행 상태) */}
                   <ol className={styles.timeline}>
                     {STATUS_FLOW.map((s, i) => (
                       <li
@@ -212,6 +248,31 @@ export default function OrdersPage() {
                       </li>
                     ))}
                   </ol>
+
+                  {/* 택배사 실시간 배송 이력 — 조회되면 단계 그림 아래에 덧붙임 */}
+                  {(trackLoading === order.orderNo || track[order.orderNo]) && (
+                    <div className={styles.trackDetail}>
+                      {trackLoading === order.orderNo ? (
+                        <p className={styles.trackMsg}>배송 정보를 불러오는 중…</p>
+                      ) : track[order.orderNo]?.tracking ? (
+                        <ol className={styles.trackEvents}>
+                          {track[order.orderNo].tracking!.events.map((ev, i) => (
+                            <li key={i} className={styles.trackEvent}>
+                              <span className={styles.evTime}>
+                                {ev.time ? formatDateTime(ev.time) : "—"}
+                              </span>
+                              <span className={styles.evStatus}>{ev.status}</span>
+                              <span className={styles.evLoc}>{ev.location}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      ) : (
+                        <p className={styles.trackMsg}>
+                          {track[order.orderNo]?.reason}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </li>

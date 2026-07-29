@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "@/app/admin/admin.module.css";
 
 // 회원 상세의 관리 동작: 등급(회원도매가) 부여/회수 + 정지/해제.
-// (승인 대기 사업자의 승인/반려는 MemberActions 가 담당)
+// (승인 대기 사업자의 승인/반려는 MemberApproveForm 가 담당)
 export default function MemberControls({
   id,
   status,
@@ -40,7 +40,7 @@ export default function MemberControls({
   function toggleGrade() {
     const next = isWholesale ? "GENERAL" : "WHOLESALE";
     const msg = isWholesale
-      ? "이 회원의 회원도매가 자격을 회수할까요? (소비자가로 전환)"
+      ? "이 회원의 회원도매가 적용을 취소할까요? (소비자가로 전환)"
       : "이 회원에게 회원도매가 자격을 부여할까요?";
     if (!window.confirm(msg)) return;
     post("grade", { grade: next });
@@ -69,7 +69,7 @@ export default function MemberControls({
           <strong>{isWholesale ? "회원도매가" : "일반(소비자가)"}</strong>
         </div>
         <button className={styles.button} disabled={busy} onClick={toggleGrade}>
-          {isWholesale ? "회원도매가 회수" : "회원도매가 부여"}
+          {isWholesale ? "회원도매가 적용 취소" : "회원도매가 부여"}
         </button>
       </div>
 

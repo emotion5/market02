@@ -13,10 +13,11 @@ const ITEMS = [
   { href: "/admin/products/featured", label: "홈 노출 편성", sub: true },
   { href: "/admin/categories", label: "카테고리 관리" },
   { href: "/admin/orders", label: "주문 관리" },
+  { href: "/admin/tax-invoices", label: "세금계산서" },
   { href: "/admin/quotes", label: "견적서 관리" },
   { href: "/admin/settings", label: "사이트 설정" },
 ];
-const SOON = ["세금계산서"];
+const SOON: string[] = [];
 
 export default function AdminNav() {
   const pathname = usePathname();

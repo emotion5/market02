@@ -106,6 +106,12 @@ export interface AdminMemberDetail {
     bizNo: string;
     company: string | null;
     owner: string | null;
+    address: string | null;
+    bizType: string | null;
+    bizItem: string | null;
+    managerName: string | null;
+    managerTel: string | null;
+    taxEmail: string | null;
     licenseFileUrl: string | null;
     approvedAt: string | null;
     approvedById: string | null;
@@ -138,6 +144,12 @@ export async function getMemberForAdmin(
           bizNo: u.business.bizNo,
           company: u.business.company,
           owner: u.business.owner,
+          address: u.business.address,
+          bizType: u.business.bizType,
+          bizItem: u.business.bizItem,
+          managerName: u.business.managerName,
+          managerTel: u.business.managerTel,
+          taxEmail: u.business.taxEmail,
           licenseFileUrl: u.business.licenseFileUrl,
           approvedAt: u.business.approvedAt
             ? u.business.approvedAt.toISOString()

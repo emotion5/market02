@@ -29,6 +29,33 @@ export default function QuotePage() {
   const [error, setError] = useState("");
   const [publishing, setPublishing] = useState(false);
 
+  // 로그인한 사업자회원이면 승인된 사업자 정보로 공급받는자를 프리필한다.
+  // (사업자 항목 bizNo~bizItem 은 표시 전용 — 발행 시 서버가 프로필에서 다시 스냅샷한다)
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/me/profile", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const p = data?.profile;
+        if (!alive || !p || p.type !== "BUSINESS") return;
+        setCustomer((c) => ({
+          ...c,
+          company: c.company || p.company || "",
+          contactName: c.contactName || p.managerName || "",
+          contactTel: c.contactTel || p.managerTel || "",
+          bizNo: p.bizNo ?? undefined,
+          owner: p.owner ?? undefined,
+          address: p.address ?? undefined,
+          bizType: p.bizType ?? undefined,
+          bizItem: p.bizItem ?? undefined,
+        }));
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   // 발행일·견적번호 미리보기는 하이드레이션 불일치를 피하려 mount 이후 생성
   const [preview, setPreview] = useState<{ date: Date; number: string } | null>(
     null,

@@ -89,7 +89,16 @@ export interface AdminQuoteDetail {
   validUntil: string;
   expired: boolean;
   userEmail: string;
-  customer: { company: string; contactName: string; contactTel: string };
+  customer: {
+    company: string;
+    contactName: string;
+    contactTel: string;
+    bizNo: string | null;
+    owner: string | null;
+    address: string | null;
+    bizType: string | null;
+    bizItem: string | null;
+  };
   items: AdminQuoteItem[];
   supply: number;
   vat: number;
@@ -114,6 +123,11 @@ export async function getQuoteForAdmin(
       company: qt.customerCompany,
       contactName: qt.customerContactName,
       contactTel: qt.customerContactTel,
+      bizNo: qt.customerBizNo,
+      owner: qt.customerOwner,
+      address: qt.customerAddress,
+      bizType: qt.customerBizType,
+      bizItem: qt.customerBizItem,
     },
     items: qt.items.map((it) => ({
       productId: it.productId,

@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { useCart } from "@/hooks/useCart";
 import { useCartReconcile } from "@/hooks/useCartReconcile";
-import { formatPrice } from "@/lib/utils";
+import { useQuoteMatch } from "@/hooks/useQuoteMatch";
+import { formatPrice, formatPhone } from "@/lib/utils";
 import CartReconcileNotice from "@/components/cart/CartReconcileNotice";
+import QuoteMatchNotice from "@/components/cart/QuoteMatchNotice";
+import AddressSearch from "@/components/AddressSearch";
 import ProductThumb from "@/components/product/ProductThumb";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import { type Order } from "@/lib/orders";
@@ -20,18 +23,40 @@ function formatBizNo(value: string) {
   return parts.filter(Boolean).join("-");
 }
 
+// 저장된 배송지(마이페이지) — 불러오기용
+interface SavedAddress {
+  id: string;
+  label: string;
+  recipient: string;
+  tel: string;
+  address: string;
+  isDefault: boolean;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalPrice } = useCart();
   const settings = useSiteSettings();
   // 진입 시 담긴 상품을 현재 DB와 대조 — 사라진 항목 제외·가격 갱신 후 안내
   const reconcileNotice = useCartReconcile();
+  // 견적서에서 넘어온 주문(?from=견적번호)이면 견적 내용과 대조해 안내(안전판)
+  const quoteMatch = useQuoteMatch();
 
   // 주문자 / 배송 정보
   const [ordererName, setOrdererName] = useState("");
   const [ordererTel, setOrdererTel] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(""); // 우편번호 검색으로 합쳐진 최종 배송지
+  // AddressSearch 초기값. 저장된 배송지를 고르면 value 교체 + key 증가로 remount(강제 반영).
+  const [addrSeed, setAddrSeed] = useState<{ value: string; key: number }>({
+    value: "",
+    key: 0,
+  });
   const [memo, setMemo] = useState("");
+
+  // 마이페이지에 저장된 배송지 목록(불러오기용) + 현재 선택 표시
+  const [savedAddrs, setSavedAddrs] = useState<SavedAddress[]>([]);
+  const [selectedAddrId, setSelectedAddrId] = useState<string | null>(null);
+  const [saveAddr, setSaveAddr] = useState(false); // 직접 입력한 배송지를 목록에 저장
 
   // 무통장입금 정보
   const [depositor, setDepositor] = useState("");
@@ -43,6 +68,66 @@ export default function CheckoutPage() {
 
   const [error, setError] = useState("");
   const [placing, setPlacing] = useState(false);
+
+  // 로그인 회원 정보로 입력값을 프리필한다(모두 편집 가능 — 기본값일 뿐).
+  // 빈 칸만 채워 사용자가 이미 입력한 값은 덮어쓰지 않는다.
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/me/profile", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const p = data?.profile;
+        if (!alive || !p) return;
+        const fill = (set: (v: (v: string) => string) => void, val?: string | null) => {
+          if (val) set((v) => v || val);
+        };
+        if (p.type === "BUSINESS") {
+          fill(setOrdererName, p.managerName || p.company);
+          fill(setOrdererTel, p.managerTel ? formatPhone(p.managerTel) : undefined);
+          // 배송지는 우편번호 검색 위젯의 기본값으로만 넘긴다(사업장 주소 = 배송지가 아닐 수 있음).
+          // 단, 저장된 기본 배송지가 있으면 그쪽이 우선하므로 비어 있을 때만 채운다.
+          if (p.address) {
+            setAddrSeed((s) => (s.value ? s : { value: p.address, key: s.key }));
+          }
+          fill(setDepositor, p.company);
+          if (p.bizNo) setBizNo((v) => v || formatBizNo(p.bizNo));
+          fill(setCompany, p.company);
+        } else {
+          // 개인회원: 이름·연락처만(있을 때)
+          fill(setOrdererName, p.name);
+          fill(setOrdererTel, p.tel);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // 저장된 배송지를 폼에 적용(받는분·연락처·배송지 교체). 저장지 우선키를 올려 위젯 remount.
+  const applyAddress = (a: SavedAddress) => {
+    setOrdererName(a.recipient || "");
+    setOrdererTel(formatPhone(a.tel || ""));
+    setAddrSeed((s) => ({ value: a.address, key: s.key + 1 }));
+    setSelectedAddrId(a.id);
+  };
+
+  // 저장된 배송지 목록을 불러오고, 기본 배송지가 있으면 자동 적용(사업장 주소보다 우선).
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/me/addresses", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!alive || !data?.addresses?.length) return;
+        setSavedAddrs(data.addresses);
+        const def = data.addresses.find((a: SavedAddress) => a.isDefault);
+        if (def) applyAddress(def);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const supply = Math.round(totalPrice / 1.1);
   const vat = totalPrice - supply;
@@ -91,6 +176,20 @@ export default function CheckoutPage() {
       }
       const order = data.order as Order;
 
+      // 직접 입력한 배송지를 목록에 저장(선택). 결제 흐름을 막지 않도록 fire-and-forget.
+      if (saveAddr && !savedAddrs.some((a) => a.address === address.trim())) {
+        fetch("/api/me/addresses", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            label: "새 배송지",
+            recipient: ordererName.trim(),
+            tel: ordererTel.trim(),
+            address: address.trim(),
+          }),
+        }).catch(() => {});
+      }
+
       // ② 토스 가상계좌 결제창 (orderId = 주문번호). 성공 시 successUrl 로 리다이렉트된다.
       const orderName =
         items.length === 1
@@ -122,6 +221,10 @@ export default function CheckoutPage() {
       setPlacing(false);
     }
   };
+
+  // 현재 배송지가 이미 저장돼 있으면(카드 그대로 선택) 저장 체크박스는 숨긴다.
+  const addressIsSaved =
+    !!address.trim() && savedAddrs.some((a) => a.address === address.trim());
 
   const canOrder =
     items.length > 0 &&
@@ -157,12 +260,43 @@ export default function CheckoutPage() {
       <h1 className={styles.title}>주문 / 결제</h1>
 
       <CartReconcileNotice notice={reconcileNotice} />
+      <QuoteMatchNotice match={quoteMatch} />
 
       <div className={styles.layout}>
         <div className={styles.main}>
           {/* 주문자 / 배송 정보 */}
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>주문자 · 배송 정보</h2>
+            {savedAddrs.length > 0 && (
+              <div className={styles.field} style={{ alignItems: "flex-start" }}>
+                <label className={styles.label}>저장된 배송지</label>
+                <div className={styles.addrChoices}>
+                  {savedAddrs.map((a) => (
+                    <button
+                      type="button"
+                      key={a.id}
+                      className={`${styles.addrChoice} ${
+                        selectedAddrId === a.id ? styles.addrChoiceOn : ""
+                      }`}
+                      onClick={() => applyAddress(a)}
+                      aria-pressed={selectedAddrId === a.id}
+                    >
+                      <span className={styles.addrChoiceHead}>
+                        {a.label}
+                        {a.isDefault && (
+                          <span className={styles.addrChoiceDefault}>기본</span>
+                        )}
+                        <span className={styles.addrChoiceWho}>
+                          {a.recipient}
+                          {a.tel ? ` · ${a.tel}` : ""}
+                        </span>
+                      </span>
+                      <span className={styles.addrChoiceText}>{a.address}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className={styles.field}>
               <label className={styles.label}>받는 분</label>
               <input
@@ -178,22 +312,40 @@ export default function CheckoutPage() {
               <input
                 className={styles.input}
                 value={ordererTel}
-                onChange={(e) => setOrdererTel(e.target.value)}
-                placeholder="연락처"
-                inputMode="tel"
+                onChange={(e) => setOrdererTel(formatPhone(e.target.value))}
+                placeholder="010-0000-0000"
+                inputMode="numeric"
                 required
               />
             </div>
             <div className={styles.field}>
               <label className={styles.label}>배송지</label>
-              <input
-                className={styles.input}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="배송받을 주소를 입력하세요"
-                required
+              <AddressSearch
+                key={addrSeed.key}
+                initialAddress={addrSeed.value}
+                inputClassName={styles.input}
+                onChange={setAddress}
               />
+              <p className={styles.fieldNote}>
+                ※ 실제 배송받을 주소가 맞는지 꼭 확인해주세요. 사업장(등록) 주소와
+                다를 수 있습니다.
+              </p>
             </div>
+
+            {/* 직접 입력한(저장되지 않은) 배송지면 목록에 저장할지 물어본다 */}
+            {address.trim() && !addressIsSaved && (
+              <div className={styles.field}>
+                <span className={styles.label} aria-hidden />
+                <label className={styles.saveAddrCheck}>
+                  <input
+                    type="checkbox"
+                    checked={saveAddr}
+                    onChange={(e) => setSaveAddr(e.target.checked)}
+                  />
+                  이 배송지를 내 배송지 목록에 저장
+                </label>
+              </div>
+            )}
             <div className={styles.field}>
               <label className={styles.label}>배송 메모</label>
               <input

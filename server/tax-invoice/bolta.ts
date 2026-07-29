@@ -86,5 +86,23 @@ export async function boltaIssue(
     const err = data as BoltaError;
     throw new Error(`[bolta] ${err.code}: ${err.message}`);
   }
-  return { issuanceKey: (data as { issuanceKey: string }).issuanceKey };
+  const issuanceKey = (data as { issuanceKey: string }).issuanceKey;
+  // 발행 성공 후 국세청승인번호(ntsTransactionId)를 내용 조회로 확보(best-effort).
+  // 발행은 이미 성공했으므로 조회 실패해도 발행을 무르지 않고 승인번호만 null 로 둔다.
+  const ntsApprovalNo = await lookupApprovalNo(issuanceKey);
+  return { issuanceKey, ntsApprovalNo };
+}
+
+async function lookupApprovalNo(issuanceKey: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/v1/taxInvoices/${encodeURIComponent(issuanceKey)}`,
+      { headers: { Authorization: authHeader() } },
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as { ntsTransactionId?: string | null };
+    return data.ntsTransactionId ?? null;
+  } catch {
+    return null;
+  }
 }

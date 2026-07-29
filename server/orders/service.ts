@@ -71,6 +71,8 @@ function toOrder(o: OrderRow): Order {
       bizNo: o.taxInvoice?.bizNo ?? undefined,
       company: o.taxInvoice?.company ?? undefined,
       issued: o.taxInvoice?.status === "ISSUED",
+      issuedAt: o.taxInvoice?.issuedAt?.toISOString(),
+      ntsApprovalNo: o.taxInvoice?.ntsApprovalNo ?? undefined,
     },
     courier: o.courier ?? undefined,
     trackingNumber: o.trackingNumber ?? undefined,

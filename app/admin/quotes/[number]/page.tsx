@@ -49,6 +49,34 @@ export default async function AdminQuoteDetailPage({
               <th style={{ width: 160 }}>공급받는 자(상호)</th>
               <td>{qt.customer.company || "—"}</td>
             </tr>
+            {qt.customer.bizNo && (
+              <tr>
+                <th>사업자번호</th>
+                <td className={styles.mono}>{qt.customer.bizNo}</td>
+              </tr>
+            )}
+            {qt.customer.owner && (
+              <tr>
+                <th>대표자</th>
+                <td>{qt.customer.owner}</td>
+              </tr>
+            )}
+            {qt.customer.address && (
+              <tr>
+                <th>주소</th>
+                <td>{qt.customer.address}</td>
+              </tr>
+            )}
+            {(qt.customer.bizType || qt.customer.bizItem) && (
+              <tr>
+                <th>업태/종목</th>
+                <td>
+                  {[qt.customer.bizType, qt.customer.bizItem]
+                    .filter(Boolean)
+                    .join(" / ") || "—"}
+                </td>
+              </tr>
+            )}
             <tr>
               <th>담당자</th>
               <td>{qt.customer.contactName || "—"}</td>

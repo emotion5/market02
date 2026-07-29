@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import type { CartItem } from "@/lib/types";
 import type { QuoteCustomer } from "@/lib/quotes";
 import { quoteTotals } from "@/lib/quotes";
-import { formatPrice, thumbUrl } from "@/lib/utils";
+import { formatPrice, formatPhone, thumbUrl } from "@/lib/utils";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 import styles from "./QuoteSheet.module.css";
 
@@ -147,7 +147,9 @@ export default function QuoteSheet({
             <h2 className={styles.partyTitle}>공급받는 자</h2>
             <div className={styles.field}>
               <label>상호</label>
-              {editable ? (
+              {/* 상호는 사업자번호·대표자처럼 승인된 등록정보다. 사업자회원(bizNo 존재)이면
+                  읽기 전용으로 표시하고, 등록정보가 없는 개인회원만 직접 입력하게 둔다. */}
+              {editable && !customer.bizNo ? (
                 <input
                   className={styles.input}
                   value={customer.company}
@@ -158,6 +160,38 @@ export default function QuoteSheet({
                 <span className={styles.value}>{customer.company || "—"}</span>
               )}
             </div>
+            {/* 사업자 항목은 승인된 회원 정보에서 채워지는 읽기 전용 표시값
+                (작성 화면에서도 수정 불가). 값이 없으면(개인회원) 행을 숨긴다. */}
+            {customer.bizNo && (
+              <div className={styles.field}>
+                <label>사업자번호</label>
+                <span className={styles.value}>{customer.bizNo}</span>
+              </div>
+            )}
+            {customer.owner && (
+              <div className={styles.field}>
+                <label>대표자</label>
+                <span className={styles.value}>{customer.owner}</span>
+              </div>
+            )}
+            {customer.address && (
+              <div className={styles.field}>
+                <label>주소</label>
+                <span className={styles.value}>{customer.address}</span>
+              </div>
+            )}
+            {customer.bizType && (
+              <div className={styles.field}>
+                <label>업태</label>
+                <span className={styles.value}>{customer.bizType}</span>
+              </div>
+            )}
+            {customer.bizItem && (
+              <div className={styles.field}>
+                <label>종목</label>
+                <span className={styles.value}>{customer.bizItem}</span>
+              </div>
+            )}
             <div className={styles.field}>
               <label>담당자</label>
               {editable ? (
@@ -179,8 +213,9 @@ export default function QuoteSheet({
                 <input
                   className={styles.input}
                   value={customer.contactTel}
-                  onChange={(e) => patch({ contactTel: e.target.value })}
+                  onChange={(e) => patch({ contactTel: formatPhone(e.target.value) })}
                   placeholder="연락처"
+                  inputMode="numeric"
                 />
               ) : (
                 <span className={styles.value}>
@@ -208,6 +243,12 @@ export default function QuoteSheet({
               <label>주소</label>
               <span className={styles.value}>{settings.supplierAddress}</span>
             </div>
+            {settings.supplierCategory && (
+              <div className={styles.field}>
+                <label>업태/종목</label>
+                <span className={styles.value}>{settings.supplierCategory}</span>
+              </div>
+            )}
             <div className={styles.field}>
               <label>연락처</label>
               <span className={styles.value}>{settings.supplierTel}</span>

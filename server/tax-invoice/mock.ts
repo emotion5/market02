@@ -15,5 +15,8 @@ export async function mockIssue(
   if (!input.items.length) {
     throw new Error("[bolta:mock] 발행할 품목이 없습니다.");
   }
-  return { issuanceKey: `MOCK-${input.orderNo}` };
+  return {
+    issuanceKey: `MOCK-${input.orderNo}`,
+    ntsApprovalNo: `test_nts_MOCK-${input.orderNo}`,
+  };
 }

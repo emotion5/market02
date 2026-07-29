@@ -29,6 +29,8 @@ export interface Order {
     bizNo?: string;
     company?: string;
     issued: boolean; // 발행완료 여부(관리자 처리)
+    issuedAt?: string; // 실제 발행일시(ISO). 발행 전이면 없음
+    ntsApprovalNo?: string; // 국세청승인번호
   };
   courier?: string;
   trackingNumber?: string;

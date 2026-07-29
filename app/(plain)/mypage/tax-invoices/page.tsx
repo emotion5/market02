@@ -53,7 +53,8 @@ export default function TaxInvoicesPage() {
       <div className={styles.head}>
         <h2 className={styles.heading}>세금계산서 내역</h2>
         <p className={styles.subnote}>
-          입금 확인(입금확인 단계) 후 전자세금계산서가 발행됩니다.
+          입금 확인 후 전자세금계산서가 발행됩니다. 발행된 계산서는 가입하신
+          이메일로 발송되며, 국세청 홈택스에서도 조회·출력하실 수 있습니다.
         </p>
       </div>
 
@@ -65,6 +66,7 @@ export default function TaxInvoicesPage() {
               <th>주문번호</th>
               <th>사업자등록번호</th>
               <th>상호</th>
+              <th>국세청승인번호</th>
               <th className={styles.right}>공급가액</th>
               <th className={styles.right}>세액</th>
               <th className={styles.right}>합계</th>
@@ -76,10 +78,15 @@ export default function TaxInvoicesPage() {
               const issued = o.taxInvoice.issued;
               return (
                 <tr key={o.orderNo}>
-                  <td>{formatDate(o.createdAt)}</td>
+                  <td>
+                    {o.taxInvoice.issuedAt
+                      ? formatDate(o.taxInvoice.issuedAt)
+                      : "—"}
+                  </td>
                   <td>{o.orderNo}</td>
                   <td>{o.taxInvoice.bizNo ?? "—"}</td>
                   <td>{o.taxInvoice.company || "—"}</td>
+                  <td>{o.taxInvoice.ntsApprovalNo ?? "—"}</td>
                   <td className={styles.right}>{formatPrice(o.supply)}</td>
                   <td className={styles.right}>{formatPrice(o.vat)}</td>
                   <td className={styles.right}>{formatPrice(o.total)}</td>

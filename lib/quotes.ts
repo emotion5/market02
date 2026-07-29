@@ -1,10 +1,17 @@
 import type { CartItem } from "./types";
 
-// 공급받는 자 (견적서를 받는 쪽) 정보
+// 공급받는 자 (견적서를 받는 쪽) 정보.
+// company/contactName/contactTel 은 작성 화면에서 입력·수정 가능,
+// 아래 사업자 항목(bizNo~bizItem)은 승인된 회원 정보에서 채워지는 읽기 전용 표시값이다.
 export interface QuoteCustomer {
   company: string;
   contactName: string;
   contactTel: string;
+  bizNo?: string;
+  owner?: string;
+  address?: string;
+  bizType?: string;
+  bizItem?: string;
 }
 
 // 발행된 견적서(서버/DB에서 내려오는 표현). 발행 시점의 번호·날짜·유효기한·품목·가격을
