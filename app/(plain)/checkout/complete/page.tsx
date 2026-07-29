@@ -136,6 +136,13 @@ function CompleteInner() {
               <strong>{order.taxInvoice.bizNo}</strong> 로 발행됩니다.
             </>
           )}
+          {order.cashReceipt.requested && (
+            <>
+              <br />
+              현금영수증(소득공제용)은 입금 확인 후{" "}
+              <strong>{order.cashReceipt.phone}</strong> 로 발급됩니다.
+            </>
+          )}
         </p>
 
         <div className={styles.doneActions}>

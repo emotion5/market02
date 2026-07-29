@@ -127,6 +127,23 @@
   text-overflow: ellipsis;
 }
 
+/* 증빙 택1 라디오 */
+.evidenceChoices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 4px 0 14px;
+}
+
+.evidenceChoice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
 /* 배송지 목록 저장 체크박스 */
 .saveAddrCheck {
   display: flex;

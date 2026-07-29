@@ -245,11 +245,19 @@ export const orderDraftSchema = z.object({
     memo: z.string().trim().max(200).optional(),
   }),
   depositor: z.string().trim().min(1, "입금자명을 입력하세요.").max(50),
-  taxInvoice: z.object({
-    requested: z.boolean(),
-    bizNo: z.string().trim().max(20).optional(),
-    company: z.string().trim().max(100).optional(),
-  }),
+  // 증빙은 택1 — 세금계산서(사업자) / 현금영수증(개인) / 안 받음. 둘 다 발급되는 일이 없다.
+  evidence: z.discriminatedUnion("type", [
+    z.object({ type: z.literal("none") }),
+    z.object({
+      type: z.literal("tax_invoice"),
+      bizNo: z.string().trim().max(20),
+      company: z.string().trim().max(100).optional(),
+    }),
+    z.object({
+      type: z.literal("cash_receipt"),
+      phone: z.string().trim().max(20),
+    }),
+  ]),
   items: z
     .array(
       z.object({
@@ -291,6 +299,7 @@ export const orderActionSchema = z.object({
     "start_shipping",
     "complete_delivery",
     "issue_tax_invoice",
+    "issue_cash_receipt",
     "cancel", // 취소·환불(반품 포함) 처리
   ]),
   courier: z.string().trim().max(50).optional(),

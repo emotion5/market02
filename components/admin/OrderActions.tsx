@@ -13,10 +13,12 @@ export default function OrderActions({
   orderNo,
   status,
   tax,
+  cash,
 }: {
   orderNo: string;
   status: OrderStatus;
   tax: TaxInvoiceState;
+  cash: "none" | "pending" | "issued";
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -44,16 +46,40 @@ export default function OrderActions({
   }
 
   const canIssueTax = tax === "pending" && status !== "pending";
-  const taxIssued = tax === "issued";
+  const canIssueCash = cash === "pending" && status !== "pending";
+  const evidenceIssued = tax === "issued" || cash === "issued";
+  // A안: 증빙은 배송완료 후 발행이 원칙(공급시기 = 인도). 그 전 발행은 "선발행"으로 경고.
+  const delivered = status === "delivered";
+
+  // 증빙 발행. 배송완료 전이면 선발행 경고 후 진행(취소 시 되돌림이 필요할 수 있음).
+  function issueEvidence(kind: "tax" | "cash") {
+    if (!delivered) {
+      const label = kind === "tax" ? "세금계산서" : "현금영수증";
+      const reverse = kind === "tax" ? "수정세금계산서 발행" : "현금영수증 취소";
+      if (
+        !window.confirm(
+          `배송완료 전 ${label} 선발행입니다.\n주문이 취소되면 ${reverse}를 따로 처리해야 할 수 있어요. 진행할까요?`,
+        )
+      ) {
+        return;
+      }
+    }
+    run(kind === "tax" ? "issue_tax_invoice" : "issue_cash_receipt");
+  }
 
   // 배송 나간 뒤(배송중·배송완료)면 반품, 그 전이면 취소로 표기.
   const isReturn = status === "shipping" || status === "delivered";
   const cancelLabel = isReturn ? "반품·환불 처리" : "취소·환불 처리";
 
   async function cancelOrder() {
-    const confirmMsg = isReturn
+    let confirmMsg = isReturn
       ? "이 주문을 반품·환불 처리합니다. 환불 이체를 완료한 뒤 진행하세요. 계속할까요?"
       : "이 주문을 취소·환불 처리합니다. 입금된 건이면 환불 이체를 완료한 뒤 진행하세요. 계속할까요?";
+    // ① 최소 안내: 이미 발행된 증빙이 있으면 취소만으로 끝나지 않음을 분명히 알린다.
+    if (evidenceIssued) {
+      confirmMsg +=
+        "\n\n⚠ 이미 발행된 증빙이 있습니다. 취소 후 수정세금계산서 발행 / 현금영수증 취소를 국세청·발급대행에서 별도로 처리해야 합니다.";
+    }
     if (!window.confirm(confirmMsg)) return;
     await run("cancel", { reason: reason.trim() || undefined });
   }
@@ -146,12 +172,31 @@ export default function OrderActions({
           <button
             className={styles.button}
             disabled={busy}
-            onClick={() => run("issue_tax_invoice")}
+            onClick={() => issueEvidence("tax")}
           >
-            세금계산서 발행
+            {delivered ? "세금계산서 발행" : "세금계산서 선발행"}
           </button>
           <span className={styles.sectionDesc} style={{ margin: 0 }}>
-            지금 전자세금계산서를 발행합니다.
+            {delivered
+              ? "지금 전자세금계산서를 발행합니다."
+              : "배송완료 후 발행을 권장합니다(취소 시 수정세금계산서 방지). 지금은 선발행."}
+          </span>
+        </div>
+      )}
+
+      {canIssueCash && (
+        <div className={styles.orderActionRow}>
+          <button
+            className={styles.button}
+            disabled={busy}
+            onClick={() => issueEvidence("cash")}
+          >
+            {delivered ? "현금영수증 발행" : "현금영수증 선발행"}
+          </button>
+          <span className={styles.sectionDesc} style={{ margin: 0 }}>
+            {delivered
+              ? "지금 소득공제용 현금영수증을 발행합니다."
+              : "배송완료 후 발행을 권장합니다(취소 시 취소 처리 방지). 지금은 선발행."}
           </span>
         </div>
       )}
@@ -181,7 +226,10 @@ export default function OrderActions({
           </button>
           <span className={styles.sectionDesc} style={{ margin: 0 }}>
             실제 환불 이체를 완료한 뒤 눌러 취소로 기록합니다.
-            {taxIssued && " 세금계산서 발행 건은 수정세금계산서가 필요합니다."}
+            {tax === "issued" &&
+              " 세금계산서 발행 건은 수정세금계산서가 필요합니다."}
+            {cash === "issued" &&
+              " 현금영수증 발행 건은 발급 취소가 필요합니다."}
           </span>
         </div>
       )}

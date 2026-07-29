@@ -132,3 +132,29 @@ export async function syncPayment(orderNo: string): Promise<void> {
   if (!payment) return;
   await apply(order, payment);
 }
+
+// 입금기한(vaDueDate)이 지난 미결제(PENDING) 주문을 토스에 재조회해 정리한다.
+// 웹훅 유실 대비 "그물망" — syncPayment 가 토스의 실제 상태(EXPIRED 등)를 반영하므로
+// 로컬 시간만 보고 무작정 취소하지 않는다(마감 직전 입금 엣지 안전).
+//   - 크론(전체): reconcileOverduePending()
+//   - 기회적(회원 본인): reconcileOverduePending({ userId }) — 주문목록 조회 시 호출
+export async function reconcileOverduePending(
+  opts: { userId?: string } = {},
+): Promise<{ checked: number }> {
+  const orders = await prisma.order.findMany({
+    where: {
+      status: "PENDING",
+      ...(opts.userId ? { userId: opts.userId } : {}),
+      payment: { is: { vaDueDate: { lt: new Date() } } },
+    },
+    select: { orderNo: true },
+  });
+  for (const o of orders) {
+    try {
+      await syncPayment(o.orderNo);
+    } catch (e) {
+      console.error(`[reconcile] ${o.orderNo} 동기화 실패`, e);
+    }
+  }
+  return { checked: orders.length };
+}

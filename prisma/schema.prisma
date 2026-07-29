@@ -339,9 +339,10 @@ model Order {
   canceledAt   DateTime? // 취소·환불 처리 시각
   cancelReason String? // 취소·환불 사유(고객취소 표시 / 관리자 메모)
 
-  items      OrderItem[]
-  payment    Payment?
-  taxInvoice TaxInvoice?
+  items       OrderItem[]
+  payment     Payment?
+  taxInvoice  TaxInvoice?
+  cashReceipt CashReceipt?
 
   @@index([userId])
 }
@@ -416,4 +417,27 @@ model TaxInvoice {
   ntsApprovalNo String? // 국세청승인번호(볼타 ntsTransactionId) — 발행 후 조회로 확보
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
+}
+
+// 현금영수증(소득공제용, 개인). 세금계산서와 "택1" — 한 주문에 둘 중 하나만 발행한다.
+// 증빙 선택은 체크아웃에서 확정하며, TaxInvoice.requested 와 CashReceipt.requested 는
+// 동시에 true 가 되지 않는다(서비스에서 보장 → 이중 증빙 원천 차단).
+enum CashReceiptStatus {
+  NONE // 미신청
+  PENDING // 신청, 발행 대기(입금확인 전)
+  ISSUED // 발행완료
+}
+
+model CashReceipt {
+  id         String            @id @default(cuid())
+  orderId    String            @unique
+  order      Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  requested  Boolean           @default(false)
+  phone      String? // 소득공제용 휴대폰번호(하이픈 포함 가능)
+  status     CashReceiptStatus @default(NONE)
+  approvalNo String? // 발급대행 승인번호 — 발행 후 확보
+  issuedAt   DateTime?
+  raw        Json? // 발급대행 응답 원본(감사·재검증용)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 }

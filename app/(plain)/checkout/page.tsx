@@ -61,10 +61,13 @@ export default function CheckoutPage() {
   // 무통장입금 정보
   const [depositor, setDepositor] = useState("");
 
-  // 세금계산서 (사업자 정보)
-  const [taxInvoice, setTaxInvoice] = useState(true);
-  const [bizNo, setBizNo] = useState("");
-  const [company, setCompany] = useState("");
+  // 증빙(택1): 세금계산서(사업자) / 현금영수증(개인) / 안 받음
+  const [evidence, setEvidence] = useState<
+    "tax_invoice" | "cash_receipt" | "none"
+  >("tax_invoice");
+  const [bizNo, setBizNo] = useState(""); // 세금계산서용 사업자번호
+  const [company, setCompany] = useState(""); // 세금계산서용 상호
+  const [cashPhone, setCashPhone] = useState(""); // 현금영수증용(소득공제) 휴대폰
 
   const [error, setError] = useState("");
   const [placing, setPlacing] = useState(false);
@@ -151,11 +154,12 @@ export default function CheckoutPage() {
             memo: memo || undefined,
           },
           depositor,
-          taxInvoice: {
-            requested: taxInvoice,
-            bizNo: taxInvoice ? bizNo : undefined,
-            company: taxInvoice ? company || undefined : undefined,
-          },
+          evidence:
+            evidence === "tax_invoice"
+              ? { type: "tax_invoice", bizNo, company: company || undefined }
+              : evidence === "cash_receipt"
+                ? { type: "cash_receipt", phone: cashPhone }
+                : { type: "none" },
           items: items.map((i) => ({
             productId: i.productId,
             variantId: i.variantId,
@@ -232,7 +236,8 @@ export default function CheckoutPage() {
     ordererTel.trim() &&
     address.trim() &&
     depositor.trim() &&
-    (!taxInvoice || bizNo.replace(/\D/g, "").length === 10);
+    (evidence !== "tax_invoice" || bizNo.replace(/\D/g, "").length === 10) &&
+    (evidence !== "cash_receipt" || cashPhone.replace(/\D/g, "").length >= 10);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -424,21 +429,34 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          {/* 세금계산서 (사업자 정보) */}
+          {/* 증빙 (택1) — 세금계산서 / 현금영수증 / 안 받음. 둘이 중복 발급되지 않는다. */}
           <section className={styles.section}>
-            <div className={styles.sectionTitleRow}>
-              <h2 className={styles.sectionTitle}>세금계산서</h2>
-              <label className={styles.checkbox}>
-                <input
-                  type="checkbox"
-                  checked={taxInvoice}
-                  onChange={(e) => setTaxInvoice(e.target.checked)}
-                />
-                전자세금계산서 발행
-              </label>
+            <h2 className={styles.sectionTitle}>증빙</h2>
+            <p className={styles.taxNote} style={{ marginTop: 0 }}>
+              증빙은 하나만 선택할 수 있습니다. 세금계산서와 현금영수증은 함께
+              발급되지 않습니다.
+            </p>
+            <div className={styles.evidenceChoices}>
+              {(
+                [
+                  { key: "tax_invoice", label: "세금계산서 (사업자)" },
+                  { key: "cash_receipt", label: "현금영수증 (개인·소득공제)" },
+                  { key: "none", label: "받지 않음" },
+                ] as const
+              ).map((opt) => (
+                <label key={opt.key} className={styles.evidenceChoice}>
+                  <input
+                    type="radio"
+                    name="evidence"
+                    checked={evidence === opt.key}
+                    onChange={() => setEvidence(opt.key)}
+                  />
+                  {opt.label}
+                </label>
+              ))}
             </div>
 
-            {taxInvoice && (
+            {evidence === "tax_invoice" && (
               <>
                 <div className={styles.field}>
                   <label className={styles.label}>사업자등록번호</label>
@@ -448,7 +466,7 @@ export default function CheckoutPage() {
                     onChange={(e) => setBizNo(formatBizNo(e.target.value))}
                     placeholder="000-00-00000"
                     inputMode="numeric"
-                    required={taxInvoice}
+                    required
                   />
                 </div>
                 <div className={styles.field}>
@@ -462,6 +480,25 @@ export default function CheckoutPage() {
                 </div>
                 <p className={styles.taxNote}>
                   세금계산서는 입금 확인 후 입력하신 사업자등록번호로 발행됩니다.
+                </p>
+              </>
+            )}
+
+            {evidence === "cash_receipt" && (
+              <>
+                <div className={styles.field}>
+                  <label className={styles.label}>휴대폰번호</label>
+                  <input
+                    className={styles.input}
+                    value={cashPhone}
+                    onChange={(e) => setCashPhone(formatPhone(e.target.value))}
+                    placeholder="010-0000-0000"
+                    inputMode="numeric"
+                    required
+                  />
+                </div>
+                <p className={styles.taxNote}>
+                  소득공제용 현금영수증이 입금 확인 후 발급됩니다.
                 </p>
               </>
             )}

@@ -5,6 +5,7 @@ import {
   getTaxInvoiceProvider,
   type TaxInvoiceIssueItem,
 } from "@/server/tax-invoice/provider";
+import { getCashReceiptProvider } from "@/server/cash-receipt/provider";
 
 // 어드민 주문 관리(조회 + 상태전이). 소비자용 server/orders/service 와 분리.
 
@@ -175,6 +176,12 @@ export interface AdminOrderDetail {
     issuanceKey: string | null; // 볼타 발행키(ntsRef)
     ntsApprovalNo: string | null; // 국세청승인번호
   };
+  cash: {
+    state: "none" | "pending" | "issued"; // 현금영수증 발행 상태
+    phone: string | null;
+    issuedAt: string | null;
+    approvalNo: string | null;
+  };
   courier: string | null;
   trackingNumber: string | null;
   paidAt: string | null;
@@ -190,6 +197,7 @@ export async function getOrderForAdmin(
     include: {
       items: { orderBy: { id: "asc" } },
       taxInvoice: true,
+      cashReceipt: true,
       user: { select: { email: true } },
       payment: { select: { paidAt: true } },
     },
@@ -229,6 +237,16 @@ export async function getOrderForAdmin(
         : null,
       issuanceKey: o.taxInvoice?.ntsRef ?? null,
       ntsApprovalNo: o.taxInvoice?.ntsApprovalNo ?? null,
+    },
+    cash: {
+      state: !o.cashReceipt?.requested
+        ? "none"
+        : o.cashReceipt.status === "ISSUED"
+          ? "issued"
+          : "pending",
+      phone: o.cashReceipt?.phone ?? null,
+      issuedAt: o.cashReceipt?.issuedAt?.toISOString() ?? null,
+      approvalNo: o.cashReceipt?.approvalNo ?? null,
     },
     courier: o.courier,
     trackingNumber: o.trackingNumber,
@@ -349,6 +367,7 @@ export type OrderAction =
   | "start_shipping"
   | "complete_delivery"
   | "issue_tax_invoice"
+  | "issue_cash_receipt"
   | "cancel";
 
 export type OrderActionResult =
@@ -368,7 +387,7 @@ export async function performOrderAction(
 ): Promise<OrderActionResult> {
   const o = await prisma.order.findUnique({
     where: { orderNo },
-    include: { taxInvoice: true },
+    include: { taxInvoice: true, cashReceipt: true },
   });
   if (!o) return fail(404, "주문을 찾을 수 없습니다.");
 
@@ -467,6 +486,45 @@ export async function performOrderAction(
           ntsRef: issuanceKey,
           ntsApprovalNo,
         },
+      });
+      return { ok: true };
+    }
+
+    case "issue_cash_receipt": {
+      // 현금영수증 발행. 세금계산서와 택1이라 현금영수증을 신청한 주문에서만 가능하다
+      // (세금계산서 신청 주문엔 cashReceipt.requested 가 false → 여기서 막힘 = 이중발급 차단).
+      if (!o.cashReceipt || !o.cashReceipt.requested) {
+        return fail(409, "현금영수증을 신청한 주문이 아닙니다.");
+      }
+      if (o.cashReceipt.status === "ISSUED") {
+        return fail(409, "이미 발행 완료된 현금영수증입니다.");
+      }
+      if (o.status === "CANCELLED") {
+        return fail(409, "취소된 주문은 현금영수증을 발행할 수 없습니다.");
+      }
+      if (o.status === "PENDING") {
+        return fail(409, "입금확인 후 발행할 수 있습니다.");
+      }
+      const phone = o.cashReceipt.phone ?? null;
+      if (!phone) return fail(400, "현금영수증 발급용 휴대폰번호가 없습니다.");
+
+      let approvalNo: string;
+      try {
+        const result = await getCashReceiptProvider().issue({
+          orderNo,
+          phone,
+          supplyCost: o.supply,
+          vat: o.vat,
+          total: o.total,
+        });
+        approvalNo = result.approvalNo;
+      } catch (e) {
+        return fail(502, `현금영수증 발행에 실패했습니다: ${(e as Error).message}`);
+      }
+
+      await prisma.cashReceipt.update({
+        where: { orderId: o.id },
+        data: { status: "ISSUED", issuedAt: new Date(), approvalNo },
       });
       return { ok: true };
     }

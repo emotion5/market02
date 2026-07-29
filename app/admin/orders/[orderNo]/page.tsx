@@ -52,7 +52,12 @@ export default async function AdminOrderDetailPage({
         </div>
 
         <div className={styles.detailActions}>
-          <OrderActions orderNo={o.orderNo} status={o.status} tax={o.tax.state} />
+          <OrderActions
+            orderNo={o.orderNo}
+            status={o.status}
+            tax={o.tax.state}
+            cash={o.cash.state}
+          />
         </div>
       </div>
 
@@ -191,7 +196,52 @@ export default async function AdminOrderDetailPage({
             )}
           </tbody>
         </table>
+        {o.status === "cancelled" && o.tax.state === "issued" && (
+          <p style={{ marginTop: 12, color: "#c0392b", fontSize: 13 }}>
+            ⚠ 취소된 주문이지만 세금계산서가 발행되어 있습니다. 수정세금계산서
+            발행을 별도로 처리하세요.
+          </p>
+        )}
       </div>
+
+      {/* 현금영수증 (세금계산서와 택1 — 신청 건만 의미 있음) */}
+      {o.cash.state !== "none" && (
+        <div className={styles.card} style={{ padding: 24 }}>
+          <h2 className={styles.sectionTitle}>현금영수증</h2>
+          <table className={styles.table}>
+            <tbody>
+              <tr>
+                <th style={{ width: 160 }}>상태</th>
+                <td>
+                  {o.cash.state === "issued" ? "발행완료" : "발행 대기"}
+                </td>
+              </tr>
+              <tr>
+                <th>휴대폰번호</th>
+                <td className={styles.mono}>{o.cash.phone ?? "—"}</td>
+              </tr>
+              {o.cash.issuedAt && (
+                <tr>
+                  <th>발행일</th>
+                  <td className={styles.mono}>{fmt(o.cash.issuedAt)}</td>
+                </tr>
+              )}
+              {o.cash.approvalNo && (
+                <tr>
+                  <th>승인번호</th>
+                  <td className={styles.mono}>{o.cash.approvalNo}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          {o.status === "cancelled" && o.cash.state === "issued" && (
+            <p style={{ marginTop: 12, color: "#c0392b", fontSize: 13 }}>
+              ⚠ 취소된 주문이지만 현금영수증이 발행되어 있습니다. 발급 취소를
+              별도로 처리하세요.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

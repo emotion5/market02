@@ -37,7 +37,7 @@ const STATUS_MAP: Record<string, OrderStatus> = {
 };
 
 type OrderRow = Prisma.OrderGetPayload<{
-  include: { items: true; taxInvoice: true; payment: true };
+  include: { items: true; taxInvoice: true; cashReceipt: true; payment: true };
 }>;
 
 function toOrder(o: OrderRow): Order {
@@ -74,6 +74,13 @@ function toOrder(o: OrderRow): Order {
       issuedAt: o.taxInvoice?.issuedAt?.toISOString(),
       ntsApprovalNo: o.taxInvoice?.ntsApprovalNo ?? undefined,
     },
+    cashReceipt: {
+      requested: o.cashReceipt?.requested ?? false,
+      phone: o.cashReceipt?.phone ?? undefined,
+      issued: o.cashReceipt?.status === "ISSUED",
+      issuedAt: o.cashReceipt?.issuedAt?.toISOString(),
+      approvalNo: o.cashReceipt?.approvalNo ?? undefined,
+    },
     courier: o.courier ?? undefined,
     trackingNumber: o.trackingNumber ?? undefined,
     paidAt: o.payment?.paidAt?.toISOString(),
@@ -103,10 +110,16 @@ export async function placeOrder(
   if (!name.trim() || !tel.trim() || !address.trim() || !input.depositor.trim()) {
     throw new OrderError("주문자·배송·입금자 정보를 모두 입력해주세요.");
   }
-  if (input.taxInvoice.requested) {
-    const digits = (input.taxInvoice.bizNo ?? "").replace(/\D/g, "");
+  // 증빙(택1) 검증 — 세금계산서면 사업자번호, 현금영수증이면 휴대폰번호가 필요하다.
+  if (input.evidence.type === "tax_invoice") {
+    const digits = input.evidence.bizNo.replace(/\D/g, "");
     if (digits.length !== 10) {
       throw new OrderError("세금계산서용 사업자등록번호를 확인해주세요.");
+    }
+  } else if (input.evidence.type === "cash_receipt") {
+    const digits = input.evidence.phone.replace(/\D/g, "");
+    if (digits.length < 10) {
+      throw new OrderError("현금영수증용 휴대폰번호를 확인해주세요.");
     }
   }
 
@@ -145,16 +158,29 @@ export async function placeOrder(
   const supply = Math.round(total / 1.1);
   const vat = total - supply;
 
-  const taxData = input.taxInvoice.requested
-    ? {
-        create: {
-          requested: true,
-          bizNo: (input.taxInvoice.bizNo ?? "").trim() || null,
-          company: input.taxInvoice.company?.trim() || null,
-          status: "PENDING" as const, // 입금확인 후 관리자가 발행
-        },
-      }
-    : undefined;
+  // 선택한 증빙 하나만 생성한다(둘 다 만들지 않음 → 이중 증빙 원천 차단).
+  const ev = input.evidence;
+  const taxData =
+    ev.type === "tax_invoice"
+      ? {
+          create: {
+            requested: true,
+            bizNo: ev.bizNo.trim() || null,
+            company: ev.company?.trim() || null,
+            status: "PENDING" as const, // 입금확인 후 관리자가 발행
+          },
+        }
+      : undefined;
+  const cashData =
+    ev.type === "cash_receipt"
+      ? {
+          create: {
+            requested: true,
+            phone: ev.phone.trim() || null,
+            status: "PENDING" as const,
+          },
+        }
+      : undefined;
 
   for (let attempt = 0; attempt < 6; attempt++) {
     const now = new Date();
@@ -179,6 +205,7 @@ export async function placeOrder(
           total,
           items: { create: lineItems },
           taxInvoice: taxData,
+          cashReceipt: cashData,
           // 가상계좌(토스페이먼츠) 결제 건. 발급 전에는 READY 이며, 발급/입금 시 승인·웹훅으로 갱신.
           payment: {
             create: {
@@ -189,7 +216,7 @@ export async function placeOrder(
             },
           },
         },
-        include: { items: true, taxInvoice: true, payment: true },
+        include: { items: true, taxInvoice: true, cashReceipt: true, payment: true },
       });
       return toOrder(created);
     } catch (e) {
@@ -249,7 +276,7 @@ export async function getUserOrder(
 ): Promise<Order | null> {
   const o = await prisma.order.findUnique({
     where: { orderNo },
-    include: { items: true, taxInvoice: true, payment: true },
+    include: { items: true, taxInvoice: true, cashReceipt: true, payment: true },
   });
   if (!o || o.userId !== userId) return null;
   return toOrder(o);
@@ -259,7 +286,7 @@ export async function listUserOrders(userId: string): Promise<Order[]> {
   const rows = await prisma.order.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
-    include: { items: true, taxInvoice: true, payment: true },
+    include: { items: true, taxInvoice: true, cashReceipt: true, payment: true },
   });
   return rows.map(toOrder);
 }

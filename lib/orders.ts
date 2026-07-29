@@ -32,6 +32,14 @@ export interface Order {
     issuedAt?: string; // 실제 발행일시(ISO). 발행 전이면 없음
     ntsApprovalNo?: string; // 국세청승인번호
   };
+  // 현금영수증(개인 소득공제) — 세금계산서와 택1
+  cashReceipt: {
+    requested: boolean;
+    phone?: string;
+    issued: boolean;
+    issuedAt?: string;
+    approvalNo?: string; // 현금영수증 승인번호
+  };
   courier?: string;
   trackingNumber?: string;
   paidAt?: string; // 입금확인 시각(ISO). 취소 시 "환불 완료" 판정에 사용
@@ -47,10 +55,16 @@ export interface Order {
 }
 
 // 주문 생성 요청(클라이언트 → 서버). 가격·주문번호는 서버가 산정한다.
+// 증빙 선택(택1) — 세금계산서 / 현금영수증 / 안 받음
+export type EvidenceInput =
+  | { type: "none" }
+  | { type: "tax_invoice"; bizNo: string; company?: string }
+  | { type: "cash_receipt"; phone: string };
+
 export interface OrderDraftInput {
   orderer: { name: string; tel: string; address: string; memo?: string };
   depositor: string;
-  taxInvoice: { requested: boolean; bizNo?: string; company?: string };
+  evidence: EvidenceInput;
   items: {
     productId: string;
     variantId: string;
