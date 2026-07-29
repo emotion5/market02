@@ -1,0 +1,241 @@
+.screen {
+  padding: 24px 16px 80px;
+}
+
+/* 화면 전용 툴바 */
+.toolbar {
+  max-width: 210mm;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backLink {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.backLink:hover {
+  color: var(--color-text);
+}
+
+.printButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: 14px;
+  font-weight: var(--fw-emphasis);
+  cursor: pointer;
+}
+
+.printButton:hover {
+  opacity: 0.85;
+}
+
+/* A4 용지를 화면 폭에 맞춰 축소 */
+.sheetFit {
+  width: 100%;
+  max-width: 210mm;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.sheet {
+  width: 794px; /* 210mm @ 96dpi */
+  transform-origin: top left;
+  background: #fff;
+  padding: 20mm 18mm;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+  color: #111;
+}
+
+.docTitle {
+  text-align: center;
+  font-size: 30px;
+  font-weight: var(--fw-display);
+  letter-spacing: 0.3em;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #111;
+  margin-bottom: 20px;
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 상단: 발급정보 + 공급자 */
+.head {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.issueMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  padding-top: 4px;
+}
+
+.issueMeta div {
+  display: flex;
+  gap: 10px;
+}
+
+.issueMeta dt {
+  width: 60px;
+  flex-shrink: 0;
+  color: #666;
+}
+
+.supplier,
+.recipient {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 열 너비를 내용이 아니라 colgroup으로 고정 */
+  font-size: 12.5px;
+}
+
+/* 4열 고정 너비: [라벨][값][라벨2][값2] */
+.cLabel {
+  width: 108px;
+}
+.cLabel2 {
+  width: 64px;
+}
+.cVal2 {
+  width: 96px;
+}
+
+.supplier th,
+.supplier td,
+.recipient th,
+.recipient td {
+  border: 1px solid #333;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+  word-break: keep-all; /* 한글은 어절 단위로, 숫자/영문 토큰은 끊지 않음 */
+  overflow-wrap: anywhere;
+}
+
+.supplier th,
+.recipient th {
+  background: #f4f4f4;
+  font-weight: var(--fw-emphasis);
+  white-space: nowrap; /* 라벨은 줄바꿈하지 않음 */
+  text-align: center;
+}
+
+.recipient {
+  margin-bottom: 16px;
+}
+
+/* 품목 표 */
+.items {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.items th,
+.items td {
+  border: 1px solid #333;
+  padding: 6px 8px;
+}
+
+.items thead th {
+  background: #f4f4f4;
+  font-weight: var(--fw-emphasis);
+  text-align: center;
+}
+
+.items tbody td {
+  height: 34px;
+}
+
+.colDate {
+  width: 30px;
+  text-align: center;
+}
+
+.colName {
+  text-align: left;
+}
+
+.colSpec {
+  width: 18%;
+  text-align: left;
+  color: #555;
+}
+
+.colQty {
+  width: 48px;
+  text-align: center;
+}
+
+.colNum {
+  width: 92px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.colMemo {
+  width: 60px;
+}
+
+.totalRow td {
+  background: #f0f0f0;
+  font-weight: var(--fw-display);
+  font-size: 14px;
+  text-align: right;
+}
+
+.totalRow td:first-child {
+  text-align: right;
+  padding-right: 16px;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #666;
+}
+
+/* 인쇄: 축소 해제하고 실제 A4로 */
+@media print {
+  .toolbar {
+    display: none;
+  }
+
+  .screen {
+    padding: 0;
+  }
+
+  .sheetFit {
+    max-width: none;
+    height: auto !important;
+    overflow: visible;
+  }
+
+  .sheet {
+    width: auto;
+    transform: none !important;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 14mm;
+}

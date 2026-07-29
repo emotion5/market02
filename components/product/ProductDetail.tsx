@@ -88,8 +88,9 @@ export default async function ProductDetail({
       </div>
 
       <div className={styles.info}>
-        {categoryName && <p className={styles.category}>{categoryName}</p>}
         <h1 className={styles.name}>{product.name}</h1>
+        {/* 카테고리는 이름 아래 고정 높이 슬롯 — 늦게 채워져도 모달 높이에 영향 없음 */}
+        <p className={styles.category}>{categoryName || "\u00A0"}</p>
         <VariantSelector product={product} wholesale={wholesale} />
         <ProductAccordion items={accordionItems} />
       </div>

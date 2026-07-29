@@ -15,6 +15,8 @@ export default function ProductDetailSkeleton() {
       </div>
       <div className={styles.info}>
         <div className={`${styles.title} ${styles.sk}`} />
+        {/* 카테고리 자리(이름 아래) — 실제 렌더와 순서·높이를 맞춰 로드 후 밀림 방지 */}
+        <div className={`${styles.cat} ${styles.sk}`} />
         <div className={`${styles.price} ${styles.sk}`} />
         <div className={`${styles.block} ${styles.sk}`} />
         <div className={`${styles.line} ${styles.w90} ${styles.sk}`} />

@@ -35,11 +35,11 @@ export default function OptimisticProductDetail({
       </div>
 
       <div className={styles.info}>
-        {/* 카테고리명 자리 예약 — 실제 로드 때 이름(예: "하드웨어")이 채워지며 높이 변화 없음 */}
+        <h1 className={styles.name}>{product.name}</h1>
+        {/* 카테고리 자리 예약(고정 높이) — 실제 로드 때 채워져도 높이 변화 없음 */}
         <p className={styles.category} aria-hidden>
           &nbsp;
         </p>
-        <h1 className={styles.name}>{product.name}</h1>
         <VariantSelector product={product} />
         <ProductAccordion items={accordionItems} />
       </div>

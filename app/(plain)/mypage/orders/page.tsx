@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Truck, Package } from "lucide-react";
+import { Truck, Package, FileText } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductThumb from "@/components/product/ProductThumb";
 import {
@@ -209,6 +209,17 @@ export default function OrdersPage() {
                       <Truck size={16} strokeWidth={1.75} />
                       배송조회
                     </button>
+                  )}
+                  {/* 거래명세표 — 결제완료(입금확인) 이후 주문만 */}
+                  {status !== "pending" && status !== "cancelled" && (
+                    <Link
+                      href={`/orders/${encodeURIComponent(order.orderNo)}/statement`}
+                      target="_blank"
+                      className={styles.trackButton}
+                    >
+                      <FileText size={16} strokeWidth={1.75} />
+                      거래명세표
+                    </Link>
                   )}
                 </div>
               </div>

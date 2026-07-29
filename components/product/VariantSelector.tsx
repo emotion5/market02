@@ -122,14 +122,18 @@ function SingleVariantSelector({
             {formatPrice(consumerTotal)}
           </span>
         </div>
-        {wholesale && (
-          <div className={styles.priceRow}>
-            <span className={styles.priceLabel}>회원도매가</span>
-            <strong className={styles.memberPrice}>
-              {formatPrice(memberTotal)}
-            </strong>
-          </div>
-        )}
+        {/* 회원도매가 줄은 항상 렌더해 높이를 예약한다(자격자만 노출).
+            미리보기(비자격)→실제(자격) 전환 시 가격 영역이 늘어나 모달이 확장되던 문제 방지. */}
+        <div
+          className={styles.priceRow}
+          style={wholesale ? undefined : { visibility: "hidden" }}
+          aria-hidden={wholesale ? undefined : true}
+        >
+          <span className={styles.priceLabel}>회원도매가</span>
+          <strong className={styles.memberPrice}>
+            {formatPrice(memberTotal)}
+          </strong>
+        </div>
       </div>
 
       <button type="button" className={styles.addButton} onClick={handleAdd}>
@@ -345,14 +349,18 @@ function MultiVariantSelector({
             {formatPrice(consumerTotal)}
           </span>
         </div>
-        {wholesale && (
-          <div className={styles.priceRow}>
-            <span className={styles.priceLabel}>회원도매가</span>
-            <strong className={styles.memberPrice}>
-              {formatPrice(memberTotal)}
-            </strong>
-          </div>
-        )}
+        {/* 회원도매가 줄은 항상 렌더해 높이를 예약한다(자격자만 노출).
+            미리보기(비자격)→실제(자격) 전환 시 가격 영역이 늘어나 모달이 확장되던 문제 방지. */}
+        <div
+          className={styles.priceRow}
+          style={wholesale ? undefined : { visibility: "hidden" }}
+          aria-hidden={wholesale ? undefined : true}
+        >
+          <span className={styles.priceLabel}>회원도매가</span>
+          <strong className={styles.memberPrice}>
+            {formatPrice(memberTotal)}
+          </strong>
+        </div>
       </div>
 
       <button

@@ -43,6 +43,12 @@
   padding-top: 8px;
 }
 
+.cat {
+  height: 14px;
+  width: 30%;
+  border-radius: 4px;
+}
+
 .title {
   height: 26px;
   width: 70%;
