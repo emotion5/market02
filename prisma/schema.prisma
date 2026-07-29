@@ -99,6 +99,16 @@ model BusinessProfile {
   updatedAt      DateTime  @updatedAt
 }
 
+// 로그인 무차별 대입(brute force) 방어 — 클라이언트 IP별 실패 카운트/잠금.
+// 서버리스(인스턴스별 메모리 불가)라 DB에 기록해 공유한다.
+model LoginThrottle {
+  key         String    @id // 클라이언트 IP (프록시 x-forwarded-for 첫 항목)
+  failCount   Int       @default(0)
+  windowStart DateTime  @default(now())
+  lockedUntil DateTime?
+  updatedAt   DateTime  @updatedAt
+}
+
 model Address {
   id        String   @id @default(cuid())
   userId    String

@@ -60,7 +60,7 @@ export default function HeaderNav() {
         onClick={() => setSearchOpen((o) => !o)}
         aria-label="검색 열기"
         aria-expanded={searchOpen}
-        title="검색"
+        data-tooltip="검색"
       >
         <Search size={20} strokeWidth={1.25} />
       </button>
@@ -83,7 +83,7 @@ export default function HeaderNav() {
           type="submit"
           className={styles.searchButton}
           aria-label="검색"
-          title="검색"
+          data-tooltip="검색"
         >
           <Search size={18} strokeWidth={1.25} />
         </button>
@@ -92,7 +92,7 @@ export default function HeaderNav() {
         href="/mypage/quotes"
         className={styles.navLink}
         aria-label="내 견적서"
-        title="내 견적서"
+        data-tooltip="내 견적서"
       >
         <FileText size={20} strokeWidth={1.25} />
       </Link>
@@ -100,7 +100,7 @@ export default function HeaderNav() {
         href="/mypage/orders"
         className={styles.navLink}
         aria-label="마이페이지"
-        title="마이페이지"
+        data-tooltip="마이페이지"
       >
         <CircleUserRound size={20} strokeWidth={1.25} />
       </Link>
@@ -113,7 +113,7 @@ export default function HeaderNav() {
           }}
           className={`${styles.navLink} ${styles.navButton}`}
           aria-label="로그아웃"
-          title="로그아웃"
+          data-tooltip="로그아웃"
         >
           <LogOut size={20} strokeWidth={1.25} />
         </button>
@@ -123,7 +123,7 @@ export default function HeaderNav() {
             href="/login"
             className={styles.navLink}
             aria-label="로그인"
-            title="로그인"
+            data-tooltip="로그인"
           >
             <User size={20} strokeWidth={1.25} />
           </Link>

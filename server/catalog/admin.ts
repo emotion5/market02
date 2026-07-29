@@ -1,9 +1,17 @@
 import { Prisma } from "@prisma/client";
+import { revalidateTag } from "next/cache";
 import { prisma } from "@/server/db";
 import { deletePublicByUrl } from "@/server/storage";
 
 // 어드민 상품 관리용 조회/쓰기 (공개 카탈로그의 repo/service 와 분리).
 // 공개 쪽은 isActive=true 만 보지만, 어드민은 비활성 포함 전체를 본다.
+
+// 홈 진열(featured) 캐시 무효화 — 카탈로그 변경 후 홈에 즉시 반영. (lib/data 의 "featured" 태그)
+// Next 16 타입은 revalidateTag(tag, profile) 2인자를 요구하지만, cacheComponents 미사용 모드의
+// 공식 문서(caching-without-cache-components)는 1인자 호출이 정답 → 타입만 캐스트로 맞춘다.
+function bustFeatured() {
+  (revalidateTag as (tag: string) => void)("featured");
+}
 
 export interface AdminProductRow {
   id: string;
@@ -98,6 +106,7 @@ export async function deleteProduct(
   for (const url of urls) {
     await deletePublicByUrl(url);
   }
+  bustFeatured();
   return "ok";
 }
 
@@ -108,6 +117,7 @@ export async function setProductActive(
 ): Promise<boolean> {
   try {
     await prisma.product.update({ where: { id }, data: { isActive } });
+    bustFeatured();
     return true;
   } catch (e) {
     if (
@@ -145,6 +155,7 @@ export async function setProductFeatured(
   } else {
     await prisma.featured.deleteMany({ where: { categorySlug, productId: id } });
   }
+  bustFeatured();
   return true;
 }
 
@@ -291,6 +302,7 @@ export async function updateProductFields(
 ): Promise<boolean> {
   try {
     await prisma.product.update({ where: { id }, data: input });
+    bustFeatured();
     return true;
   } catch (e) {
     if (
@@ -337,6 +349,7 @@ export async function updateProductBasics(
         }
       }
     });
+    bustFeatured();
     return true;
   } catch (e) {
     if (
@@ -455,6 +468,7 @@ export async function updateProductOptions(
       });
     }
   });
+  bustFeatured();
   return true;
 }
 
@@ -487,6 +501,7 @@ export async function setRepImage(
     where: { id: productId },
     data: { repImage: url },
   });
+  bustFeatured();
 }
 
 export async function addGalleryImage(
@@ -583,6 +598,7 @@ export async function setCategoryVisibility(
         }),
       ),
   );
+  bustFeatured();
 }
 
 // ── 카테고리 CRUD (관리자) ──────────────────────────
@@ -652,6 +668,7 @@ export async function createCategory(input: {
       parentSlug,
     },
   });
+  bustFeatured();
   return { ok: true, slug };
 }
 
@@ -679,6 +696,7 @@ export async function updateCategory(
   if (input.sortOrder !== undefined) data.sortOrder = input.sortOrder;
 
   await prisma.category.update({ where: { slug }, data });
+  bustFeatured();
   return { ok: true, slug };
 }
 
@@ -699,6 +717,7 @@ export async function reorderCategories(orderedSlugs: string[]): Promise<void> {
     i++;
   }
   if (updates.length) await prisma.$transaction(updates);
+  bustFeatured();
 }
 
 export async function deleteCategory(
@@ -732,6 +751,7 @@ export async function deleteCategory(
     prisma.featured.deleteMany({ where: { categorySlug: slug } }),
     prisma.category.delete({ where: { slug } }),
   ]);
+  bustFeatured();
   return { ok: true, slug };
 }
 
@@ -809,5 +829,6 @@ export async function setFeatured(
       });
     }
   });
+  bustFeatured();
   return true;
 }

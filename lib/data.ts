@@ -11,6 +11,7 @@ import {
   getCategories as svcGetCategories,
   type FeaturedSection,
 } from "@/server/catalog/service";
+import { unstable_cache } from "next/cache";
 import { getSessionUser } from "./session";
 import { prisma } from "@/server/db";
 import type { Product, NavCategory, Category } from "./types";
@@ -45,8 +46,18 @@ export async function getProductsByCategory(slug: string): Promise<Product[]> {
   });
 }
 
+// 홈 진열(featured) 데이터는 무거운 카탈로그 조회라 캐시한다.
+//  - 가격 종류가 일반가/도매가 2가지뿐이라 wholesale 별로 캐시 엔트리 2개.
+//  - 60초 창으로 자동 갱신 + 관리자 카탈로그 변경 시 revalidateTag("featured")로 즉시 무효화.
+//  - 비로그인은 isWholesaleViewer()가 DB 없이 false → 홈이 DB를 아예 안 침(콜드 스타트 무관).
+const getCachedFeatured = unstable_cache(
+  (wholesale: boolean) => svcGetFeaturedSections({ wholesale }),
+  ["featured-sections"],
+  { revalidate: 60, tags: ["featured"] },
+);
+
 export async function getFeaturedSections(): Promise<FeaturedSection[]> {
-  return svcGetFeaturedSections({ wholesale: await isWholesaleViewer() });
+  return getCachedFeatured(await isWholesaleViewer());
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {

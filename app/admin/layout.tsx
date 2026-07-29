@@ -13,8 +13,10 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await getSessionUser();
-  if (!session) redirect("/login?redirect=/admin/members");
+  // 미로그인 → 관리자 로그인 화면으로. (메인 /login 으로도 로그인 가능)
+  if (!session) redirect("/admin-login");
   const user = await getMe(session.userId);
+  // 로그인했으나 관리자 아님 → 관리자 영역 노출 없이 홈으로.
   if (!user || user.role !== "ADMIN") redirect("/");
 
   return (
