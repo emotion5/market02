@@ -88,35 +88,37 @@ export default function HeaderNav() {
           <Search size={18} strokeWidth={1.25} />
         </button>
       </form>
-      <Link
-        href="/mypage/quotes"
-        className={styles.navLink}
-        aria-label="내 견적서"
-        data-tooltip="내 견적서"
-      >
-        <FileText size={20} strokeWidth={1.25} />
-      </Link>
-      <Link
-        href="/mypage/orders"
-        className={styles.navLink}
-        aria-label="마이페이지"
-        data-tooltip="마이페이지"
-      >
-        <CircleUserRound size={20} strokeWidth={1.25} />
-      </Link>
       {isLoggedIn ? (
-        <button
-          type="button"
-          onClick={async () => {
-            await logout();
-            router.push("/");
-          }}
-          className={`${styles.navLink} ${styles.navButton}`}
-          aria-label="로그아웃"
-          data-tooltip="로그아웃"
-        >
-          <LogOut size={20} strokeWidth={1.25} />
-        </button>
+        <>
+          <Link
+            href="/mypage/quotes"
+            className={styles.navLink}
+            aria-label="내 견적서"
+            data-tooltip="내 견적서"
+          >
+            <FileText size={20} strokeWidth={1.25} />
+          </Link>
+          <Link
+            href="/mypage/orders"
+            className={styles.navLink}
+            aria-label="마이페이지"
+            data-tooltip="마이페이지"
+          >
+            <CircleUserRound size={20} strokeWidth={1.25} />
+          </Link>
+          <button
+            type="button"
+            onClick={async () => {
+              await logout();
+              router.push("/");
+            }}
+            className={`${styles.navLink} ${styles.navButton}`}
+            aria-label="로그아웃"
+            data-tooltip="로그아웃"
+          >
+            <LogOut size={20} strokeWidth={1.25} />
+          </button>
+        </>
       ) : (
         <>
           <Link

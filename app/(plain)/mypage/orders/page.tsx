@@ -39,7 +39,10 @@ export default function OrdersPage() {
   const toggleTracking = async (orderNo: string) => {
     const opening = openTracking !== orderNo;
     setOpenTracking(opening ? orderNo : null);
-    if (!opening || track[orderNo] !== undefined) return;
+    // 송장이 등록된 주문만 실시간 배송조회를 호출한다(없으면 조회 대상 자체가 없음).
+    const hasTracking = !!orders?.find((o) => o.orderNo === orderNo)
+      ?.trackingNumber;
+    if (!opening || !hasTracking || track[orderNo] !== undefined) return;
     setTrackLoading(orderNo);
     try {
       const res = await fetch(
@@ -52,6 +55,14 @@ export default function OrdersPage() {
         ...m,
         [orderNo]: { tracking: data.tracking ?? null, reason: data.reason },
       }));
+      // 서버가 배송완료로 자동 승격했으면 목록 뱃지·진행단계도 즉시 맞춘다.
+      if (data.delivered) {
+        setOrders((list) =>
+          list?.map((o) =>
+            o.orderNo === orderNo ? { ...o, status: "delivered" } : o,
+          ) ?? list,
+        );
+      }
     } catch {
       setTrack((m) => ({
         ...m,
@@ -207,7 +218,7 @@ export default function OrdersPage() {
                       aria-expanded={open}
                     >
                       <Truck size={16} strokeWidth={1.75} />
-                      배송조회
+                      {order.trackingNumber ? "배송조회" : "주문 진행상태"}
                     </button>
                   )}
                   {/* 거래명세표 — 결제완료(입금확인) 이후 주문만 */}
@@ -236,12 +247,16 @@ export default function OrdersPage() {
 
               {open && status !== "cancelled" && (
                 <div className={styles.tracking}>
-                  <div className={styles.trackingMeta}>
-                    <span>택배사 {order.courier ?? DEFAULT_COURIER}</span>
-                    <span>
-                      운송장번호 {order.trackingNumber ?? "배송 준비 중"}
-                    </span>
-                  </div>
+                  {/* 택배사·운송장은 관리자가 송장을 등록한 뒤에만 노출.
+                      등록 전에는 아래 진행 단계만 보여준다. */}
+                  {order.trackingNumber ? (
+                    <div className={styles.trackingMeta}>
+                      <span>택배사 {order.courier ?? DEFAULT_COURIER}</span>
+                      <span>운송장번호 {order.trackingNumber}</span>
+                    </div>
+                  ) : (
+                    <p className={styles.trackMsg}>아직 송장이 등록되지 않았습니다.</p>
+                  )}
 
                   {/* 진행 단계 다이어그램 — 항상 표시(주문의 전체 진행 상태) */}
                   <ol className={styles.timeline}>

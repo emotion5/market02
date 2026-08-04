@@ -1,5 +1,5 @@
 import { getSessionUser } from "@/lib/session";
-import { getUserOrder } from "@/server/orders/service";
+import { getUserOrder, autoCompleteDelivery } from "@/server/orders/service";
 import { getTracker, TrackingError } from "@/server/shipping/tracker";
 import { courierCodeByName } from "@/lib/couriers";
 
@@ -36,7 +36,12 @@ export async function GET(
       courierCode: code,
       trackingNumber: order.trackingNumber,
     });
-    return Response.json({ tracking });
+    // 택배사가 배송완료로 확인해주면 주문 상태를 자동 승격(배송중→배송완료).
+    // 관리자가 수동으로 누르지 않아도 마이페이지/관리자 뱃지가 맞춰진다.
+    const delivered = tracking.completed
+      ? await autoCompleteDelivery(order.orderNo, session.userId)
+      : false;
+    return Response.json({ tracking, delivered });
   } catch (e) {
     if (e instanceof TrackingError) {
       return Response.json({ tracking: null, reason: e.message });

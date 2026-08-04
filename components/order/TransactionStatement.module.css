@@ -230,12 +230,14 @@
     width: auto;
     transform: none !important;
     margin: 0;
-    padding: 0;
+    padding: 14mm;
     box-shadow: none;
   }
 }
 
+/* 여백을 0으로 두어 브라우저 기본 머리글(날짜·제목)·바닥글(URL)이
+   그려질 자리를 없앤다. 실제 종이 여백은 .sheet의 padding으로 확보. */
 @page {
   size: A4;
-  margin: 14mm;
+  margin: 0;
 }

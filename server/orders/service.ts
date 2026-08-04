@@ -282,6 +282,21 @@ export async function getUserOrder(
   return toOrder(o);
 }
 
+// 택배사 조회 결과가 "배송완료"일 때 주문 상태를 배송중→배송완료로 자동 승격.
+// 배송조회(읽기)에서 완료가 확인된 순간 호출한다. SHIPPING 인 건만 바꾸므로
+// 멱등하고(이미 DELIVERED면 0건), 다른 상태(취소 등)로는 절대 되돌리지 않는다.
+// 반환값: 이번 호출로 실제 승격됐으면 true.
+export async function autoCompleteDelivery(
+  orderNo: string,
+  userId: string,
+): Promise<boolean> {
+  const res = await prisma.order.updateMany({
+    where: { orderNo, userId, status: "SHIPPING" },
+    data: { status: "DELIVERED" },
+  });
+  return res.count > 0;
+}
+
 export async function listUserOrders(userId: string): Promise<Order[]> {
   const rows = await prisma.order.findMany({
     where: { userId },
