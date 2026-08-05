@@ -2,20 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
 import { formatPhone } from "@/lib/utils";
+import { isValidPassword, PASSWORD_HINT } from "@/lib/password";
+import OkCheck from "@/components/signup/OkCheck";
+import AgreementConsent from "@/components/signup/AgreementConsent";
 import styles from "../signup.module.css";
-
-// 입력칸 오른쪽에 유효 입력 시 표시하는 체크. 자리는 항상 고정폭으로 예약해 입력폭이 흔들리지 않게 한다.
-function OkCheck({ show }: { show: boolean }) {
-  return (
-    <span className={styles.okSlot}>
-      {show && (
-        <Check size={16} strokeWidth={2.5} className={styles.ok} aria-hidden />
-      )}
-    </span>
-  );
-}
 
 // 사업자등록번호 10자리를 000-00-00000 형태로 표시
 function formatBizNo(value: string) {
@@ -32,6 +23,9 @@ export default function BusinessSignupPage() {
   const [managerName, setManagerName] = useState("");
   const [managerTel, setManagerTel] = useState("");
   const [license, setLicense] = useState<File | null>(null);
+  // 약관·개인정보 동의(둘 다 필수). 새창으로 전문을 볼 수 있다.
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -41,8 +35,8 @@ export default function BusinessSignupPage() {
   // 사업자등록번호는 사업자 확인용 (숫자 10자리)
   const bizDigits = bizNo.replace(/\D/g, "");
   const bizValid = bizDigits.length === 10;
-  // 비밀번호는 서버 규칙(8자 이상)과 맞춰 유효 판정한다.
-  const passwordValid = password.length >= 8;
+  // 비밀번호 유효성은 서버 스키마와 동일한 공용 규칙(8자+특수문자)을 쓴다.
+  const passwordValid = isValidPassword(password);
   // 담당자명·연락처 필수 — 승인 안내·가상계좌 안내문자 수신처로 사용.
   const managerNameValid = managerName.trim().length > 0;
   const managerTelValid = managerTel.replace(/\D/g, "").length >= 9;
@@ -52,7 +46,9 @@ export default function BusinessSignupPage() {
     passwordValid &&
     managerNameValid &&
     managerTelValid &&
-    !!license;
+    !!license &&
+    agreeTerms &&
+    agreePrivacy;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,14 +143,16 @@ export default function BusinessSignupPage() {
               <input
                 type="password"
                 className={styles.input}
-                placeholder="비밀번호를 입력해주세요"
+                placeholder="8자 이상, 특수문자 포함"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
+                aria-invalid={password.length > 0 && !passwordValid}
                 required
               />
               <OkCheck show={passwordValid} />
             </div>
+            <span className={styles.hint}>{PASSWORD_HINT}</span>
           </label>
 
           <label className={styles.field}>
@@ -252,6 +250,13 @@ export default function BusinessSignupPage() {
           <p className={styles.approval} role="note">
             자료 입력 후 <strong>영업일 1일 이내</strong>에 승인됩니다.
           </p>
+
+          <AgreementConsent
+            agreeTerms={agreeTerms}
+            agreePrivacy={agreePrivacy}
+            setAgreeTerms={setAgreeTerms}
+            setAgreePrivacy={setAgreePrivacy}
+          />
 
           {error && (
             <p

@@ -108,6 +108,43 @@
   font-weight: var(--fw-body);
 }
 
+/* 약관·개인정보 동의 (가입 버튼 위) */
+.consent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+.consentAll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: var(--fw-emphasis);
+  cursor: pointer;
+}
+.consentItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+.consent input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+}
+.consentLink {
+  text-decoration: underline;
+  color: var(--color-text);
+}
+.consentReq {
+  color: var(--color-text-muted);
+}
+
 /* 필수 입력 표시 — 라벨 옆 별표 + 폼 상단 안내 */
 .req {
   margin-left: 1px;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPassword, PASSWORD_ERROR } from "./password";
 
 // 프론트·API 공용 입력 검증 스키마. (도메인이 늘면 phase 별로 여기에 추가)
 
@@ -8,7 +9,7 @@ export const bizNoSchema = z
   .regex(/^\d{3}-\d{2}-\d{5}$/, "사업자등록번호는 000-00-00000 형식이어야 합니다.");
 
 export const emailSchema = z.email("올바른 이메일 형식이 아닙니다.");
-export const passwordSchema = z.string().min(8, "비밀번호는 8자 이상이어야 합니다.");
+export const passwordSchema = z.string().refine(isValidPassword, PASSWORD_ERROR);
 
 export const loginSchema = z.object({
   email: emailSchema,
@@ -71,7 +72,7 @@ export const profileUpdateSchema = z.object({
   name: z.string().max(50).optional(),
   tel: z.string().max(30).optional(),
   company: z.string().max(100).optional(),
-  newPassword: z.string().min(8, "비밀번호는 8자 이상이어야 합니다.").optional(),
+  newPassword: z.string().refine(isValidPassword, PASSWORD_ERROR).optional(),
 });
 
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
