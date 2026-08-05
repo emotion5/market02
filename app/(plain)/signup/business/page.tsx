@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CircleCheck } from "lucide-react";
+import { Check } from "lucide-react";
 import { formatPhone } from "@/lib/utils";
 import styles from "../signup.module.css";
 
@@ -11,7 +11,7 @@ function OkCheck({ show }: { show: boolean }) {
   return (
     <span className={styles.okSlot}>
       {show && (
-        <CircleCheck size={18} strokeWidth={2} className={styles.ok} aria-hidden />
+        <Check size={16} strokeWidth={2.5} className={styles.ok} aria-hidden />
       )}
     </span>
   );
@@ -114,8 +114,11 @@ export default function BusinessSignupPage() {
         <h1 className={styles.title}>사업자회원 가입</h1>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <p className={styles.reqNote}>*필수 입력 항목</p>
           <label className={styles.field}>
-            <span className={styles.label}>이메일 (아이디)</span>
+            <span className={styles.label}>
+              이메일 (아이디)<span className={styles.req}>*</span>
+            </span>
             <div className={styles.inputRow}>
               <input
                 type="email"
@@ -137,7 +140,9 @@ export default function BusinessSignupPage() {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>비밀번호</span>
+            <span className={styles.label}>
+              비밀번호<span className={styles.req}>*</span>
+            </span>
             <div className={styles.inputRow}>
               <input
                 type="password"
@@ -153,7 +158,9 @@ export default function BusinessSignupPage() {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>사업자등록번호</span>
+            <span className={styles.label}>
+              사업자등록번호<span className={styles.req}>*</span>
+            </span>
             <div className={styles.inputRow}>
               <input
                 type="text"
@@ -176,7 +183,9 @@ export default function BusinessSignupPage() {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>사업자등록증</span>
+            <span className={styles.label}>
+              사업자등록증<span className={styles.req}>*</span>
+            </span>
             <div className={styles.inputRow}>
               <input
                 type="file"
@@ -195,7 +204,9 @@ export default function BusinessSignupPage() {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>담당자명</span>
+            <span className={styles.label}>
+              담당자명<span className={styles.req}>*</span>
+            </span>
             <div className={styles.inputRow}>
               <input
                 type="text"
@@ -214,7 +225,9 @@ export default function BusinessSignupPage() {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>담당자 연락처</span>
+            <span className={styles.label}>
+              담당자 연락처<span className={styles.req}>*</span>
+            </span>
             <div className={styles.inputRow}>
               <input
                 type="tel"

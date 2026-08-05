@@ -97,8 +97,8 @@ export async function signupBusiness(input: {
   email: string;
   password: string;
   bizNo: string;
-  managerName?: string;
-  managerTel?: string;
+  managerName: string;
+  managerTel: string;
   company?: string;
   licenseFileUrl?: string;
 }): Promise<AuthUser> {
@@ -121,8 +121,8 @@ export async function signupBusiness(input: {
           create: {
             bizNo: input.bizNo,
             company: input.company ?? null,
-            managerName: input.managerName ?? null,
-            managerTel: input.managerTel ?? null,
+            managerName: input.managerName,
+            managerTel: input.managerTel,
             licenseFileUrl: input.licenseFileUrl ?? null,
           },
         },
@@ -203,8 +203,8 @@ export interface BusinessApproveDetails {
   address?: string;
   bizType?: string;
   bizItem?: string;
-  managerName?: string;
-  managerTel?: string;
+  managerName: string;
+  managerTel: string;
   taxEmail?: string;
 }
 
@@ -229,8 +229,8 @@ export async function approveBusiness(
         address: orNull(details.address),
         bizType: orNull(details.bizType),
         bizItem: orNull(details.bizItem),
-        managerName: orNull(details.managerName),
-        managerTel: orNull(details.managerTel),
+        managerName: details.managerName.trim(),
+        managerTel: details.managerTel.trim(),
         taxEmail: orNull(details.taxEmail),
         approvedAt: new Date(),
         approvedById: adminId,

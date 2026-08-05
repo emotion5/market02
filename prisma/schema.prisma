@@ -88,8 +88,8 @@ model BusinessProfile {
   address     String? // 사업장 소재지
   bizType     String? // 업태
   bizItem     String? // 종목
-  managerName String? // 담당자명
-  managerTel  String? // 담당자 연락처
+  managerName String // 담당자명 (가입 필수)
+  managerTel  String // 담당자 연락처 (가입 필수)
   taxEmail    String? // 전자세금계산서 수신 이메일 (기본=계정 이메일)
 
   approvedAt     DateTime?

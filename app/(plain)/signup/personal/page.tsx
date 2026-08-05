@@ -67,8 +67,11 @@ export default function PersonalSignupPage() {
         <h1 className={styles.title}>개인회원 가입</h1>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <p className={styles.reqNote}>*필수 입력 항목</p>
           <label className={styles.field}>
-            <span className={styles.label}>이메일 (아이디)</span>
+            <span className={styles.label}>
+              이메일 (아이디)<span className={styles.req}>*</span>
+            </span>
             <input
               type="email"
               className={styles.input}
@@ -87,7 +90,9 @@ export default function PersonalSignupPage() {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>비밀번호</span>
+            <span className={styles.label}>
+              비밀번호<span className={styles.req}>*</span>
+            </span>
             <input
               type="password"
               className={styles.input}

@@ -45,8 +45,13 @@ export const businessApproveSchema = z.object({
   address: z.string().trim().max(200).optional(),
   bizType: z.string().trim().max(100).optional(),
   bizItem: z.string().trim().max(100).optional(),
-  managerName: z.string().trim().max(50).optional(),
-  managerTel: z.string().trim().max(30).optional(),
+  managerName: z.string().trim().min(1, "담당자명을 입력하세요.").max(50),
+  managerTel: z
+    .string()
+    .trim()
+    .min(1, "담당자 연락처를 입력하세요.")
+    .max(30)
+    .refine((v) => v.replace(/\D/g, "").length >= 9, "연락처를 정확히 입력하세요."),
   taxEmail: z.union([z.email("올바른 이메일 형식이 아닙니다."), z.literal("")]).optional(),
 });
 export type BusinessApproveInput = z.infer<typeof businessApproveSchema>;

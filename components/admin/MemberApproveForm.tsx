@@ -43,11 +43,15 @@ export default function MemberApproveForm({
   const set = (key: keyof typeof form, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  const canApprove = form.company.trim() !== "" && form.owner.trim() !== "";
+  const canApprove =
+    form.company.trim() !== "" &&
+    form.owner.trim() !== "" &&
+    form.managerName.trim() !== "" &&
+    form.managerTel.replace(/\D/g, "").length >= 9;
 
   async function approve() {
     if (!canApprove) {
-      setError("상호와 대표자는 세금계산서 발행에 필요합니다.");
+      setError("상호·대표자·담당자명·담당자 연락처를 모두 입력하세요.");
       return;
     }
     if (!window.confirm("입력한 사업자 정보로 승인하시겠습니까?")) return;
@@ -111,8 +115,8 @@ export default function MemberApproveForm({
       {field("address", "사업장 주소")}
       {field("bizType", "업태")}
       {field("bizItem", "종목")}
-      {field("managerName", "담당자명")}
-      {field("managerTel", "담당자 연락처")}
+      {field("managerName", "담당자명", { required: true })}
+      {field("managerTel", "담당자 연락처", { required: true })}
       {field("taxEmail", "세금계산서 수신 이메일", {
         placeholder: `미입력 시 계정 이메일(${initial.accountEmail}) 사용`,
       })}
