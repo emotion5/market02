@@ -3,14 +3,10 @@
 import { useEffect, useState } from "react";
 import { Receipt } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { formatDate } from "@/lib/datetime";
 import { type Order } from "@/lib/orders";
 import styles from "./page.module.css";
 
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
-}
 
 export default function TaxInvoicesPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listMembersForAdmin } from "@/lib/admin";
 import StatusPill from "@/components/admin/StatusPill";
+import { formatDate } from "@/lib/datetime";
 import styles from "../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -165,7 +166,7 @@ export default async function AdminMembersPage({
                     <StatusPill status={m.status} />
                   </td>
                   <td className={styles.mono}>
-                    {new Date(m.createdAt).toLocaleDateString("ko-KR")}
+                    {formatDate(m.createdAt)}
                   </td>
                   <td>
                     <div className={styles.actions}>

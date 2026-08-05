@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
+import { formatDateTime } from "@/lib/datetime";
 import { type Order } from "@/lib/orders";
 import styles from "../page.module.css";
 
@@ -111,9 +112,7 @@ function CompleteInner() {
               <div>
                 <dt>입금 기한</dt>
                 <dd>
-                  {new Date(order.virtualAccount.dueDate).toLocaleString(
-                    "ko-KR",
-                  )}
+                  {formatDateTime(order.virtualAccount.dueDate)}
                 </dd>
               </div>
             )}

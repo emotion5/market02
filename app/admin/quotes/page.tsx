@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listQuotesForAdmin } from "@/lib/admin";
+import { formatDateTime, formatDate } from "@/lib/datetime";
 import styles from "../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -10,18 +11,6 @@ const STATUS_FILTERS = [
   { value: "expired", label: "만료" },
 ];
 
-function formatDateTime(iso: string) {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(
-    d.getHours(),
-  )}:${p(d.getMinutes())}`;
-}
-function formatDate(iso: string) {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
-}
 
 export default async function AdminQuotesPage({
   searchParams,

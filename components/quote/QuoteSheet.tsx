@@ -39,10 +39,15 @@ function numberToKorean(num: number): string {
 }
 
 function formatDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}. ${m}. ${day}`;
+  // KST 고정(서버 UTC 렌더 보정). 견적서 표기 형식 "YYYY. MM. DD" 유지.
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(d);
+  const g = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${g("year")}. ${g("month")}. ${g("day")}`;
 }
 
 interface QuoteSheetProps {

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Truck, Package, FileText } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { formatDateTime } from "@/lib/datetime";
 import ProductThumb from "@/components/product/ProductThumb";
 import {
   DEFAULT_COURIER,
@@ -19,13 +20,6 @@ import styles from "./page.module.css";
 // 배송조회 API 응답 (실시간 결과 없으면 tracking:null + reason)
 type TrackState = { tracking: TrackingResult | null; reason?: string };
 
-function formatDateTime(iso: string): string {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(
-    d.getHours(),
-  )}:${p(d.getMinutes())}`;
-}
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);

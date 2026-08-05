@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listOrdersForAdmin } from "@/lib/admin";
 import { STATUS_FLOW, STATUS_LABEL } from "@/lib/orders";
 import OrderStatusBadge from "@/components/admin/OrderStatusBadge";
+import { formatDateTime } from "@/lib/datetime";
 import styles from "../admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -17,13 +18,6 @@ const TAX_LABEL: Record<string, string> = {
   issued: "발행완료",
 };
 
-function formatDateTime(iso: string) {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(
-    d.getHours(),
-  )}:${p(d.getMinutes())}`;
-}
 
 export default async function AdminOrdersPage({
   searchParams,

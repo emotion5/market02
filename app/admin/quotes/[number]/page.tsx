@@ -2,14 +2,13 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getQuoteForAdmin } from "@/lib/admin";
 import ProductThumb from "@/components/product/ProductThumb";
+import { formatDateTime } from "@/lib/datetime";
 import styles from "../../admin.module.css";
 
 export const dynamic = "force-dynamic";
 
 const won = (n: number) => `${n.toLocaleString("ko-KR")}원`;
-function fmt(iso: string) {
-  return new Date(iso).toLocaleString("ko-KR");
-}
+const fmt = formatDateTime;
 
 export default async function AdminQuoteDetailPage({
   params,

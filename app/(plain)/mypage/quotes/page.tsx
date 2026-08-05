@@ -4,23 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { formatDateTime, formatDate } from "@/lib/datetime";
 import ProductThumb from "@/components/product/ProductThumb";
 import { type SavedQuote } from "@/lib/quotes";
 import styles from "./page.module.css";
 
-function formatDateTime(iso: string): string {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} ${p(
-    d.getHours(),
-  )}:${p(d.getMinutes())}`;
-}
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
-}
 
 export default function QuotesPage() {
   const [quotes, setQuotes] = useState<SavedQuote[] | null>(null);

@@ -6,15 +6,11 @@ import { useParams, useRouter } from "next/navigation";
 import { Printer, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice } from "@/lib/utils";
+import { formatDate } from "@/lib/datetime";
 import QuoteSheet from "@/components/quote/QuoteSheet";
 import { type SavedQuote } from "@/lib/quotes";
 import styles from "./page.module.css";
 
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
-}
 
 // 발행된 견적서 열람. 발행 시점에 굳은 문서라 읽기 전용이다 —
 // 내용을 바꾸려면 상품을 다시 담아 새로 발행해야 한다.

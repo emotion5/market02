@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getMemberForAdmin } from "@/lib/admin";
+import { formatDateTime } from "@/lib/datetime";
 import { signedPrivateUrl } from "@/server/storage";
 import StatusPill from "@/components/admin/StatusPill";
 import MemberApproveForm from "@/components/admin/MemberApproveForm";
@@ -9,9 +10,7 @@ import styles from "../../admin.module.css";
 
 export const dynamic = "force-dynamic";
 
-function fmt(iso: string) {
-  return new Date(iso).toLocaleString("ko-KR");
-}
+const fmt = formatDateTime;
 
 export default async function MemberDetailPage({
   params,
