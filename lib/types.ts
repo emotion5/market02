@@ -41,7 +41,8 @@ export interface Product {
 export interface Category {
   slug: string;
   name: string; // 한글 표시명 (칩 hover 시 노출)
-  en: string; // 영문 표시명 (칩 기본 노출)
+  en: string; // 영문 표시명 (칩 기본 노출) — 해당 카테고리 자신의 영문명
+  parentEn?: string; // 중분류일 때 부모(대분류)의 영문명. 홈 진열 제목을 "Hardware › Divider"로 표기하는 데 사용
 }
 
 // 상단 내비 칩용 카테고리. showInNav 로 걸러진 것만 담기며,

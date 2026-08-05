@@ -2,8 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { CircleCheck } from "lucide-react";
 import { formatPhone } from "@/lib/utils";
 import styles from "../signup.module.css";
+
+// 입력칸 오른쪽에 유효 입력 시 표시하는 체크. 자리는 항상 고정폭으로 예약해 입력폭이 흔들리지 않게 한다.
+function OkCheck({ show }: { show: boolean }) {
+  return (
+    <span className={styles.okSlot}>
+      {show && (
+        <CircleCheck size={18} strokeWidth={2} className={styles.ok} aria-hidden />
+      )}
+    </span>
+  );
+}
 
 // 사업자등록번호 10자리를 000-00-00000 형태로 표시
 function formatBizNo(value: string) {
@@ -29,7 +41,18 @@ export default function BusinessSignupPage() {
   // 사업자등록번호는 사업자 확인용 (숫자 10자리)
   const bizDigits = bizNo.replace(/\D/g, "");
   const bizValid = bizDigits.length === 10;
-  const canSubmit = emailValid && bizValid && password.length > 0 && !!license;
+  // 비밀번호는 서버 규칙(8자 이상)과 맞춰 유효 판정한다.
+  const passwordValid = password.length >= 8;
+  // 담당자명·연락처 필수 — 승인 안내·가상계좌 안내문자 수신처로 사용.
+  const managerNameValid = managerName.trim().length > 0;
+  const managerTelValid = managerTel.replace(/\D/g, "").length >= 9;
+  const canSubmit =
+    emailValid &&
+    bizValid &&
+    passwordValid &&
+    managerNameValid &&
+    managerTelValid &&
+    !!license;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,16 +116,19 @@ export default function BusinessSignupPage() {
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.field}>
             <span className={styles.label}>이메일 (아이디)</span>
-            <input
-              type="email"
-              className={styles.input}
-              placeholder="example@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="username"
-              aria-invalid={email.length > 0 && !emailValid}
-              required
-            />
+            <div className={styles.inputRow}>
+              <input
+                type="email"
+                className={styles.input}
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+                aria-invalid={email.length > 0 && !emailValid}
+                required
+              />
+              <OkCheck show={emailValid} />
+            </div>
             <span className={styles.hint}>
               {email.length > 0 && !emailValid
                 ? "올바른 이메일 형식을 입력해주세요."
@@ -112,30 +138,36 @@ export default function BusinessSignupPage() {
 
           <label className={styles.field}>
             <span className={styles.label}>비밀번호</span>
-            <input
-              type="password"
-              className={styles.input}
-              placeholder="비밀번호를 입력해주세요"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-              required
-            />
+            <div className={styles.inputRow}>
+              <input
+                type="password"
+                className={styles.input}
+                placeholder="비밀번호를 입력해주세요"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                required
+              />
+              <OkCheck show={passwordValid} />
+            </div>
           </label>
 
           <label className={styles.field}>
             <span className={styles.label}>사업자등록번호</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              className={styles.input}
-              placeholder="000-00-00000"
-              value={bizNo}
-              onChange={(e) => setBizNo(formatBizNo(e.target.value))}
-              autoComplete="off"
-              aria-invalid={bizNo.length > 0 && !bizValid}
-              required
-            />
+            <div className={styles.inputRow}>
+              <input
+                type="text"
+                inputMode="numeric"
+                className={styles.input}
+                placeholder="000-00-00000"
+                value={bizNo}
+                onChange={(e) => setBizNo(formatBizNo(e.target.value))}
+                autoComplete="off"
+                aria-invalid={bizNo.length > 0 && !bizValid}
+                required
+              />
+              <OkCheck show={bizValid} />
+            </div>
             <span className={styles.hint}>
               {bizNo.length > 0 && !bizValid
                 ? "사업자등록번호 10자리를 정확히 입력해주세요."
@@ -144,49 +176,63 @@ export default function BusinessSignupPage() {
           </label>
 
           <label className={styles.field}>
-            <span className={styles.label}>담당자명</span>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="담당자 성함"
-              value={managerName}
-              onChange={(e) => setManagerName(e.target.value)}
-              autoComplete="name"
-            />
+            <span className={styles.label}>사업자등록증</span>
+            <div className={styles.inputRow}>
+              <input
+                type="file"
+                className={styles.file}
+                accept="image/*,application/pdf"
+                onChange={(e) => setLicense(e.target.files?.[0] ?? null)}
+                required
+              />
+              <OkCheck show={!!license} />
+            </div>
             <span className={styles.hint}>
-              주문·견적 관련 연락에 사용됩니다. (선택)
+              {license
+                ? `선택된 파일: ${license.name}`
+                : "이미지 또는 PDF 파일을 업로드해주세요."}
+            </span>
+          </label>
+
+          <label className={styles.field}>
+            <span className={styles.label}>담당자명</span>
+            <div className={styles.inputRow}>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="담당자 성함"
+                value={managerName}
+                onChange={(e) => setManagerName(e.target.value)}
+                autoComplete="name"
+                required
+              />
+              <OkCheck show={managerNameValid} />
+            </div>
+            <span className={styles.hint}>
+              주문·견적 관련 연락에 사용됩니다.
             </span>
           </label>
 
           <label className={styles.field}>
             <span className={styles.label}>담당자 연락처</span>
-            <input
-              type="tel"
-              inputMode="numeric"
-              className={styles.input}
-              placeholder="010-0000-0000"
-              value={managerTel}
-              onChange={(e) => setManagerTel(formatPhone(e.target.value))}
-              autoComplete="tel"
-            />
+            <div className={styles.inputRow}>
+              <input
+                type="tel"
+                inputMode="numeric"
+                className={styles.input}
+                placeholder="010-0000-0000"
+                value={managerTel}
+                onChange={(e) => setManagerTel(formatPhone(e.target.value))}
+                autoComplete="tel"
+                aria-invalid={managerTel.length > 0 && !managerTelValid}
+                required
+              />
+              <OkCheck show={managerTelValid} />
+            </div>
             <span className={styles.hint}>
-              승인 결과 안내와 문의에 사용됩니다. (선택)
-            </span>
-          </label>
-
-          <label className={styles.field}>
-            <span className={styles.label}>사업자등록증</span>
-            <input
-              type="file"
-              className={styles.file}
-              accept="image/*,application/pdf"
-              onChange={(e) => setLicense(e.target.files?.[0] ?? null)}
-              required
-            />
-            <span className={styles.hint}>
-              {license
-                ? `선택된 파일: ${license.name}`
-                : "이미지 또는 PDF 파일을 업로드해주세요."}
+              {managerTel.length > 0 && !managerTelValid
+                ? "연락처를 정확히 입력해주세요."
+                : "승인 결과 안내·가상계좌 입금·배송 안내 문자에 사용됩니다."}
             </span>
           </label>
 

@@ -14,8 +14,17 @@ export default function FeaturedSection({ section }: { section: Section }) {
       <aside className={styles.aside}>
         <h2 className={styles.title}>
           {category.name}
-          {/* 영문명은 제목의 일부다 — 읽는 순서(한글 → 영문)를 유지하려 h2 안에 둔다 */}
-          <span className={styles.titleEn}>{category.en}</span>
+          {/* 영문명은 제목의 일부다 — 읽는 순서(한글 → 영문)를 유지하려 h2 안에 둔다.
+              중분류는 "부모 › 현재" 위계로 표기하고 현재 카테고리를 강조한다. */}
+          <span className={styles.titleEn}>
+            {category.parentEn && (
+              <>
+                <span className={styles.parentEn}>{category.parentEn}</span>
+                <span className={styles.titleSep}> › </span>
+              </>
+            )}
+            <span className={styles.currentEn}>{category.en}</span>
+          </span>
         </h2>
         <Link href={`/category/${category.slug}`} className={styles.more}>
           전체보기

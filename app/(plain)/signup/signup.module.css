@@ -108,6 +108,29 @@
   font-weight: var(--fw-body);
 }
 
+/* 입력칸 + 유효 체크를 한 행에 배치 — 입력칸이 체크 자리만큼 줄어든다 */
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.inputRow > .input,
+.inputRow > .file {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* 체크 자리(고정폭) — 유효/무효와 무관하게 입력폭이 흔들리지 않게 예약 */
+.okSlot {
+  flex: 0 0 auto;
+  width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ok {
+  color: #16a34a;
+}
+
 .input {
   height: 46px;
   padding: 0 14px;

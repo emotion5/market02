@@ -160,14 +160,25 @@ export async function getFeaturedSections(
     byCat.set(f.categorySlug, list);
   }
 
+  // 부모(대분류) 영문명을 찾기 위한 slug→row 맵 (전체 카테고리가 이미 로드돼 있어 추가 조회 없음)
+  const bySlug = new Map(cats.map((c) => [c.slug, c]));
+
   const sections: FeaturedSection[] = [];
   for (const c of cats) {
     if (!c.showOnHome) continue; // 홈 노출 off 카테고리는 진열대 자체를 만들지 않음
     // 편성(featured)된 상품은 개수 제한 없이 전부 노출한다.
     const products = byCat.get(c.slug) ?? [];
     if (products.length > 0) {
+      // 중분류(부모 있음)는 부모 영문명을 함께 넘겨, 홈 제목을 "Hardware › Divider"처럼
+      // 위계로 표기한다(현재 카테고리는 컴포넌트에서 강조). 한글명은 중분류명 그대로.
+      const parent = c.parentSlug ? bySlug.get(c.parentSlug) : undefined;
       sections.push({
-        category: { slug: c.slug, name: c.nameKo, en: c.nameEn },
+        category: {
+          slug: c.slug,
+          name: c.nameKo,
+          en: c.nameEn,
+          parentEn: parent?.nameEn,
+        },
         products,
       });
     }

@@ -27,9 +27,13 @@ export const businessSignupSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
   bizNo: bizNoSchema,
-  managerName: z.string().trim().max(50).optional(),
-  managerTel: z.string().trim().max(30).optional(),
-  company: z.string().min(1).optional(),
+  managerName: z.string().trim().min(1, "담당자명을 입력하세요.").max(50),
+  managerTel: z
+    .string()
+    .trim()
+    .min(1, "담당자 연락처를 입력하세요.")
+    .max(30)
+    .refine((v) => v.replace(/\D/g, "").length >= 9, "연락처를 정확히 입력하세요."),
   licenseFileUrl: z.url().optional(),
 });
 

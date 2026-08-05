@@ -122,6 +122,20 @@
   font-weight: var(--fw-emphasis);
 }
 
+/* 회원도매가 자격 뷰어: 소비자가(삭선·흐림) + 회원도매가(강조)를 나란히 */
+.consumerPrice {
+  margin-right: 6px;
+  font-size: 13px;
+  font-weight: var(--fw-body);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.memberPrice {
+  color: var(--color-text);
+  font-weight: var(--fw-emphasis);
+}
+
 .colors {
   list-style: none;
   display: flex;

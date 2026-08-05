@@ -45,6 +45,8 @@ export default function CheckoutPage() {
   // 주문자 / 배송 정보
   const [ordererName, setOrdererName] = useState("");
   const [ordererTel, setOrdererTel] = useState("");
+  // 가상계좌 발급 안내(토스 알림톡/문자·이메일) 수신처. 회원 이메일로 프리필하며 화면엔 노출하지 않는다.
+  const [ordererEmail, setOrdererEmail] = useState("");
   const [address, setAddress] = useState(""); // 우편번호 검색으로 합쳐진 최종 배송지
   // AddressSearch 초기값. 저장된 배송지를 고르면 value 교체 + key 증가로 remount(강제 반영).
   const [addrSeed, setAddrSeed] = useState<{ value: string; key: number }>({
@@ -84,6 +86,8 @@ export default function CheckoutPage() {
         const fill = (set: (v: (v: string) => string) => void, val?: string | null) => {
           if (val) set((v) => v || val);
         };
+        // 이메일은 회원 유형과 무관하게 계정 이메일을 쓴다(가상계좌 안내 이메일 수신처).
+        fill(setOrdererEmail, p.email);
         if (p.type === "BUSINESS") {
           fill(setOrdererName, p.managerName || p.company);
           fill(setOrdererTel, p.managerTel ? formatPhone(p.managerTel) : undefined);
@@ -211,6 +215,10 @@ export default function CheckoutPage() {
         successUrl: `${window.location.origin}/checkout/complete`,
         failUrl: `${window.location.origin}/checkout?failed=1`,
         customerName: ordererName,
+        // 가상계좌 발급 안내(알림톡→문자 대체, 이메일)를 토스가 자동 발송하는 수신처.
+        // customerMobilePhone 은 하이픈 제거한 숫자만 전달. 이메일은 있을 때만.
+        customerMobilePhone: ordererTel.replace(/\D/g, ""),
+        ...(ordererEmail ? { customerEmail: ordererEmail } : {}),
         virtualAccount: { validHours: 24 }, // 입금기한 24시간
       });
       // 성공 시 위에서 successUrl 로 이동하므로 이 아래는 실행되지 않는다.

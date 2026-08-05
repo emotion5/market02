@@ -28,6 +28,13 @@
   color: var(--color-text-muted);
 }
 
+/* 중분류 위계 표기 "Hardware › Divider": 현재 카테고리(끝)를 약간 굵게 강조.
+   부모·구분자(›)는 titleEn 기본(얇고 흐림)을 그대로 상속한다.
+   색은 그대로 두고 굵기만 올려 과하지 않게(대분류 단독 섹션도 자연스럽게). */
+.currentEn {
+  font-weight: var(--fw-emphasis);
+}
+
 .more {
   margin-top: 12px;
   display: inline-flex;
